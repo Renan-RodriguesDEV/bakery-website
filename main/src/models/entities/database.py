@@ -8,17 +8,37 @@ from sqlalchemy import (
     ForeignKey,
     DECIMAL,
 )
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.sql import func
-from ..utils import log_green
+from sqlalchemy.orm import sessionmaker
+from src.utils.uteis import Logger
 
 
-user = "root"
-host = "localhost"
-database = "db_comercio"
-password = ""
-engine = create_engine(f"mysql+pymysql://{user}:{password}@{host}/{database}")
-Session = sessionmaker(bind=engine)
+class DatabaseHandler:
+
+    def __init__(
+        self, user="root", password="", host="localhost", database="db_comercio"
+    ):
+        __user = user
+        __password = password
+        __host = host
+        __database = database
+        self.__str_url = f"mysql+pymysql://{__user}:{__password}@{__host}/{__database}"
+        self.__engine = create_engine(self.__str_url)
+        self.session = None
+
+    def get_engine(self):
+        return self.__engine
+
+    def __enter__(self):
+        session_make = sessionmaker(bind=self.__engine)
+        self.session = session_make()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.session.close()
+
+
 Base = declarative_base()
 
 
@@ -92,32 +112,18 @@ class Divida(Base):
 
 
 def initialize_database():
-    session = Session()
-    result = (
-        session.query(User).filter_by(nome="root").filter_by(senha="superuser").first()
-    )
-    if not result:
-        user = User("root", "superuser")
-        session.add(user)
-        session.commit()
-        log_green(f"[INFO] User {user.nome} added successfully [INFO]")
-    # Criação das tabelas no banco de dados
-    Base.metadata.create_all(engine)
-    log_green("[###] - Initialization database sucessfully - [###]")
-
-
-if __name__ == "__main__":
-    initialize_database()
-
-    c = Divida(
-        "Renan Rodrigues", "44455566677", "19999999999", "renanrodrigues@gmail.com"
-    )
-
-    sessao = Session()
-    sessao.add(c)
-
-    # sessao.commit()
-
-    cliente = sessao.query(Cliente).filter(Cliente.nome == "Renan Rodrigues").first()
-
-    print(cliente.nome)
+    with DatabaseHandler() as database_handler:
+        # Criação das tabelas no banco de dados
+        Base.metadata.create_all(database_handler.get_engine())
+        Logger.log_green("[INFO] - Initialization database sucessfully - [INFO]")
+        result = (
+            database_handler.session.query(User)
+            .filter_by(nome="root")
+            .filter_by(senha="superuser")
+            .first()
+        )
+        if not result:
+            user = User("root", "superuser")
+            database_handler.session.add(user)
+            database_handler.session.commit()
+            Logger.log_blue(f"[INFO] User {user.nome} added successfully [INFO]")

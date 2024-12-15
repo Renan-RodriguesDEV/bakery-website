@@ -1,6 +1,17 @@
 from decimal import Decimal
 import pymysql
 import pandas as pd
+from ..entities.database import (
+    Produto,
+    Cliente,
+    User,
+    Cliente_Produto,
+    Divida,
+    Base,
+    DatabaseHandler,
+)
+from ...utils.uteis import Logger
+
 
 db_data = {
     "host": "localhost",

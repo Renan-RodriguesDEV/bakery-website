@@ -1,12 +1,12 @@
 import io
 from pandas import DataFrame
 import streamlit as st
-from src.models.database import *
-from src.controller.SQLRepository import *
-from src.controller.payments import *
-from src.utils import log_blue, log_green, log_red, send_feedback_email
+from src.utils.uteis import *
+from src.controller.payments import payment
+from src.models.entities.database import *
+from src.models.repository.database_repository import *
 
-log_green("[==] Runnig server streamlit localhost [==]")
+Logger.log_green("[==] Runnig server streamlit localhost [==]")
 initialize_database()
 
 
@@ -31,20 +31,20 @@ st.set_page_config(
 def autenticar_usuario(username, password, type_user):
     if type_user == "Owner/Employee":
         user = select_user(username, password)
-        log_red(
+        Logger.log_red(
             f'[===] - User: {user.get("username")} [===] Password: {user.get("password")} - [===]'
         )
         # Aqui você pode adicionar lógica de verificação com um banco de dados ou API
         if username == user.get("username") and password == user.get("password"):
-            log_blue("Logando o usuario")
+            Logger.log_blue("Logando o usuario")
             return True
-        log_red(
+        Logger.log_red(
             f"Erro ao logar o usuario {username}-{user.get('username')} {password}-{user.get('password')}"
         )
         return False
     elif type_user == "Client":
         user = select_user_client(username, password)
-        log_red(
+        Logger.log_red(
             f'[===] - User: {user.get("username")} [===] Password: {user.get("password")} - [===]'
         )
         # Aqui você pode adicionar lógica de verificação com um banco de dados ou API
@@ -58,7 +58,7 @@ def autenticar_usuario(username, password, type_user):
 def tela_login():
     st.title("Faça seu Login para continuar")
     tipo_user = st.selectbox("Usuario", ["Owner/Employee", "Client"])
-    log_blue(tipo_user)
+    Logger.log_blue(tipo_user)
     username = st.text_input("Usuário", help="Insira seu nome de usuario")
     password = st.text_input(
         "Senha",
@@ -159,7 +159,7 @@ def cadastro_produto():
             st.success(f"Produto {nome} cadastrado com sucesso!")
     else:
         produto = st.selectbox("Selecione o produto", select_all_produtos())
-        log_green(produto)
+        Logger.log_green(produto)
         if st.button("Deletar Produto", type="primary"):
             deletion = delete_product(produto)
             if deletion:
@@ -188,7 +188,7 @@ def cadastro_cliente():
     else:
         cliente = st.selectbox("Selecione o cliente", select_all_clientes())
         if st.button("Deletar Cliente", type="primary"):
-            log_green(f"Cliente a deletar: {cliente}")
+            Logger.log_green(f"Cliente a deletar: {cliente}")
             deletion = delete_client(cliente)
             if deletion:
                 st.success(f"Cliente {cliente} deletado com sucesso!")
@@ -389,7 +389,7 @@ def realizar_compra():
     if st.button("Comprar", type="primary"):
         try:
             link_paryment = payment(str(produto), float(preco), int(quantidade))
-            log_blue(f"link para pagamento {link_paryment}")
+            Logger.log_blue(f"link para pagamento {link_paryment}")
             # Redireciona automaticamente
             st.page_link(
                 page=link_paryment, label=":green[Ir para o Pagamento]", icon="💸"
