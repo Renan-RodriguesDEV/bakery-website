@@ -1,0 +1,22 @@
+h1 {
+  font-family: "fira code";
+  color: cyan;
+  /* text-decoration: none; */
+  font-style: italic;
+  font-weight: bold;
+}
+
+.st-emotion-cache-yk7at5.ef3psqc14 {
+  font-family: "JetBrains Mono";
+  background-color: darkgreen;
+  border-color: darkgreen;
+}
+.st-emotion-cache-yk7at5.ef3psqc14:hover {
+  background-color: chartreuse;
+  border-color: chartreuse;
+  color: black;
+}
+
+span {
+  visibility: hidden;
+}

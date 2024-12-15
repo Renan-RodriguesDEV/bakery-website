@@ -1,0 +1,10 @@
+[theme]
+
+# "dark" or "light"
+base = "dark"
+
+# primaryColor = "#ff01f0"
+
+# secondaryBackgroundColor = "#7c7c7c"
+
+font = "sans serif"
