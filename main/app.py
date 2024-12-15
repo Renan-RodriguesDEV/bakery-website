@@ -36,7 +36,11 @@ def autenticar_usuario(username, password, type_user):
         )
         # Aqui você pode adicionar lógica de verificação com um banco de dados ou API
         if username == user.get("username") and password == user.get("password"):
+            log_blue("Logando o usuario")
             return True
+        log_red(
+            f"Erro ao logar o usuario {username}-{user.get('username')} {password}-{user.get('password')}"
+        )
         return False
     elif type_user == "Client":
         user = select_user_client(username, password)

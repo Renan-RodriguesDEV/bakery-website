@@ -92,6 +92,15 @@ class Divida(Base):
 
 
 def initialize_database():
+    session = Session()
+    result = (
+        session.query(User).filter_by(nome="root").filter_by(senha="superuser").first()
+    )
+    if not result:
+        user = User("root", "superuser")
+        session.add(user)
+        session.commit()
+        log_green(f"[INFO] User {user.nome} added successfully [INFO]")
     # Criação das tabelas no banco de dados
     Base.metadata.create_all(engine)
     log_green("[###] - Initialization database sucessfully - [###]")
