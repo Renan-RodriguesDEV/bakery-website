@@ -12,4 +12,5 @@ def page_support():
         st.session_state["pagina"] = "homepage"
         st.rerun()
 
-    return True
+
+page_support()
