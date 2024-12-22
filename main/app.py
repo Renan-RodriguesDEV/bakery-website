@@ -5,6 +5,7 @@ from src.utils.uteis import *
 from src.controller.payments import payment
 from src.models.entities.database import *
 from src.models.repository.database_repository import *
+from routes.support_page import page_support
 
 Logger.log_green("[==] Runnig server streamlit localhost [==]")
 initialize_database()
@@ -68,7 +69,9 @@ def tela_login():
     )
     if username == "" or password == "":
         st.warning("Por favor, preencha os campos de usuário e senha")
-    if st.button("Login", type="primary"):
+    x, y = st.columns([2, 1], gap="large")
+    col1, col2 = x.columns([1, 1])
+    if col1.button("Login", type="primary"):
         if autenticar_usuario(username, password, type_user=tipo_user):
             st.session_state["autenticado"] = True
             st.session_state["owner"] = True if tipo_user == "Owner/Employee" else False
@@ -77,6 +80,16 @@ def tela_login():
             st.rerun()
         else:
             st.error("Usuário ou senha incorretos")
+    if col2.button(
+        "Esqueci minha senha",
+        help="Reseta senha enviando token por email!!",
+        type="primary",
+    ):
+        st.session_state["pagina"] = "reset_password"
+        st.rerun()
+    if y.button("Support Page"):
+        st.session_state["pagina"] = "suporte"
+        st.rerun()
 
 
 # Função para enviar feedback
@@ -142,6 +155,10 @@ def homepage():
     if st.sidebar.button("Logout"):
         st.session_state["autenticado"] = False
         st.session_state["pagina"] = "login"
+        st.rerun()
+
+    if st.sidebar.button("Support Page"):
+        st.session_state["pagina"] = "suporte"
         st.rerun()
 
 
@@ -430,5 +447,7 @@ if st.session_state["autenticado"]:
         atualizar_divida()
     elif st.session_state["pagina"] == "realizar_compra":
         realizar_compra()
+    elif st.session_state["pagina"] == "suporte":
+        page_support()
 else:
     tela_login()
