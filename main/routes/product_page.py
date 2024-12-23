@@ -2,14 +2,19 @@ import io
 
 import streamlit as st
 from pandas import DataFrame
-from src.models.repository.dividas_repository import update_divida
-from src.models.repository.product_repository import ProductRepository
-from src.models.repository.database_repository import (
+from src.models.repository.dividas_repository import (
+    delete_dividas,
     register_sale,
+    select_debt_by_client,
+    update_dividas,
+)
+from src.models.repository.product_repository import ProductRepository
+from src.utils.uteis import Logger
+
+from src.models.repository.dataframes_repository import (
     select_all_clientes,
     select_all_produtos,
     select_all_sales_by_client,
-    select_debt_by_client,
 )
 
 
@@ -80,7 +85,9 @@ def consulta_divida():
             "Selecione o cliente",
             df_clientes["nome"].to_list(),
         )
-        divida = select_debt_by_client(cliente)
+        divida = select_debt_by_client(
+            cliente,
+        )
         st.subheader(f"Divida do cliente :gray[{cliente}]", divider="red")
         st.write(
             f"""<p style="font-size:30px;">Valor atual: <span style="text-decoration:underline; color:green; font-weight:bold;">R$ {divida if divida else 0.00}</span></p>""",
@@ -153,6 +160,7 @@ def atualizar_divida():
             preco = ProductRepository().select_product_price(produto)
         except Exception as e:
             st.warning("Produto não encontrado")
+            Logger.log_red(e)
             pass
         quantidade = st.number_input("Quantidade", min_value=1, step=1)
         st.markdown(
@@ -173,20 +181,32 @@ def atualizar_divida():
         st.write(
             f"**O cliente :blue[{cliente}] tem a divida total no valor: :gray[R${divida_total}]**"
         )
-
+        valor_remover = st.number_input(
+            "Valor a ser removido", min_value=0.0, step=0.01
+        )
+        is_pag = None
         st.warning("Cuidado ao remover a divida, essa ação não pode ser desfeita")
-        if st.button(
+        col1, col2 = st.columns([1, 1])
+        if col1.button(f"Remover Valor R${valor_remover}", type="primary"):
+            is_pag = update_dividas(cliente, "remove", valor_remover)
+            if valor_remover > divida_total or valor_remover < 0:
+                st.error(
+                    "Insira valores positivos ao remover a divida e não insira valores maiores que a divida!!!"
+                )
+        if col2.button(
             "Zerar divida",
             type="primary",
             help="Atenção, essa ação não pode ser desfeita",
         ):
-            is_pag = update_divida(cliente)
-            if is_pag:
-                st.success(
-                    f"Pagamento registrado com sucesso!! a conta atual está em R$ 0,00"
-                )
-            else:
-                st.error("Erro ao registrar a pagamento")
+            is_pag = delete_dividas(cliente)
+        if is_pag is not None and is_pag:
+            st.success(
+                f"Pagamento registrado com sucesso!! a conta atual está em R$ {select_debt_by_client(cliente)}"
+            )
+        elif is_pag is None or not is_pag:
+            st.warning("Aguardando efetuação de pagamento")
+        else:
+            st.error("Erro ao registrar a pagamento")
 
     if st.button("Voltar"):
         st.session_state["pagina"] = "homepage"

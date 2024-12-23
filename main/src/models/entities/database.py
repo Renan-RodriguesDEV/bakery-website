@@ -27,7 +27,6 @@ class DatabaseHandler:
         self.__str_url = f"mysql+pymysql://{__user}:{__password}@{__host}/{__database}"
         self.__engine = create_engine(self.__str_url)
         self.session = None
-        self.hasher = Hasher()
 
     def get_engine(self):
         return self.__engine
@@ -98,12 +97,28 @@ class Cliente_Produto(Base):
     total = Column("total", DECIMAL(15, 2))
     data = Column("data", TIMESTAMP, server_default=func.now())
 
+    def __init__(
+        self,
+        id_cliente,
+        id_produto,
+        preco,
+        quantidade,
+        total=0,
+        data=datetime.datetime.now(),
+    ):
+        self.id_cliente = id_cliente
+        self.id_produto = id_produto
+        self.preco = preco
+        self.quantidade = quantidade
+        self.total = total
+        self.data = data
+
 
 class Divida(Base):
     __tablename__ = "dividas"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     id_cliente = Column("id_cliente", ForeignKey("clientes.id"), nullable=False)
-    valor = Column("valor", DECIMAL(15, 2), nullable=False)
+    valor = Column("valor", DECIMAL(15, 2), nullable=False, default=0)
     pago = Column("pago", DECIMAL(15, 2), nullable=False, default=0)
     data_modificacao = Column("data_modificacao", TIMESTAMP, server_default=func.now())
 

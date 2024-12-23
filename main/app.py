@@ -1,17 +1,15 @@
-import io
-from pandas import DataFrame
 import streamlit as st
-from routes.product_page import atualizar_divida, consulta_divida, consulta_produto
-from routes.cadastro import cadastro_cliente, cadastro_produto
-from src.utils.uteis import *
-from src.controller.payments import payment
-from src.models.entities.database import *
-from src.models.repository.database_repository import *
-from routes.support_page import page_support
-from routes.login_page import tela_login
+from routes.cadastro import cadastro_cliente, cadastro_produto, my_account
 from routes.compras import realizar_compra
+from routes.login_page import tela_login
+from routes.product_page import atualizar_divida, consulta_divida, consulta_produto
+from routes.support_page import page_support
+from src.models.entities.database import initialize_database
+from src.utils.uteis import Logger, send_feedback_email
 
 Logger.log_green("[==] Runnig server streamlit localhost [==]")
+
+
 initialize_database()
 
 
@@ -98,6 +96,9 @@ def homepage():
     if st.sidebar.button("Support Page"):
         st.session_state["pagina"] = "suporte"
         st.rerun()
+    if st.sidebar.button("My Account"):
+        st.session_state["pagina"] = "conta"
+        st.rerun()
 
 
 # Configurando a sessão para manter o estado do login e da página
@@ -109,6 +110,9 @@ if "pagina" not in st.session_state:
 # Inicializa "owner" com False por padrão, caso ainda não tenha sido definido
 if "owner" not in st.session_state:
     st.session_state["owner"] = False
+    st.session_state["usuario"] = "Client"
+else:
+    st.session_state["usuario"] = "Owner/Employee"
 # Verifica se o usuário está autenticado
 if st.session_state["autenticado"]:
     if st.session_state["pagina"] == "homepage":
@@ -125,10 +129,15 @@ if st.session_state["autenticado"]:
         atualizar_divida()
     elif st.session_state["pagina"] == "realizar_compra":
         realizar_compra()
+    elif st.session_state["pagina"] == "suporte":
+        page_support()
+    elif st.session_state["pagina"] == "conta":
+        my_account()
 
 else:
     # Se não estiver autenticado, ainda permite acesso à página de suporte
     if st.session_state["pagina"] == "support":
         page_support()
+
     else:
         tela_login()

@@ -9,12 +9,13 @@ def autenticar_usuario(username, password, type_user):
     if type_user == "Owner/Employee":
         Logger.log_green(password)
         user = UserRepository().select_user(username, type_user)
-        Logger.log_red(
-            f"[===] - User: {user.nome} [===] Password: {user.senha} - [===]"
-        )
         if user:
+            Logger.log_red(
+                f"[===] - User: {user.nome} [===] Password: {user.senha} - [===]"
+            )
             isAuth = Hasher().checkpswd(password, user.senha)
             # Aqui você pode adicionar lógica de verificação com um banco de dados ou API
+            Logger.log_blue(f"Autenticando o usuario {isAuth}")
             if username == user.nome and isAuth == True:
                 Logger.log_blue("Logando o usuario")
                 return True
@@ -38,6 +39,7 @@ def tela_login():
     tipo_user = st.selectbox("Usuario", ["Owner/Employee", "Client"])
     Logger.log_blue(tipo_user)
     username = st.text_input("Usuário", help="Insira seu nome de usuario")
+    st.session_state["username"] = username
     password = st.text_input(
         "Senha",
         type="password",

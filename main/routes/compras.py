@@ -2,7 +2,7 @@ import streamlit as st
 
 from src.models.repository.product_repository import ProductRepository
 from src.controller.payments import payment
-from src.models.repository.database_repository import (
+from src.models.repository.dataframes_repository import (
     select_all_produtos,
 )
 from src.utils.uteis import Logger

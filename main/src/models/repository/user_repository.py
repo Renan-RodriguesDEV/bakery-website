@@ -1,5 +1,7 @@
 from typing import Literal
 
+from src.utils.hasher import Hasher
+
 from ...utils.uteis import Logger
 from ..entities.database import Cliente, DatabaseHandler, User
 
@@ -30,7 +32,9 @@ class UserRepository(DatabaseHandler):
                 return True
         return False
 
-    def select_user(self, username, type_user: Literal["Owner/Employee", "Client"]):
+    def select_user(
+        self, username, type_user: Literal["Owner/Employee", "Client"] = "Client"
+    ):
         with self:
             if type_user == "Owner/Employee":
                 user = self.session.query(User).filter_by(nome=username).first()
@@ -39,6 +43,10 @@ class UserRepository(DatabaseHandler):
                 user = self.session.query(Cliente).filter_by(nome=username).first()
                 return user
             return None
+
+    def select_user_cpf(self, cpf):
+        with self:
+            return self.session.query(Cliente).filter_by(cpf=cpf).first()
 
     def select_all_users(self, type_user: Literal["Owner/Employee", "Client"]):
         with self:
@@ -50,11 +58,12 @@ class UserRepository(DatabaseHandler):
                 return users
             return None
 
-    def update_user_password(self, username, new_password):
+    def update_user(self, username, new_name, new_password):
         with self:
             try:
                 user = self.session.query(User).filter_by(nome=username).first()
-                user.password = self.hasher.hasherpswd(new_password)
+                user.senha = Hasher().hasherpswd(new_password)
+                user.nome = new_name
                 self.session.commit()
                 return True
             except Exception as e:

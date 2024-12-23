@@ -2,7 +2,7 @@ import streamlit as st
 from src.models.repository.product_repository import ProductRepository
 from src.models.repository.user_repository import UserRepository
 from src.utils.uteis import Logger
-from src.models.repository.database_repository import (
+from src.models.repository.dataframes_repository import (
     select_all_clientes,
     select_all_produtos,
 )
@@ -69,3 +69,40 @@ def cadastro_cliente():
     if st.button("Voltar"):
         st.session_state["pagina"] = "homepage"
         st.rerun()
+
+
+def my_account():
+    if not "autenticado" in st.session_state:
+        st.error("Você precisa estar logado para ver sua conta")
+        st.session_state["pagina"] = "login"
+    else:
+        print(st.session_state["username"])
+        st.title("Minha Conta")
+        user = st.session_state["username"]
+        user_data = UserRepository().select_user(user, "Owner/Employee")
+        x, y = st.columns([1, 1])
+        if not user_data:
+            user_data = UserRepository().select_user(user, "Client")
+            x.write(f"Nome: {user_data.nome}")
+            x.write(f"Email: {user_data.email}")
+            x.write(f"Telefone: {user_data.telefone}")
+            x.write(f"CPF: {user_data.cpf}")
+        else:
+            x.image(
+                r"C:\Users\Renan Rodrigues\Pictures\Screenshots\Captura de Tela (1).png",
+                width=200,
+            )
+            x.write(f"Nome: {user_data.nome}")
+            # x.write(f"Senha: {user_data.senha}")
+            new_name = y.text_input(f"Nome: ", type="default")
+            new_pswd = y.text_input(f"Senha: ", type="password", max_chars=8)
+            if new_name and new_pswd:
+                if st.button("Atualizar", type="primary"):
+                    update = UserRepository().update_user(user, new_name, new_pswd)
+                    if update:
+                        st.success("Atualizado com sucesso")
+                    else:
+                        st.error("Erro ao atualizar")
+        if st.button("Voltar"):
+            st.session_state["pagina"] = "homepage"
+            st.rerun()

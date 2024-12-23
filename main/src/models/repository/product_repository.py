@@ -22,9 +22,9 @@ class ProductRepository(DatabaseHandler):
             )
             return product
 
-    def select_product_price(self, price):
+    def select_product_price(self, nome):
         with self:
-            product = self.session.query(Produto).filter_by(preco=price).first()
+            product = self.session.query(Produto).filter_by(nome=nome).first()
             return product.preco if product else None
 
     def select_all_products(self):
