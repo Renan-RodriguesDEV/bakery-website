@@ -12,6 +12,7 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.sql import func
 from sqlalchemy.orm import sessionmaker
 from src.utils.uteis import Logger
+from src.utils.hasher import Hasher
 
 
 class DatabaseHandler:
@@ -26,6 +27,7 @@ class DatabaseHandler:
         self.__str_url = f"mysql+pymysql://{__user}:{__password}@{__host}/{__database}"
         self.__engine = create_engine(self.__str_url)
         self.session = None
+        self.hasher = Hasher()
 
     def get_engine(self):
         return self.__engine
@@ -59,13 +61,13 @@ class Cliente(Base):
     __tablename__ = "clientes"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     nome = Column("nome", String(255))
-    cpf = Column("cpf", String(11), nullable=True, unique=True)
+    cpf = Column("cpf", String(255), nullable=True, unique=True)
     telefone = Column("telefone", String(15), nullable=True)
     email = Column("email", String(255), nullable=True)
 
     def __init__(self, nome, cpf=None, telefone=None, email=None):
         self.nome = nome
-        self.cpf = cpf
+        self.cpf = Hasher().hasherpswd(cpf) if cpf else None
         self.telefone = telefone
         self.email = email
 
@@ -74,11 +76,11 @@ class User(Base):
     __tablename__ = "users"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     nome = Column("nome", String(255), nullable=False)
-    senha = Column("senha", String(13), nullable=True, unique=True)
+    senha = Column("senha", String(255), nullable=True)  # Increased length for hash
 
     def __init__(self, nome, senha=None):
         self.nome = nome
-        self.senha = senha
+        self.senha = Hasher().hasherpswd(senha) if senha else None
 
 
 class Cliente_Produto(Base):
@@ -116,12 +118,7 @@ def initialize_database():
         # Criação das tabelas no banco de dados
         Base.metadata.create_all(database_handler.get_engine())
         Logger.log_green("[INFO] - Initialization database sucessfully - [INFO]")
-        result = (
-            database_handler.session.query(User)
-            .filter_by(nome="root")
-            .filter_by(senha="superuser")
-            .first()
-        )
+        result = database_handler.session.query(User).filter_by(nome="root").first()
         if not result:
             user = User("root", "superuser")
             database_handler.session.add(user)

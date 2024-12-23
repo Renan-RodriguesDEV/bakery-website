@@ -1,31 +1,39 @@
-import streamlit as st
 import io
+
+import streamlit as st
+from pandas import DataFrame
+from src.models.repository.dividas_repository import update_divida
+from src.models.repository.product_repository import ProductRepository
 from src.models.repository.database_repository import (
     register_sale,
-    select_all_produtos,
     select_all_clientes,
-    select_price_by_name,
-    select_product_by_name,
+    select_all_produtos,
     select_all_sales_by_client,
     select_debt_by_client,
-    update_divida,
 )
-from pandas import DataFrame
 
 
-# Função para a consulta de produtos
 def consulta_produto():
+    """Pagina para consulta de produtos"""
     st.title("Consulta de Produtos")
     produtos = select_all_produtos()
     # Aqui você poderia listar os produtos cadastrados. Exemplo simples:
     st.table(produtos)
     nome = st.text_input("Digite o nome do produto para consultar")
-    produto = select_product_by_name(nome)
+    produto = ProductRepository().select_product(nome)
     col1, col2 = st.columns([1, 1])
     with col1:
         if st.button("Consultar", type="primary"):
-            if produto.shape[0] > 0:
-                st.write(produto)
+            if produto:
+                st.table(
+                    {
+                        "Produto": {
+                            "Nome": produto.nome,
+                            "Preço": produto.preco,
+                            "Estoque": produto.estoque,
+                        }
+                    }
+                )
             else:
                 st.error("Nenhum produto encontrado com esse nome")
 
@@ -50,6 +58,7 @@ def consulta_produto():
 
 # Função para a consulta de dívida de clientes
 def consulta_divida():
+    """Pagina para a consulta de dívida de clientes"""
 
     @st.cache_data
     def converter_df_to_excel(dataframe: DataFrame):
@@ -130,6 +139,7 @@ def consulta_divida():
 
 
 def atualizar_divida():
+    """Pagina para atualizar a dívida de clientes"""
     st.title("Atualizar Dívida de Clientes")
     # Simulação de consulta de dívida. Poderia ser ligado a um banco de dados.
     df_clientes = select_all_clientes()
@@ -140,7 +150,7 @@ def atualizar_divida():
         produto = st.selectbox("Selecione o produto", df_produtos)
         preco = None
         try:
-            preco = select_price_by_name(produto)["preco"]
+            preco = ProductRepository().select_product_price(produto)
         except Exception as e:
             st.warning("Produto não encontrado")
             pass

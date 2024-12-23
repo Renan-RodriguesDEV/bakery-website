@@ -1,16 +1,5 @@
-from decimal import Decimal
 import pymysql
 import pandas as pd
-from ..entities.database import (
-    Produto,
-    Cliente,
-    User,
-    Cliente_Produto,
-    Divida,
-    Base,
-    DatabaseHandler,
-)
-from ...utils.uteis import Logger
 
 
 db_data = {
@@ -43,41 +32,6 @@ def select_all_clientes():
             return df
 
 
-# Função para selecionar o preço do produto pelo nome
-def select_price_by_name(name):
-    connective = pymysql.connect(**db_data)
-    with connective as connective:
-        with connective.cursor() as cursor:
-            cursor.execute(
-                "SELECT preco FROM produtos WHERE nome  like%s", (f"%{name}%",)
-            )
-            price = cursor.fetchone()
-            return price
-
-
-# Função para selecionar o cliente pelo nome
-def select_cliente_id_by_name(name):
-    connective = pymysql.connect(**db_data)
-    with connective as connective:
-        with connective.cursor() as cursor:
-            cursor.execute("SELECT id FROM clientes WHERE nome = %s", (name,))
-            result = cursor.fetchall()
-            return result[0]["id"] if result else None
-
-
-def select_product_by_name(name):
-    connective = pymysql.connect(**db_data)
-    with connective as connective:
-        with connective.cursor() as cursor:
-            cursor.execute(
-                "SELECT nome,preco,estoque FROM produtos WHERE nome like%s",
-                (f"%{name}%",),
-            )
-            df = pd.DataFrame(cursor.fetchall(), columns=["nome", "preco", "estoque"])
-            df.columns = ["Nome", "Preço", "Estoque"]
-            return df
-
-
 # Função para selecionar o estoque pelo nome do produto
 def select_count_by_name(name):
     connective = pymysql.connect(**db_data)
@@ -86,33 +40,6 @@ def select_count_by_name(name):
             cursor.execute("SELECT estoque FROM produtos WHERE nome = %s", (name,))
             df = pd.DataFrame(cursor.fetchall())
             return df
-
-
-# Função para registrar um cliente
-def register_client(name, cpf, telefone, email):
-    connective = pymysql.connect(**db_data)
-    with connective as connective:
-        with connective.cursor() as cursor:
-            sentence = "INSERT INTO clientes (nome, cpf, telefone, email) VALUES (%s, %s, %s, %s)"
-            cursor.execute(
-                sentence,
-                (name, cpf, telefone, email),
-            )
-            connective.commit()
-            return True
-
-
-# Função para registrar um produto
-def register_product(name, price, count):
-    connective = pymysql.connect(**db_data)
-    with connective as connective:
-        with connective.cursor() as cursor:
-            cursor.execute(
-                "INSERT INTO produtos (nome, preco, estoque) VALUES (%s, %s, %s)",
-                (name, price, count),
-            )
-            connective.commit()
-            return True
 
 
 # Função para registrar um produto
@@ -168,17 +95,7 @@ def register_sale(cliente, produto, quantidade: int = 1):
             return True if rows > 0 else False
 
 
-def update_divida(cliente):
-    result = select_cliente_id_by_name(cliente)
-    if result:
-        connective = pymysql.connect(**db_data)
-        with connective as connective:
-            with connective.cursor() as cursor:
-                query = "DELETE FROM cliente_produto WHERE id_cliente = %s"
-                cursor.execute(query, (result))
-                connective.commit()
-                return True
-    return False
+
 
 
 # Função para consultar a dívida do cliente
@@ -206,34 +123,6 @@ def select_debt_by_client(cliente, cpf=None):
             return data[0].get("divida_total") if data else 0.00
 
 
-def select_user(name, passwd):
-    connective = pymysql.connect(**db_data)
-    with connective as connective:
-        with connective.cursor() as cursor:
-            query = "SELECT * FROM users WHERE nome = %s AND senha = %s"
-            cursor.execute(query, (name, passwd))
-            result = cursor.fetchone()
-            if result:
-                senha = result["senha"]
-                usuario = result["nome"]
-                return {"username": usuario, "password": senha}
-            return {"username": "", "password": ""}
-
-
-def select_user_client(name, passwd):
-    connective = pymysql.connect(**db_data)
-    with connective as connective:
-        with connective.cursor() as cursor:
-            query = "SELECT * FROM clientes WHERE nome = %s AND cpf = %s"
-            cursor.execute(query, (name, passwd))
-            result = cursor.fetchone()
-            if result:
-                senha = result["cpf"]
-                usuario = result["nome"]
-                return {"username": usuario, "password": senha}
-            return {"username": "", "password": ""}
-
-
 def select_all_sales_by_client(cliente):
     connective = pymysql.connect(**db_data)
     with connective as connective:
@@ -248,35 +137,3 @@ def select_all_sales_by_client(cliente):
             cursor.execute(query, (cliente,))
             data = cursor.fetchall()
             return pd.DataFrame(data) if data else None
-
-
-def delete_product(name):
-    connective = pymysql.connect(**db_data)
-    with connective as connective:
-        with connective.cursor() as cursor:
-            try:
-                query = "DELETE FROM produtos WHERE nome = %s"
-                cursor.execute(query, (name,))
-                connective.commit()
-                return True
-            except Exception as e:
-                return False
-
-
-def delete_client(cliente):
-    connective = pymysql.connect(**db_data)
-    with connective as connective:
-        with connective.cursor() as cursor:
-            try:
-                query = "DELETE FROM clientes WHERE nome = %s"
-                cursor.execute(query, (cliente,))
-                connective.commit()
-                return True
-            except Exception as e:
-                return False
-
-
-# Teste básico
-if __name__ == "__main__":
-    df = select_debt_by_client("Renan de Souza Rodrigues")
-    print(df)

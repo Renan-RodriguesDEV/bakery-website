@@ -2,6 +2,7 @@ import streamlit as st
 
 
 def page_support():
+    """Pagina dedicada ao suporte ao usuario"""
     x, y = st.columns([2, 1], gap="large", vertical_alignment="center")
     x.title("Bem vindo a pagina de support")
     feedback = x.text_area("Por favor descreva o ocorrido!!:", max_chars=500)
@@ -11,6 +12,4 @@ def page_support():
     if st.button("Voltar"):
         st.session_state["pagina"] = "homepage"
         st.rerun()
-
-
-page_support()
+    st.html("<foot>@renanrodrigues.dev</foot>")

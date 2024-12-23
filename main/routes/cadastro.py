@@ -1,10 +1,8 @@
 import streamlit as st
+from src.models.repository.product_repository import ProductRepository
+from src.models.repository.user_repository import UserRepository
 from src.utils.uteis import Logger
 from src.models.repository.database_repository import (
-    delete_client,
-    delete_product,
-    register_client,
-    register_product,
     select_all_clientes,
     select_all_produtos,
 )
@@ -20,13 +18,13 @@ def cadastro_produto():
         qtde = st.number_input("Quantidade", min_value=0, step=1)
 
         if st.button("Cadastrar Produto", type="primary"):
-            register_product(nome, float(preco), int(qtde))
+            ProductRepository().insert_product(nome, float(preco), int(qtde))
             st.success(f"Produto {nome} cadastrado com sucesso!")
     else:
         produto = st.selectbox("Selecione o produto", select_all_produtos())
         Logger.log_green(produto)
         if st.button("Deletar Produto", type="primary"):
-            deletion = delete_product(produto)
+            deletion = ProductRepository().delete_product(produto)
             if deletion:
                 st.success(f"Produto {produto} deletado com sucesso!")
             else:
@@ -48,13 +46,22 @@ def cadastro_cliente():
 
         if st.button("Cadastrar Cliente", type="primary"):
             cpf = cpf.replace(".", "").replace("-", "")
-            register_client(nome, cpf, telefone, email)
-            st.success(f"Cliente {nome} cadastrado com sucesso!")
+            cadasto = UserRepository().insert_user(
+                username=nome,
+                cpf=cpf,
+                telefone=telefone,
+                email=email,
+                type_user="Client",
+            )
+            if cadasto:
+                st.success(f"Cliente {nome} cadastrado com sucesso!")
+            else:
+                st.error(f"Não foi possivel cadastrar o cliente")
     else:
         cliente = st.selectbox("Selecione o cliente", select_all_clientes())
         if st.button("Deletar Cliente", type="primary"):
             Logger.log_green(f"Cliente a deletar: {cliente}")
-            deletion = delete_client(cliente)
+            deletion = UserRepository().delete_user(cliente, "Client")
             if deletion:
                 st.success(f"Cliente {cliente} deletado com sucesso!")
             else:

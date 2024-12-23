@@ -1,35 +1,32 @@
-from src.utils.uteis import Logger
 import streamlit as st
-
-from src.models.repository.database_repository import (
-    select_user,
-    select_user_client,
-)
+from src.models.repository.user_repository import UserRepository
+from src.utils.hasher import Hasher
+from src.utils.uteis import Logger
 
 
-# Função de autenticação simulada (exemplo simples)
 @st.cache_data
 def autenticar_usuario(username, password, type_user):
     if type_user == "Owner/Employee":
-        user = select_user(username, password)
+        Logger.log_green(password)
+        user = UserRepository().select_user(username, type_user)
         Logger.log_red(
-            f'[===] - User: {user.get("username")} [===] Password: {user.get("password")} - [===]'
+            f"[===] - User: {user.nome} [===] Password: {user.senha} - [===]"
         )
-        # Aqui você pode adicionar lógica de verificação com um banco de dados ou API
-        if username == user.get("username") and password == user.get("password"):
-            Logger.log_blue("Logando o usuario")
-            return True
-        Logger.log_red(
-            f"Erro ao logar o usuario {username}-{user.get('username')} {password}-{user.get('password')}"
-        )
+        if user:
+            isAuth = Hasher().checkpswd(password, user.senha)
+            # Aqui você pode adicionar lógica de verificação com um banco de dados ou API
+            if username == user.nome and isAuth == True:
+                Logger.log_blue("Logando o usuario")
+                return True
+            Logger.log_red(
+                f"Erro ao logar o usuario {username}-{user.nome} {password}-{user.senha}"
+            )
         return False
     elif type_user == "Client":
-        user = select_user_client(username, password)
-        Logger.log_red(
-            f'[===] - User: {user.get("username")} [===] Password: {user.get("password")} - [===]'
-        )
-        # Aqui você pode adicionar lógica de verificação com um banco de dados ou API
-        if username == user.get("username") and password == user.get("password"):
+        user = UserRepository().select_user(username, type_user)
+        Logger.log_red(f"[===] - User: {user.nome} [===] Password: {user.cpf} - [===]")
+        isAuth = Hasher().checkpswd(password, user.cpf)
+        if username == user.nome and isAuth == True:
             return True
         return False
     return False
