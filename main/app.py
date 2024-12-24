@@ -1,11 +1,12 @@
 import streamlit as st
+from src.utils.email import EmailSender
 from routes.cadastro import cadastro_cliente, cadastro_produto, my_account
 from routes.compras import realizar_compra
 from routes.login_page import tela_login
 from routes.product_page import atualizar_divida, consulta_divida, consulta_produto
-from routes.support_page import page_support
+from routes.support_page import esquci_senha, page_support
 from src.models.entities.database import initialize_database
-from src.utils.uteis import Logger, send_feedback_email
+from src.utils.uteis import Logger
 
 Logger.log_green("[==] Runnig server streamlit localhost [==]")
 
@@ -31,7 +32,7 @@ st.set_page_config(
 # Função para enviar feedback
 @st.cache_data
 def send_feedback(feedback):
-    send_feedback_email(str(st.session_state["usuario"]), feedback)
+    EmailSender().send_feedback_email(str(st.session_state["usuario"]), feedback)
     st.success(f"Feedback enviado com sucesso: {st.session_state['usuario']}")
 
 
@@ -133,11 +134,14 @@ if st.session_state["autenticado"]:
         page_support()
     elif st.session_state["pagina"] == "conta":
         my_account()
+    elif st.session_state["pagina"] == "esqueci":
+        esquci_senha()
 
 else:
     # Se não estiver autenticado, ainda permite acesso à página de suporte
     if st.session_state["pagina"] == "support":
         page_support()
-
+    elif st.session_state["pagina"] == "esqueci":
+        esquci_senha()
     else:
         tela_login()

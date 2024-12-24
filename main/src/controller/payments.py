@@ -29,6 +29,10 @@ def payment(name_product: str, price: float, quantity: int):
     return result["response"]["init_point"]
 
 
+def get_payment():
+    return sdk.payment().search()
+
+
 if __name__ == "__main__":
     link_payment = payment("nome", 1, 1)
 

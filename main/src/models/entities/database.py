@@ -63,12 +63,14 @@ class Cliente(Base):
     cpf = Column("cpf", String(255), nullable=True, unique=True)
     telefone = Column("telefone", String(15), nullable=True)
     email = Column("email", String(255), nullable=True)
+    token = Column("token", String(255), nullable=True)
 
-    def __init__(self, nome, cpf=None, telefone=None, email=None):
+    def __init__(self, nome, cpf=None, telefone=None, email=None, token=None):
         self.nome = nome
         self.cpf = Hasher().hasherpswd(cpf) if cpf else None
         self.telefone = telefone
         self.email = email
+        self.token = token
 
 
 class User(Base):

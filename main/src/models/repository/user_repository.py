@@ -62,8 +62,10 @@ class UserRepository(DatabaseHandler):
         with self:
             try:
                 user = self.session.query(User).filter_by(nome=username).first()
-                user.senha = Hasher().hasherpswd(new_password)
-                user.nome = new_name
+                if new_password:
+                    user.senha = Hasher().hasherpswd(new_password)
+                if new_name:
+                    user.nome = new_name
                 self.session.commit()
                 return True
             except Exception as e:
@@ -86,4 +88,35 @@ class UserRepository(DatabaseHandler):
             except Exception as e:
                 Logger.log_red(e)
                 return False
+        return False
+
+    def reset_password(
+        self, username, new_password, type_user: Literal["Owner/Employee", "Client"]
+    ):
+        with self:
+            try:
+                if type_user == "Owner/Employee":
+                    user = self.session.query(User).filter_by(nome=username).first()
+                    user.senha = Hasher().hasherpswd(new_password)
+                else:
+                    user = self.session.query(Cliente).filter_by(email=username).first()
+                    user.cpf = Hasher().hasherpswd(new_password)
+                self.session.commit()
+                return True
+            except Exception as e:
+                Logger.log_red(e)
+                return False
+
+    def get_token(self):
+        with self:
+            user = self.session.query(Cliente).first()
+            if user:
+                return user.token
+
+    def set_token(self, token):
+        with self:
+            user = self.session.query(Cliente).first()
+            user.token = token
+            self.session.commit()
+            return True
         return False

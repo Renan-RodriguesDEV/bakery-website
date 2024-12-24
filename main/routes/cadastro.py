@@ -98,11 +98,12 @@ def my_account():
             new_pswd = y.text_input(f"Senha: ", type="password", max_chars=8)
             if new_name and new_pswd:
                 if st.button("Atualizar", type="primary"):
-                    update = UserRepository().update_user(user, new_name, new_pswd)
-                    if update:
-                        st.success("Atualizado com sucesso")
-                    else:
-                        st.error("Erro ao atualizar")
+                    with UserRepository() as u:
+                        update = u.update_user(user, new_name, new_pswd)
+                        if update:
+                            st.success("Atualizado com sucesso")
+                        else:
+                            st.error("Erro ao atualizar")
         if st.button("Voltar"):
             st.session_state["pagina"] = "homepage"
             st.rerun()

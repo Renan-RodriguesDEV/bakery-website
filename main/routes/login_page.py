@@ -46,6 +46,7 @@ def tela_login():
         max_chars=11,
         help="insira sua senha de usuario, clientes insiram o CPF cadastrado",
     )
+
     if username == "" or password == "":
         st.warning("Por favor, preencha os campos de usuário e senha")
     x, y = st.columns([2, 1], gap="large")
@@ -64,7 +65,7 @@ def tela_login():
         help="Reseta senha enviando token por email!!",
         type="primary",
     ):
-        st.session_state["pagina"] = "reset_password"
+        st.session_state["pagina"] = "esqueci"
         st.rerun()
     if y.button("Support Page"):
         st.session_state["pagina"] = "support"

@@ -18,15 +18,17 @@ def realizar_compra():
     produto = st.selectbox("Selecione o produto", df_produtos)
     preco = ProductRepository().select_product_price(produto)
     quantidade = st.number_input("Quantidade", min_value=1, step=1)
+    col1, col2 = st.columns([1, 1])
+
     if produto and preco:
-        st.markdown(
+        col1.html(
             f"""
-            \n:green[PRODUTO]: **{produto}** 
-            \n:green[PREÇO UNITÁRIO]: **`R$`{preco}** 
-            \n:green[VALOR FINAL]: **`R$`{preco*quantidade}**""",
-            unsafe_allow_html=True,
+            <p><span style='color: cyan'>Produto: </span><strong>{produto}</strong></p>
+            <p><span style='color: cyan;'>Preço Unitário: </span><strong>R$ {preco}</strong></p>
+            <p><span style='color: cyan;'>Valor Final: </span><strong>R$ {preco*quantidade}</strong></p>
+            """
         )
-        if st.button("Comprar", type="primary"):
+        if col1.button("Comprar", type="primary"):
             try:
                 link_paryment = payment(str(produto), float(preco), int(quantidade))
                 Logger.log_blue(f"link para pagamento {link_paryment}")
@@ -40,6 +42,14 @@ def realizar_compra():
                 )
             except Exception as e:
                 st.error("Erro ao registrar a venda")
+        col2.html(
+            """
+<h4>Se preferir pague em pix 🪙</h4> 
+<p><b>Proprietario: </b> <span style='text-decoration: underline;'>Renan Rodrigues</span></p>
+<p>Chave:</p>"""
+        )
+        col2.code("(19) 99872-2472")
+        col2.html("<h4/>Banco Santander (SA)</h4>")
 
     if st.button("Voltar"):
         st.session_state["pagina"] = "homepage"
