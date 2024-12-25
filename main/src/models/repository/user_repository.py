@@ -37,7 +37,11 @@ class UserRepository(DatabaseHandler):
     ):
         with self:
             if type_user == "Owner/Employee":
-                user = self.session.query(User).filter_by(nome=username).first()
+                user = (
+                    self.session.query(User)
+                    .filter((User.email == username) | (User.nome == username))
+                    .first()
+                )
                 return user
             elif type_user == "Client":
                 user = self.session.query(Cliente).filter_by(nome=username).first()
@@ -58,10 +62,29 @@ class UserRepository(DatabaseHandler):
                 return users
             return None
 
-    def update_user(self, username, new_name, new_password):
+    def update_user(
+        self,
+        username=None,
+        new_name=None,
+        new_password=None,
+        type_user: Literal["Owner/Employee", "Client"] = "Client",
+    ):
         with self:
             try:
-                user = self.session.query(User).filter_by(nome=username).first()
+                if type_user == "Owner/Employee":
+                    user = (
+                        self.session.query(User)
+                        .filter((User.nome == username) | (User.email == username))
+                        .first()
+                    )
+                else:
+                    user = (
+                        self.session.query(Cliente)
+                        .filter(
+                            (Cliente.nome == username) | (Cliente.email == username)
+                        )
+                        .first()
+                    )
                 if new_password:
                     user.senha = Hasher().hasherpswd(new_password)
                 if new_name:
@@ -76,7 +99,7 @@ class UserRepository(DatabaseHandler):
         with self:
             try:
                 if type_user == "Owner/Employee":
-                    user = self.session.query(User).filter_by(nome=username).first()
+                    user = self.session.query(User).filter_by(email=username).first()
                     self.session.delete(user)
                     self.session.commit()
                     return True
@@ -96,7 +119,7 @@ class UserRepository(DatabaseHandler):
         with self:
             try:
                 if type_user == "Owner/Employee":
-                    user = self.session.query(User).filter_by(nome=username).first()
+                    user = self.session.query(User).filter_by(email=username).first()
                     user.senha = Hasher().hasherpswd(new_password)
                 else:
                     user = self.session.query(Cliente).filter_by(email=username).first()

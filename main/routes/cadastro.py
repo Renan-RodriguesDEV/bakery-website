@@ -43,8 +43,10 @@ def cadastro_cliente():
         cpf = st.text_input("CPF do Cliente", placeholder="123.456.789-00")
         email = st.text_input("Email do Cliente", placeholder="darkside@gmail.com")
         telefone = st.text_input("Telefone do Cliente")
-
-        if st.button("Cadastrar Cliente", type="primary"):
+        flag = True if not cpf or not email or not nome or not telefone else False
+        if flag:
+            st.warning("Todos os campos são obrigatorios!!")
+        if st.button("Cadastrar Cliente", type="primary", disabled=flag):
             cpf = cpf.replace(".", "").replace("-", "")
             cadasto = UserRepository().insert_user(
                 username=nome,
@@ -90,20 +92,26 @@ def my_account():
         else:
             x.image(
                 r"C:\Users\Renan Rodrigues\Pictures\Screenshots\Captura de Tela (1).png",
+                caption="Account",
                 width=200,
             )
             x.write(f"Nome: {user_data.nome}")
+            x.write(f"Email: {user_data.email}")
             # x.write(f"Senha: {user_data.senha}")
             new_name = y.text_input(f"Nome: ", type="default")
             new_pswd = y.text_input(f"Senha: ", type="password", max_chars=8)
-            if new_name and new_pswd:
-                if st.button("Atualizar", type="primary"):
+            if new_name or new_pswd:
+                if y.button("Atualizar", type="primary"):
                     with UserRepository() as u:
-                        update = u.update_user(user, new_name, new_pswd)
+                        update = u.update_user(
+                            user, new_name, new_pswd, type_user="Owner/Employee"
+                        )
                         if update:
                             st.success("Atualizado com sucesso")
                         else:
                             st.error("Erro ao atualizar")
+            else:
+                st.warning("Preencha algum dos campos para alteração")
         if st.button("Voltar"):
             st.session_state["pagina"] = "homepage"
             st.rerun()

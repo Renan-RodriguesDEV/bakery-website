@@ -25,7 +25,7 @@ class DatabaseHandler:
         __host = host
         __database = database
         self.__str_url = f"mysql+pymysql://{__user}:{__password}@{__host}/{__database}"
-        self.__engine = create_engine(self.__str_url)
+        self.__engine = create_engine(self.__str_url, echo=True)
         self.session = None
 
     def get_engine(self):
@@ -77,10 +77,12 @@ class User(Base):
     __tablename__ = "users"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     nome = Column("nome", String(255), nullable=False)
+    email = Column("email", String(255), nullable=False)
     senha = Column("senha", String(255), nullable=True)  # Increased length for hash
 
-    def __init__(self, nome, senha=None):
+    def __init__(self, nome, email, senha=None):
         self.nome = nome
+        self.email = email
         self.senha = Hasher().hasherpswd(senha) if senha else None
 
 
@@ -137,7 +139,7 @@ def initialize_database():
         Logger.log_green("[INFO] - Initialization database sucessfully - [INFO]")
         result = database_handler.session.query(User).filter_by(nome="root").first()
         if not result:
-            user = User("root", "superuser")
+            user = User("root", "dev.rodrigues.renan@gmail.com", "superuser")
             database_handler.session.add(user)
             database_handler.session.commit()
             Logger.log_blue(f"[INFO] User {user.nome} added successfully [INFO]")
