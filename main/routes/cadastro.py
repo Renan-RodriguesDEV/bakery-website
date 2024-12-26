@@ -16,10 +16,18 @@ def cadastro_produto():
         nome = st.text_input("Nome do Produto")
         preco = st.number_input("Preço", min_value=0.0, step=0.01)
         qtde = st.number_input("Quantidade", min_value=0, step=1)
-
-        if st.button("Cadastrar Produto", type="primary"):
-            ProductRepository().insert_product(nome, float(preco), int(qtde))
-            st.success(f"Produto {nome} cadastrado com sucesso!")
+        flag = True if not nome or not preco or not qtde else False
+        if flag:
+            st.warning("Todos os campos são obrigatorios!!")
+        if st.button(
+            "Cadastrar Produto",
+            type="primary",
+        ):
+            if flag:
+                st.error("Todos os campos são obrigatorios!! Por favor preencha todos")
+            else:
+                ProductRepository().insert_product(nome, float(preco), int(qtde))
+                st.success(f"Produto {nome} cadastrado com sucesso!")
     else:
         produto = st.selectbox("Selecione o produto", select_all_produtos())
         Logger.log_green(produto)
@@ -46,19 +54,23 @@ def cadastro_cliente():
         flag = True if not cpf or not email or not nome or not telefone else False
         if flag:
             st.warning("Todos os campos são obrigatorios!!")
-        if st.button("Cadastrar Cliente", type="primary", disabled=flag):
-            cpf = cpf.replace(".", "").replace("-", "")
-            cadasto = UserRepository().insert_user(
-                username=nome,
-                cpf=cpf,
-                telefone=telefone,
-                email=email,
-                type_user="Client",
-            )
-            if cadasto:
-                st.success(f"Cliente {nome} cadastrado com sucesso!")
+
+        if st.button("Cadastrar Cliente", type="primary"):
+            if flag:
+                st.error("Todos os campos são obrigatorios!! Por favor preencha todos")
             else:
-                st.error(f"Não foi possivel cadastrar o cliente")
+                cpf = cpf.replace(".", "").replace("-", "")
+                cadasto = UserRepository().insert_user(
+                    username=nome,
+                    cpf=cpf,
+                    telefone=telefone,
+                    email=email,
+                    type_user="Client",
+                )
+                if cadasto:
+                    st.success(f"Cliente {nome} cadastrado com sucesso!")
+                else:
+                    st.error(f"Não foi possivel cadastrar o cliente")
     else:
         cliente = st.selectbox("Selecione o cliente", select_all_clientes())
         if st.button("Deletar Cliente", type="primary"):
@@ -88,13 +100,27 @@ def my_account():
             x.write(f"Nome: {user_data.nome}")
             x.write(f"Email: {user_data.email}")
             x.write(f"Telefone: {user_data.telefone}")
-            x.write(f"CPF: {user_data.cpf}")
+            # x.write(f"CPF: {user_data.cpf}")
+            new_name = y.text_input(f"Nome: ", type="default")
+            new_pswd = y.text_input(f"Senha: ", type="password", max_chars=8)
+            if new_name or new_pswd:
+                if y.button("Atualizar", type="primary"):
+                    with UserRepository() as u:
+                        update = u.update_user(
+                            user, new_name, new_pswd, type_user="Client"
+                        )
+                        if update:
+                            st.success("Atualizado com sucesso")
+                        else:
+                            st.error("Erro ao atualizar")
+            else:
+                st.warning("Preencha algum dos campos para alteração")
         else:
-            x.image(
-                r"C:\Users\Renan Rodrigues\Pictures\Screenshots\Captura de Tela (1).png",
-                caption="Account",
-                width=200,
-            )
+            # x.image(
+            #     r"C:\Users\Renan Rodrigues\Pictures\Screenshots\Captura de Tela (1).png",
+            #     caption="Account",
+            #     width=200,
+            # )
             x.write(f"Nome: {user_data.nome}")
             x.write(f"Email: {user_data.email}")
             # x.write(f"Senha: {user_data.senha}")

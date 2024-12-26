@@ -22,6 +22,7 @@ def consulta_produto():
     """Pagina para consulta de produtos"""
     st.title("Consulta de Produtos")
     produtos = select_all_produtos()
+    flag = True if produtos.empty else False
     # Aqui você poderia listar os produtos cadastrados. Exemplo simples:
     st.table(produtos)
     nome = st.text_input("Digite o nome do produto para consultar")
@@ -55,6 +56,7 @@ def consulta_produto():
             data=converter_df_to_excel(produtos),
             file_name="produtos.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            disabled=flag,
         )
     if st.button("Voltar"):
         st.session_state["pagina"] = "homepage"
@@ -73,14 +75,12 @@ def consulta_divida():
             buffer.seek(0)
             return buffer
         except Exception as e:
-            st.warning(f"Não há cliente e produtos existentes na base de dados")
-            pass
+            Logger.log_red(str(e))
 
     if st.session_state["owner"]:
         st.title("Consulta de Dívida de Clientes")
         # Simulação de consulta de dívida. Poderia ser ligado a um banco de dados.
         df_clientes = select_all_clientes()
-
         cliente = st.selectbox(
             "Selecione o cliente",
             df_clientes["nome"].to_list(),
@@ -105,8 +105,9 @@ def consulta_divida():
                 type="primary",
             )
         except Exception as e:
+            st.warning(f"Não dividas existentes para o cliente {cliente}")
             st.button(f"Dowload divida", disabled=True)
-            pass
+            Logger.log_red(str(e))
         if st.button("Voltar"):
             st.session_state["pagina"] = "homepage"
             st.rerun()
@@ -129,7 +130,7 @@ def consulta_divida():
             divida = select_debt_by_client(cliente, cpf)
             st.write(f"Divida do cliente {cliente}: R$ {divida if divida else 0.00}")
             divida_total = select_all_sales_by_client(cliente)
-            if divida_total is not None:
+            if not divida_total.empty:
                 st.table(divida_total)
                 st.download_button(
                     label="Download divida",
@@ -138,7 +139,7 @@ def consulta_divida():
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 )
             else:
-                st.error("Nenhum cliente encontrado com esse nome")
+                st.error("Nenhuma divida encontrado !!!")
 
         if st.button("Voltar"):
             st.session_state["pagina"] = "homepage"
@@ -154,20 +155,26 @@ def atualizar_divida():
     cliente = st.selectbox("Selecione o cliente", df_clientes["nome"].to_list())
     action = st.selectbox("Adicionar/Remover divida", ["Adicionar", "Remover"])
     if action == "Adicionar":
-        produto = st.selectbox("Selecione o produto", df_produtos)
+        if df_produtos.empty:
+            st.error("Nenhum produto cadastrado")
+            produto = None
+        else:
+            produto = st.selectbox("Selecione o produto", df_produtos)
+        if df_clientes.empty:
+            st.error("Nenhum cliente cadastrado")
         preco = None
         try:
-            preco = ProductRepository().select_product_price(produto)
+            if produto:
+                preco = ProductRepository().select_product_price(produto)
         except Exception as e:
             st.warning("Produto não encontrado")
-            Logger.log_red(e)
-            pass
+            Logger.log_red(str(e))
         quantidade = st.number_input("Quantidade", min_value=1, step=1)
         st.markdown(
             f"<span style='font-size:30px; text-decoration:underline; font-family:JetBrains mono'>Valor final: :green[${preco * quantidade if (preco and quantidade)!=None else 0}]</span>",
             unsafe_allow_html=True,
         )
-        if st.button("Atualizar"):
+        if st.button("Atualizar", type="primary", disabled=df_produtos.empty):
 
             is_register = register_sale(cliente, produto, quantidade)
             if is_register:
