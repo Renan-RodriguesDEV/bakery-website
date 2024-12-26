@@ -42,9 +42,15 @@ class UserRepository(DatabaseHandler):
                     .filter((User.email == username) | (User.nome == username))
                     .first()
                 )
+                Logger.log_blue(f"Usuario encontrado: {user.nome}")
                 return user
             elif type_user == "Client":
-                user = self.session.query(Cliente).filter_by(nome=username).first()
+                user = (
+                    self.session.query(Cliente)
+                    .filter((Cliente.nome == username) | (Cliente.email == username))
+                    .first()
+                )
+                Logger.log_blue(f"Usuario encontrado: {user.nome}")
                 return user
             return None
 
@@ -86,9 +92,14 @@ class UserRepository(DatabaseHandler):
                         .first()
                     )
                 if new_password:
-                    user.senha = Hasher().hasherpswd(new_password)
+                    if type_user == "Owner/Employee":
+                        user.senha = Hasher().hasherpswd(new_password)
+                    else:
+                        user.cpf = Hasher().hasherpswd(new_password)
+                    Logger.log_blue(f"Senha atualizada para '{new_password}'")
                 if new_name:
                     user.nome = new_name
+                    Logger.log_blue(f"Nome atualizado para '{new_name}'")
                 self.session.commit()
                 return True
             except Exception as e:

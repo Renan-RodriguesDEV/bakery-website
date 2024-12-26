@@ -90,54 +90,55 @@ def my_account():
         st.error("Você precisa estar logado para ver sua conta")
         st.session_state["pagina"] = "login"
     else:
-        print(st.session_state["username"])
+        Logger.log_blue(st.session_state["username"])
+        Logger.log_blue(st.session_state["usuario"])
         st.title("Minha Conta")
         user = st.session_state["username"]
-        user_data = UserRepository().select_user(user, "Owner/Employee")
+        type_user = st.session_state["usuario"]
+        user_data = UserRepository().select_user(user, type_user)
         x, y = st.columns([1, 1])
         if not user_data:
-            user_data = UserRepository().select_user(user, "Client")
-            x.write(f"Nome: {user_data.nome}")
-            x.write(f"Email: {user_data.email}")
-            x.write(f"Telefone: {user_data.telefone}")
-            # x.write(f"CPF: {user_data.cpf}")
-            new_name = y.text_input(f"Nome: ", type="default")
-            new_pswd = y.text_input(f"Senha: ", type="password", max_chars=8)
-            if new_name or new_pswd:
-                if y.button("Atualizar", type="primary"):
-                    with UserRepository() as u:
-                        update = u.update_user(
-                            user, new_name, new_pswd, type_user="Client"
-                        )
-                        if update:
-                            st.success("Atualizado com sucesso")
-                        else:
-                            st.error("Erro ao atualizar")
-            else:
-                st.warning("Preencha algum dos campos para alteração")
+            st.error("Usuário não encontrado")
         else:
-            # x.image(
-            #     r"C:\Users\Renan Rodrigues\Pictures\Screenshots\Captura de Tela (1).png",
-            #     caption="Account",
-            #     width=200,
-            # )
-            x.write(f"Nome: {user_data.nome}")
-            x.write(f"Email: {user_data.email}")
-            # x.write(f"Senha: {user_data.senha}")
-            new_name = y.text_input(f"Nome: ", type="default")
-            new_pswd = y.text_input(f"Senha: ", type="password", max_chars=8)
-            if new_name or new_pswd:
-                if y.button("Atualizar", type="primary"):
-                    with UserRepository() as u:
-                        update = u.update_user(
-                            user, new_name, new_pswd, type_user="Owner/Employee"
-                        )
-                        if update:
-                            st.success("Atualizado com sucesso")
-                        else:
-                            st.error("Erro ao atualizar")
+            if type_user == "Client":
+                user_data = UserRepository().select_user(user, "Client")
+                x.write(f"Nome: {user_data.nome}")
+                x.write(f"Email: {user_data.email}")
+                x.write(f"Telefone: {user_data.telefone}")
+                # x.write(f"CPF: {user_data.cpf}")
+                new_name = y.text_input(f"Nome: ", type="default")
+                new_pswd = y.text_input(f"Senha: ", type="password", max_chars=11)
+                if new_name or new_pswd:
+                    if y.button("Atualizar", type="primary"):
+                        with UserRepository() as u:
+                            update = u.update_user(
+                                user, new_name, new_pswd, type_user="Client"
+                            )
+                            if update:
+                                st.success("Atualizado com sucesso")
+                            else:
+                                st.error("Erro ao atualizar")
+                else:
+                    st.warning("Preencha algum dos campos para alteração")
             else:
-                st.warning("Preencha algum dos campos para alteração")
+
+                x.write(f"Nome: {user_data.nome}")
+                x.write(f"Email: {user_data.email}")
+                # x.write(f"Senha: {user_data.senha}")
+                new_name = y.text_input(f"Nome: ", type="default")
+                new_pswd = y.text_input(f"Senha: ", type="password", max_chars=8)
+                if new_name or new_pswd:
+                    if y.button("Atualizar", type="primary"):
+                        with UserRepository() as u:
+                            update = u.update_user(
+                                user, new_name, new_pswd, type_user="Owner/Employee"
+                            )
+                            if update:
+                                st.success("Atualizado com sucesso")
+                            else:
+                                st.error("Erro ao atualizar")
+                else:
+                    st.warning("Preencha algum dos campos para alteração")
         if st.button("Voltar"):
             st.session_state["pagina"] = "homepage"
             st.rerun()

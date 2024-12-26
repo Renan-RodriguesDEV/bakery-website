@@ -32,13 +32,14 @@ st.set_page_config(
 # Função para enviar feedback
 @st.cache_data
 def send_feedback(feedback):
-    EmailSender().send_feedback_email(str(st.session_state["usuario"]), feedback)
-    st.success(f"Feedback enviado com sucesso: {st.session_state['usuario']}")
+    EmailSender().send_feedback_email(str(st.session_state["username"]), feedback)
+    st.success(f"Feedback enviado com sucesso: {st.session_state['username']}")
 
 
 # Função para a homepage
 def homepage():
-    st.title(f"Bem-vindo, :gray[{st.session_state['usuario']}!]")
+    st.title(f"Bem-vindo, :gray[{st.session_state['username']}!]")
+    st.subheader(f"Você está logado como: :gray[{st.session_state['usuario']}]")
     x, y = st.columns([2, 1], gap="medium", vertical_alignment="top")
 
     feedback = x.text_area(
@@ -109,7 +110,7 @@ if "autenticado" not in st.session_state:
 if "pagina" not in st.session_state:
     st.session_state["pagina"] = "login"  # Define a página inicial como login
 # Inicializa "owner" com False por padrão, caso ainda não tenha sido definido
-if "owner" not in st.session_state:
+if not st.session_state["owner"]:
     st.session_state["owner"] = False
     st.session_state["usuario"] = "Client"
 else:

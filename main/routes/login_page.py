@@ -26,10 +26,14 @@ def autenticar_usuario(username, password, type_user):
         return False
     elif type_user == "Client":
         user = UserRepository().select_user(username, type_user)
+        if not user:
+            Logger.log_red(f"Usuario {username} não encontrado")
+            return False
         Logger.log_red(f"[===] - User: {user.nome} [===] Password: {user.cpf} - [===]")
         isAuth = Hasher().checkpswd(password, user.cpf)
-        if username == user.nome and isAuth == True:
+        if (username == user.nome or username == user.email) and isAuth == True:
             return True
+        Logger.log_red(f"Erro ao logar o usuario, {isAuth} | {username} | {user.nome}")
         return False
     return False
 
@@ -53,14 +57,23 @@ def tela_login():
     x, y = st.columns([2, 1], gap="large")
     col1, col2 = x.columns([1, 1])
     if col1.button("Login", type="primary"):
-        if autenticar_usuario(username, password, type_user=tipo_user):
-            st.session_state["autenticado"] = True
-            st.session_state["owner"] = True if tipo_user == "Owner/Employee" else False
-            st.session_state["usuario"] = username
-            st.session_state["pagina"] = "homepage"  # Redireciona para a homepage
-            st.rerun()
-        else:
-            st.error("Usuário ou senha incorretos")
+        try:
+            if autenticar_usuario(username, password, type_user=tipo_user):
+                st.session_state["autenticado"] = True
+                st.session_state["usuario"] = tipo_user
+                st.session_state["username"] = username
+                if st.session_state["usuario"] == "Owner/Employee":
+                    st.session_state["owner"] = True
+                Logger.log_green(
+                    f"Usuario {username} logado com sucesso como: {tipo_user}"
+                )
+                st.session_state["pagina"] = "homepage"  # Redireciona para a homepage
+                st.rerun()
+            else:
+                st.error("Usuário ou senha incorretos")
+        except Exception as e:
+            Logger.log_red(str(e))
+            st.error("Erro ao logar o usuário")
     if col2.button(
         "Esqueci minha senha",
         help="Reseta senha enviando token por email!!",

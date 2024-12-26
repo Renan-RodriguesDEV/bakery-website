@@ -7,6 +7,7 @@ from sqlalchemy import (
     TIMESTAMP,
     ForeignKey,
     DECIMAL,
+    TEXT,
 )
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.sql import func
@@ -46,7 +47,7 @@ Base = declarative_base()
 class Produto(Base):
     __tablename__ = "produtos"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
-    nome = Column("nome", String(255), nullable=False)
+    nome = Column("nome", TEXT(500), nullable=False)
     preco = Column("preco", DECIMAL(15, 2), nullable=False)
     estoque = Column("estoque", Integer, nullable=False)
 
@@ -78,7 +79,7 @@ class User(Base):
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     nome = Column("nome", String(255), nullable=False)
     email = Column("email", String(255), nullable=False)
-    senha = Column("senha", String(255), nullable=True)  # Increased length for hash
+    senha = Column("senha", TEXT(500), nullable=True)  # Increased length for hash
 
     def __init__(self, nome, email, senha=None):
         self.nome = nome
