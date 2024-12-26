@@ -32,9 +32,9 @@ def autenticar_usuario(username, password, type_user):
         Logger.log_red(f"[===] - User: {user.nome} [===] Password: {user.cpf} - [===]")
         isAuth = Hasher().checkpswd(password, user.cpf)
         if (username == user.nome or username == user.email) and isAuth == True:
+            Logger.log_green("Autenticado com sucesso")
             return True
         Logger.log_red(f"Erro ao logar o usuario, {isAuth} | {username} | {user.nome}")
-        return False
     return False
 
 

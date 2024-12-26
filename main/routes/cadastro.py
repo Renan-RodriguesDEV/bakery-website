@@ -109,7 +109,11 @@ def my_account():
                 new_name = y.text_input(f"Nome: ", type="default")
                 new_pswd = y.text_input(f"Senha: ", type="password", max_chars=11)
                 if new_name or new_pswd:
-                    if y.button("Atualizar", type="primary"):
+                    flag = True
+                else:
+                    flag = False
+                    st.warning("Preencha algum dos campos para alteração")
+                if y.button("Atualizar", type="primary"):
                         with UserRepository() as u:
                             update = u.update_user(
                                 user, new_name, new_pswd, type_user="Client"
@@ -126,19 +130,31 @@ def my_account():
                 x.write(f"Email: {user_data.email}")
                 # x.write(f"Senha: {user_data.senha}")
                 new_name = y.text_input(f"Nome: ", type="default")
-                new_pswd = y.text_input(f"Senha: ", type="password", max_chars=8)
+                new_pswd = y.text_input(f"Senha: ", type="password", max_chars=11)
                 if new_name or new_pswd:
-                    if y.button("Atualizar", type="primary"):
+                    flag = True
+                else:
+                    flag = False
+                    st.warning("Preencha algum dos campos para alteração")
+                if y.button("Atualizar", type="primary"):
+                    if flag:
                         with UserRepository() as u:
                             update = u.update_user(
                                 user, new_name, new_pswd, type_user="Owner/Employee"
                             )
                             if update:
                                 st.success("Atualizado com sucesso")
+                                st.success(
+                                    "Aperte em voltar e depois faça o logout do usuario!!",
+                                    icon="😁",
+                                )
                             else:
                                 st.error("Erro ao atualizar")
-                else:
-                    st.warning("Preencha algum dos campos para alteração")
+                    else:
+                        st.error(
+                            "É necessario preencher algum dos campos para atualizar"
+                        )
+
         if st.button("Voltar"):
             st.session_state["pagina"] = "homepage"
             st.rerun()
