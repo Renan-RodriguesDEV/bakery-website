@@ -44,6 +44,7 @@ def tela_login():
     tipo_user = st.selectbox("Usuario", ["Owner/Employee", "Client"])
     Logger.log_blue(tipo_user)
     username = st.text_input("Usuário", help="Insira seu nome de usuario")
+    st.session_state["usuario"] = tipo_user
     st.session_state["username"] = username
     password = st.text_input(
         "Senha",

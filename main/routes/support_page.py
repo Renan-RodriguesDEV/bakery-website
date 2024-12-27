@@ -10,7 +10,10 @@ def page_support():
     """Pagina dedicada ao suporte ao usuario"""
     x, y = st.columns([2, 1], gap="large", vertical_alignment="center")
     x.title("Bem vindo a pagina de support")
-    feedback = x.text_area("Por favor descreva o ocorrido!!:", max_chars=500)
+    feedback = x.text_area(
+        "Por favor descreva o ocorrido!!:", max_chars=500, height=200
+    )
+
     if x.button("Enviar Feedback", type="primary"):
         EmailSender().send_feedback_email(
             name=st.session_state["usuario"], feedback=feedback
@@ -60,7 +63,7 @@ def esquci_senha():
                     st.code(token_generator)
                     EmailSender().send_email(
                         usuario,
-                        f"Seu token de usuario para login em <a>https://BakeryVillage.com<a/>é: <b>{token_generator}</b>",
+                        f"Seu <b>token</b> de usuario para login em <a>https://BakeryVillage.com</a> é: <b>{token_generator}</b>",
                     )
                 else:
                     st.error(f"Erro ao gerar nova senha!!")

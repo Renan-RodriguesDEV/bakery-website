@@ -86,9 +86,10 @@ def cadastro_cliente():
 
 
 def my_account():
-    if not "autenticado" in st.session_state:
+    if not "autenticado" in st.session_state or not "usuario" in st.session_state:
         st.error("Você precisa estar logado para ver sua conta")
         st.session_state["pagina"] = "login"
+        st.rerun()
     else:
         Logger.log_blue(st.session_state["username"])
         Logger.log_blue(st.session_state["usuario"])
@@ -105,7 +106,6 @@ def my_account():
                 x.write(f"Nome: {user_data.nome}")
                 x.write(f"Email: {user_data.email}")
                 x.write(f"Telefone: {user_data.telefone}")
-                # x.write(f"CPF: {user_data.cpf}")
                 new_name = y.text_input(f"Nome: ", type="default")
                 new_pswd = y.text_input(f"Senha: ", type="password", max_chars=11)
                 if new_name or new_pswd:
@@ -114,21 +114,26 @@ def my_account():
                     flag = False
                     st.warning("Preencha algum dos campos para alteração")
                 if y.button("Atualizar", type="primary"):
+                    if flag:
                         with UserRepository() as u:
                             update = u.update_user(
                                 user, new_name, new_pswd, type_user="Client"
                             )
                             if update:
                                 st.success("Atualizado com sucesso")
+                                st.success(
+                                    "Aperte em voltar e depois faça o logout do usuario preenchendo com seus novos dados!!",
+                                    icon="😁",
+                                )
                             else:
                                 st.error("Erro ao atualizar")
-                else:
-                    st.warning("Preencha algum dos campos para alteração")
+                    else:
+                        st.error(
+                            "É necessario preencher algum dos campos para atualizar"
+                        )
             else:
-
                 x.write(f"Nome: {user_data.nome}")
                 x.write(f"Email: {user_data.email}")
-                # x.write(f"Senha: {user_data.senha}")
                 new_name = y.text_input(f"Nome: ", type="default")
                 new_pswd = y.text_input(f"Senha: ", type="password", max_chars=11)
                 if new_name or new_pswd:
@@ -145,7 +150,7 @@ def my_account():
                             if update:
                                 st.success("Atualizado com sucesso")
                                 st.success(
-                                    "Aperte em voltar e depois faça o logout do usuario!!",
+                                    "Aperte em voltar e depois faça o logout do usuario preenchendo com seus novos dados!!",
                                     icon="😁",
                                 )
                             else:
