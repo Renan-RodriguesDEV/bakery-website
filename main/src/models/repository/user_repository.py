@@ -42,7 +42,7 @@ class UserRepository(DatabaseHandler):
                     .filter((User.email == username) | (User.nome == username))
                     .first()
                 )
-                Logger.log_blue(f"Usuario encontrado: {user.nome}")
+                Logger.sucess(f"Usuario encontrado: {user.nome}")
                 return user
             elif type_user == "Client":
                 user = (
@@ -50,7 +50,7 @@ class UserRepository(DatabaseHandler):
                     .filter((Cliente.nome == username) | (Cliente.email == username))
                     .first()
                 )
-                Logger.log_blue(f"Usuario encontrado: {user.nome}")
+                Logger.sucess(f"Usuario encontrado: {user.nome}")
                 return user
             return None
 
@@ -96,14 +96,14 @@ class UserRepository(DatabaseHandler):
                         user.senha = Hasher().hasherpswd(new_password)
                     else:
                         user.cpf = Hasher().hasherpswd(new_password)
-                    Logger.log_blue(f"Senha atualizada para '{new_password}'")
+                    Logger.sucess(f"Senha atualizada para '{new_password}'")
                 if new_name:
                     user.nome = new_name
-                    Logger.log_blue(f"Nome atualizado para '{new_name}'")
+                    Logger.sucess(f"Nome atualizado para '{new_name}'")
                 self.session.commit()
                 return True
             except Exception as e:
-                Logger.log_red(e)
+                Logger.error(e)
                 return False
 
     def delete_user(self, username, type_user: Literal["Owner/Employee", "Client"]):
@@ -120,7 +120,7 @@ class UserRepository(DatabaseHandler):
                     self.session.commit()
                     return True
             except Exception as e:
-                Logger.log_red(e)
+                Logger.error(e)
                 return False
         return False
 
@@ -138,7 +138,7 @@ class UserRepository(DatabaseHandler):
                 self.session.commit()
                 return True
             except Exception as e:
-                Logger.log_red(e)
+                Logger.error(e)
                 return False
 
     def get_token(self):

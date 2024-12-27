@@ -40,7 +40,7 @@ class ProductRepository(DatabaseHandler):
                 self.session.commit()
                 return True
             except Exception as e:
-                Logger.log_red(e)
+                Logger.error(e)
                 return False
 
     def update_product_stock(self, name, new_stock):
@@ -51,7 +51,7 @@ class ProductRepository(DatabaseHandler):
                 self.session.commit()
                 return True
             except Exception as e:
-                Logger.log_red(e)
+                Logger.error(e)
                 return False
 
     def delete_product(self, name):
@@ -62,5 +62,5 @@ class ProductRepository(DatabaseHandler):
                 self.session.commit()
                 return True
             except Exception as e:
-                Logger.log_red(e)
+                Logger.error(e)
                 return False

@@ -9,9 +9,7 @@ from routes.support_page import esquci_senha, page_support
 from src.models.entities.database import initialize_database
 from src.utils.uteis import Logger
 
-Logger.log_green(
-    "[==] Runnig server streamlit localhost in http://localhost:8501/ [==]"
-)
+Logger.info("[==] Runnig server streamlit localhost in http://localhost:8501/ [==]")
 
 
 initialize_database()
@@ -40,7 +38,7 @@ def send_feedback(feedback):
 
         return True
     except Exception as e:
-        Logger.log_red(str(e))
+        Logger.error(str(e))
         return False
 
 

@@ -30,7 +30,7 @@ def cadastro_produto():
                 st.success(f"Produto {nome} cadastrado com sucesso!")
     else:
         produto = st.selectbox("Selecione o produto", select_all_produtos())
-        Logger.log_green(produto)
+        Logger.info(produto)
         if st.button("Deletar Produto", type="primary"):
             deletion = ProductRepository().delete_product(produto)
             if deletion:
@@ -74,7 +74,7 @@ def cadastro_cliente():
     else:
         cliente = st.selectbox("Selecione o cliente", select_all_clientes())
         if st.button("Deletar Cliente", type="primary"):
-            Logger.log_green(f"Cliente a deletar: {cliente}")
+            Logger.info(f"Cliente a deletar: {cliente}")
             deletion = UserRepository().delete_user(cliente, "Client")
             if deletion:
                 st.success(f"Cliente {cliente} deletado com sucesso!")
@@ -91,8 +91,8 @@ def my_account():
         st.session_state["pagina"] = "login"
         st.rerun()
     else:
-        Logger.log_blue(st.session_state["username"])
-        Logger.log_blue(st.session_state["usuario"])
+        Logger.sucess(st.session_state["username"])
+        Logger.sucess(st.session_state["usuario"])
         st.title("Minha Conta")
         user = st.session_state["username"]
         type_user = st.session_state["usuario"]

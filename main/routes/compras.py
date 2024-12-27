@@ -31,7 +31,7 @@ def realizar_compra():
         if col1.button("Comprar", type="primary"):
             try:
                 link_paryment = payment(str(produto), float(preco), int(quantidade))
-                Logger.log_blue(f"link para pagamento {link_paryment}")
+                Logger.sucess(f"link para pagamento {link_paryment}")
                 # Redireciona automaticamente
                 st.page_link(
                     page=link_paryment, label=":green[Ir para o Pagamento]", icon="💸"

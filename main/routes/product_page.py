@@ -75,7 +75,7 @@ def consulta_divida():
             buffer.seek(0)
             return buffer
         except Exception as e:
-            Logger.log_red(str(e))
+            Logger.error(str(e))
 
     if st.session_state["owner"]:
         st.title("Consulta de Dívida de Clientes")
@@ -107,7 +107,7 @@ def consulta_divida():
         except Exception as e:
             st.warning(f"Não dividas existentes para o cliente {cliente}")
             st.button(f"Dowload divida", disabled=True)
-            Logger.log_red(str(e))
+            Logger.error(str(e))
         if st.button("Voltar"):
             st.session_state["pagina"] = "homepage"
             st.rerun()
@@ -168,7 +168,7 @@ def atualizar_divida():
                 preco = ProductRepository().select_product_price(produto)
         except Exception as e:
             st.warning("Produto não encontrado")
-            Logger.log_red(str(e))
+            Logger.error(str(e))
         quantidade = st.number_input("Quantidade", min_value=1, step=1)
         st.markdown(
             f"<span style='font-size:30px; text-decoration:underline; font-family:JetBrains mono'>Valor final: :green[${preco * quantidade if (preco and quantidade)!=None else 0}]</span>",

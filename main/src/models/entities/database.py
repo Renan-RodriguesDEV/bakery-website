@@ -137,10 +137,10 @@ def initialize_database():
     with DatabaseHandler() as database_handler:
         # Criação das tabelas no banco de dados
         Base.metadata.create_all(database_handler.get_engine())
-        Logger.log_green("[INFO] - Initialization database sucessfully - [INFO]")
+        Logger.info("[INFO] - Initialization database sucessfully - [INFO]")
         result = database_handler.session.query(User).filter_by(nome="root").first()
         if not result:
             user = User("root", "dev.rodrigues.renan@gmail.com", "superuser")
             database_handler.session.add(user)
             database_handler.session.commit()
-            Logger.log_blue(f"[INFO] User {user.nome} added successfully [INFO]")
+            Logger.sucess(f"[INFO] User {user.nome} added successfully [INFO]")

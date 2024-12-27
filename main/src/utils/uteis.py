@@ -8,7 +8,7 @@ class Logger:
         init(autoreset=True)
 
     @staticmethod
-    def log_green(text):
+    def info(text):
         """Faz logs de texto na cor verde
 
         Args:
@@ -17,7 +17,16 @@ class Logger:
         print(f"{Style.BRIGHT}{Fore.GREEN}{text}{Style.RESET_ALL}")
 
     @staticmethod
-    def log_blue(text):
+    def warning(text):
+        """Faz logs de texto na cor verde
+
+        Args:
+            text (str): texto a ser exibido na cor verde
+        """
+        print(f"{Style.BRIGHT}{Fore.GREEN}{text}{Style.RESET_ALL}")
+
+    @staticmethod
+    def sucess(text):
         """Faz logs de texto na cor azul
 
         Args:
@@ -26,7 +35,7 @@ class Logger:
         print(f"{Style.BRIGHT}{Fore.BLUE}{text}{Style.RESET_ALL}")
 
     @staticmethod
-    def log_red(text):
+    def error(text):
         """Faz logs de texto na cor vermelho
 
         Args:

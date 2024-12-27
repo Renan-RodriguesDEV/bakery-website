@@ -12,7 +12,6 @@ class EmailSender:
         self.__USER = usermail
         self.__PASSWORD = password
 
-    
     def send_feedback_email(self, name, feedback):
         """Envia feedback por email
 
@@ -21,10 +20,10 @@ class EmailSender:
         """
 
         with smtplib.SMTP_SSL(host="smtp.gmail.com", port=465) as smtp:
-            Logger.log_blue("Conectando no servidor SMTP...")
+            Logger.sucess("Conectando no servidor SMTP...")
             smtp.ehlo()
             # smtp.starttls()
-            Logger.log_blue("Logando no servidor SMTP...")
+            Logger.sucess("Logando no servidor SMTP...")
             smtp.login(user=str(self.__USER), password=str(self.__PASSWORD))
             subject = "Feedback do site"
             body = f"Feedback de {name}: \n{feedback}"
@@ -38,11 +37,8 @@ class EmailSender:
                 to_addrs=self.__USER,
                 msg=mensagem.as_string(),
             )
-            Logger.log_green(
-                f"Feedback enviado com sucesso para o email {self.__USER}!"
-            )
+            Logger.info(f"Feedback enviado com sucesso para o email {self.__USER}!")
 
-    
     def send_email(self, email, text):
         """Envia feedback por email
 
@@ -50,10 +46,10 @@ class EmailSender:
             feedback (str): feedback a ser enviado
         """
         with smtplib.SMTP_SSL(host="smtp.gmail.com", port=465) as smtp:
-            Logger.log_blue("Conectando no servidor SMTP...")
+            Logger.sucess("Conectando no servidor SMTP...")
             smtp.ehlo()
             # smtp.starttls()
-            Logger.log_blue("Logando no servidor SMTP...")
+            Logger.sucess("Logando no servidor SMTP...")
             smtp.login(user=str(self.__USER), password=str(self.__PASSWORD))
             subject = "Reset Token WebAppBakary"
             body = f"<p>Olá {email}, esse é o seu <b>reset-token</b></p><p>{text}<p>"
@@ -67,4 +63,4 @@ class EmailSender:
                 to_addrs=email,
                 msg=mensagem.as_string(),
             )
-            Logger.log_green(f"Email enviado com sucesso para o email {email}!")
+            Logger.info(f"Email enviado com sucesso para o email {email}!")

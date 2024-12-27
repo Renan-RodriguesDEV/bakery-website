@@ -7,34 +7,34 @@ from src.utils.uteis import Logger
 @st.cache_data
 def autenticar_usuario(username, password, type_user):
     if type_user == "Owner/Employee":
-        Logger.log_green(password)
+        Logger.info(password)
         user = UserRepository().select_user(username, type_user)
-        Logger.log_blue(user)
+        Logger.sucess(user)
         if user:
-            Logger.log_red(
+            Logger.error(
                 f"[===] - User: {user.email} [===] Password: {user.senha} - [===]"
             )
             isAuth = Hasher().checkpswd(password, user.senha)
             # Aqui você pode adicionar lógica de verificação com um banco de dados ou API
-            Logger.log_blue(f"Autenticando o usuario {isAuth}")
+            Logger.sucess(f"Autenticando o usuario {isAuth}")
             if (username == user.email or user.nome == username) and isAuth == True:
-                Logger.log_blue("Logando o usuario")
+                Logger.sucess("Logando o usuario")
                 return True
-            Logger.log_red(
+            Logger.error(
                 f"Erro ao logar o usuario {username}-{user.email} {password}-{user.senha}"
             )
         return False
     elif type_user == "Client":
         user = UserRepository().select_user(username, type_user)
         if not user:
-            Logger.log_red(f"Usuario {username} não encontrado")
+            Logger.error(f"Usuario {username} não encontrado")
             return False
-        Logger.log_red(f"[===] - User: {user.nome} [===] Password: {user.cpf} - [===]")
+        Logger.error(f"[===] - User: {user.nome} [===] Password: {user.cpf} - [===]")
         isAuth = Hasher().checkpswd(password, user.cpf)
         if (username == user.nome or username == user.email) and isAuth == True:
-            Logger.log_green("Autenticado com sucesso")
+            Logger.info("Autenticado com sucesso")
             return True
-        Logger.log_red(f"Erro ao logar o usuario, {isAuth} | {username} | {user.nome}")
+        Logger.error(f"Erro ao logar o usuario, {isAuth} | {username} | {user.nome}")
     return False
 
 
@@ -42,7 +42,7 @@ def autenticar_usuario(username, password, type_user):
 def tela_login():
     st.title("Faça seu Login para continuar")
     tipo_user = st.selectbox("Usuario", ["Owner/Employee", "Client"])
-    Logger.log_blue(tipo_user)
+    Logger.sucess(tipo_user)
     username = st.text_input("Usuário", help="Insira seu nome de usuario")
     st.session_state["usuario"] = tipo_user
     st.session_state["username"] = username
@@ -65,15 +65,13 @@ def tela_login():
                 st.session_state["username"] = username
                 if st.session_state["usuario"] == "Owner/Employee":
                     st.session_state["owner"] = True
-                Logger.log_green(
-                    f"Usuario {username} logado com sucesso como: {tipo_user}"
-                )
+                Logger.info(f"Usuario {username} logado com sucesso como: {tipo_user}")
                 st.session_state["pagina"] = "homepage"  # Redireciona para a homepage
                 st.rerun()
             else:
                 st.error("Usuário ou senha incorretos")
         except Exception as e:
-            Logger.log_red(str(e))
+            Logger.error(str(e))
             st.error("Erro ao logar o usuário")
     if col2.button(
         "Esqueci minha senha",
