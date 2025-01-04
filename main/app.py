@@ -1,5 +1,7 @@
 import time
 import streamlit as st
+import threading
+from src.controller.telegram import start_bot
 from src.utils.email import EmailSender
 from routes.cadastro import cadastro_cliente, cadastro_produto, my_account
 from routes.compras import realizar_compra
@@ -73,7 +75,7 @@ def homepage():
 
     # Opções de navegação
     if y.button(
-        "Buy",
+        "Comprar",
         use_container_width=True,
         disabled=st.session_state["owner"],
     ):
@@ -94,16 +96,16 @@ def homepage():
         st.session_state["pagina"] = "cadastro_cliente"
         st.rerun()
 
-    if y.button("Consulta de Produtos", use_container_width=True):
+    if y.button("Catalogo de Produtos", use_container_width=True):
         st.session_state["pagina"] = "consulta_produto"
         st.rerun()
 
-    if y.button("Consulta de Dívida de Clientes", use_container_width=True):
+    if y.button("Consultar Pendencias", use_container_width=True):
         st.session_state["pagina"] = "consulta_divida"
         st.rerun()
 
     if y.button(
-        "Atualizar Dívida de Clientes",
+        "Alterar Pendencias",
         use_container_width=True,
         disabled=not st.session_state["owner"],
     ):
@@ -166,3 +168,8 @@ else:
         esquci_senha()
     else:
         tela_login()
+
+# Iniciar o bot do Telegram em uma thread separada
+if "bot_thread" not in st.session_state:
+    st.session_state.bot_thread = threading.Thread(target=start_bot, daemon=True)
+    st.session_state.bot_thread.start()

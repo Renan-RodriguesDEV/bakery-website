@@ -10,9 +10,7 @@ def page_support():
     """Pagina dedicada ao suporte ao usuario"""
     x, y = st.columns([2, 1], gap="large", vertical_alignment="center")
     x.title("Bem vindo a pagina de support")
-    feedback = x.text_area(
-        "Por favor descreva o ocorrido!!:", max_chars=500, height=200
-    )
+    feedback = x.text_area("Por favor descreva o ocorrido!!", max_chars=500, height=200)
 
     if x.button("Enviar Feedback", type="primary"):
         EmailSender().send_feedback_email(
