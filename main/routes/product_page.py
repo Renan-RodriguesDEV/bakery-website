@@ -81,6 +81,14 @@ def consulta_divida():
         st.title("Consulta de Dívida de Clientes")
         # Simulação de consulta de dívida. Poderia ser ligado a um banco de dados.
         df_clientes = select_all_clientes()
+        if df_clientes.empty:
+            st.subheader("Ops!! Houve algum erro no processo..")
+            st.error("Nenhum cliente cadastrado")
+            st.warning("Cadastre algum cliente antes de acessar está pagina")
+            if st.button("Voltar"):
+                st.session_state["pagina"] = "homepage"
+                st.rerun()
+            st.stop()
         cliente = st.selectbox(
             "Selecione o cliente",
             df_clientes["nome"].to_list(),

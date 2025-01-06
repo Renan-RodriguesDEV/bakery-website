@@ -42,16 +42,18 @@ class UserRepository(DatabaseHandler):
                     .filter((User.email == username) | (User.nome == username))
                     .first()
                 )
-                Logger.sucess(f"Usuario encontrado: {user.nome}")
-                return user
+                if user:
+                    Logger.sucess(f"Usuario encontrado: {user.nome}")
+                    return user
             elif type_user == "Client":
                 user = (
                     self.session.query(Cliente)
                     .filter((Cliente.nome == username) | (Cliente.email == username))
                     .first()
                 )
-                Logger.sucess(f"Usuario encontrado: {user.nome}")
-                return user
+                if user:
+                    Logger.sucess(f"Usuario encontrado: {user.nome}")
+                    return user
             return None
 
     def select_user_cpf(self, cpf):

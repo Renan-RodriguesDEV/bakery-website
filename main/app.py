@@ -12,27 +12,20 @@ from src.utils.uteis import Logger
 Logger.info("[==] Runnig server streamlit localhost in http://localhost:8501/ [==]")
 
 
-@st.cache_resource
-def init_db():
-    return initialize_database()
-
-
-init_db()
-
-
-def load_styles():
-    """Carrega o arquivo css para estilizaçção de componentes"""
-    with open("style/style.css", "r") as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
-
 st.set_page_config(
     page_title="Sistema de Gerenciamento de Vendas",
     page_icon=":moneybag:",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
-# load_styles()
+
+
+@st.cache_resource
+def init_db():
+    return initialize_database()
+
+
+init_db()
 
 
 # Função para enviar feedback
