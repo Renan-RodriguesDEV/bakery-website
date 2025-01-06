@@ -1,0 +1,10 @@
+colorama==0.4.6
+mercadopago==2.2.3
+pandas==2.2.3
+PyMySQL==1.1.1
+pyTelegramBotAPI==4.26.0
+python-dotenv==1.0.1
+python_bcrypt==0.3.2
+SQLAlchemy==2.0.36
+SQLAlchemy==2.0.35
+streamlit==1.38.0
