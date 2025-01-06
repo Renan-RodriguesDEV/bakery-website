@@ -1,9 +1,8 @@
 import mercadopago
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
-access_token = os.getenv("ACESS_TOKEN")
+from streamlit import secrets
+
+access_token = secrets["ACESS_TOKEN"]
 sdk = mercadopago.SDK(access_token)
 
 
