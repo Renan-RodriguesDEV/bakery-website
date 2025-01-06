@@ -1,5 +1,4 @@
 import datetime
-import os
 from sqlalchemy import (
     create_engine,
     Column,
@@ -15,21 +14,15 @@ from sqlalchemy.sql import func
 from sqlalchemy.orm import sessionmaker
 from src.utils.uteis import Logger
 from src.utils.hasher import Hasher
-from dotenv import load_dotenv
 from streamlit import secrets
 
-load_dotenv()
 
 _USERNAME = secrets["USER_DB"]
 _PASSWORD = secrets["PASSWORD_DB"]
 _HOST = secrets["HOST_DB"]
 _DATABASE = secrets["DATABASE_NAME"]
-print(_USERNAME, _PASSWORD, _HOST, _DATABASE)
 
-# os.getenv("USER_DB")
-# os.getenv("PASSWORD_DB")
-# os.getenv("HOST_DB")
-# os.getenv("DATABASE_NAME")
+
 class DatabaseHandler:
 
     def __init__(

@@ -1,15 +1,11 @@
-import os
 import pymysql
 import pandas as pd
-from dotenv import load_dotenv
 from streamlit import secrets
 
-load_dotenv()
 _USERNAME = secrets["USER_DB"]
 _PASSWORD = secrets["PASSWORD_DB"]
 _HOST = secrets["HOST_DB"]
 _DATABASE = secrets["DATABASE_NAME"]
-print(_USERNAME, _PASSWORD, _HOST, _DATABASE)
 db_data = {
     "host": _HOST,
     "user": _USERNAME,
