@@ -10,7 +10,7 @@ db_data = {
     "host": _HOST,
     "user": _USERNAME,
     "password": _PASSWORD,
-    "database": _PASSWORD,
+    "database": _DATABASE,
     "cursorclass": pymysql.cursors.DictCursor,
 }
 
