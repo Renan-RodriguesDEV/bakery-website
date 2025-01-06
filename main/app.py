@@ -1,6 +1,5 @@
 import time
 import streamlit as st
-import threading
 from src.utils.email import EmailSender
 from routes.cadastro import cadastro_cliente, cadastro_produto, my_account
 from routes.compras import realizar_compra
