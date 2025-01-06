@@ -1,4 +1,5 @@
 import datetime
+import os
 from sqlalchemy import (
     create_engine,
     Column,
@@ -14,12 +15,19 @@ from sqlalchemy.sql import func
 from sqlalchemy.orm import sessionmaker
 from src.utils.uteis import Logger
 from src.utils.hasher import Hasher
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class DatabaseHandler:
 
     def __init__(
-        self, user="root", password="", host="localhost", database="db_comercio"
+        self,
+        user=os.getenv("USER_DB"),
+        password=os.getenv("PASSWORD_DB"),
+        host=os.getenv("HOST_DB"),
+        database=os.getenv("DATABASE_NAME"),
     ):
         __user = user
         __password = password

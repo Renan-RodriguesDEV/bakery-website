@@ -1,12 +1,15 @@
+import os
 import pymysql
 import pandas as pd
+from dotenv import load_dotenv
 
+load_dotenv()
 
 db_data = {
-    "host": "localhost",
-    "user": "root",
-    "password": "",
-    "database": "db_comercio",
+    "host": os.getenv("HOST_DB"),
+    "user": os.getenv("USER_DB"),
+    "password": os.getenv("PASSWORD_DB"),
+    "database": os.getenv("DATABASE_NAME"),
     "cursorclass": pymysql.cursors.DictCursor,
 }
 
