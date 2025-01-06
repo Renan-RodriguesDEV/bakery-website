@@ -1,14 +1,11 @@
-import os
 import smtplib
 from email.mime.text import MIMEText
-from dotenv import load_dotenv
+from streamlit import secrets
 from .uteis import Logger
-
-load_dotenv()
 
 
 class EmailSender:
-    def __init__(self, usermail=os.getenv("USER"), password=os.getenv("PASSWORD")):
+    def __init__(self, usermail=secrets["USER"], password=secrets["PASSWORD"]):
         self.__USER = usermail
         self.__PASSWORD = password
 
