@@ -13,7 +13,12 @@ from src.utils.uteis import Logger
 Logger.info("[==] Runnig server streamlit localhost in http://localhost:8501/ [==]")
 
 
-initialize_database()
+@st.cache_resource
+def init_db():
+    return initialize_database()
+
+
+init_db()
 
 
 def load_styles():
