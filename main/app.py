@@ -1,7 +1,6 @@
 import time
 import streamlit as st
 import threading
-from src.controller.telegram import start_bot
 from src.utils.email import EmailSender
 from routes.cadastro import cadastro_cliente, cadastro_produto, my_account
 from routes.compras import realizar_compra
@@ -168,8 +167,3 @@ else:
         esquci_senha()
     else:
         tela_login()
-
-# Iniciar o bot do Telegram em uma thread separada
-if "bot_thread" not in st.session_state:
-    st.session_state.bot_thread = threading.Thread(target=start_bot, daemon=True)
-    st.session_state.bot_thread.start()

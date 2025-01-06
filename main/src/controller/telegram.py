@@ -74,3 +74,7 @@ def start_bot():
         _bot.infinity_polling()
     except Exception as e:
         print(f"[ERROR] >>> {str(e)} <<< [ERROR]")
+
+
+if __name__ == "__main__":
+    start_bot()
