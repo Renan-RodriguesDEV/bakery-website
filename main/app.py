@@ -9,15 +9,14 @@ from routes.support_page import esquci_senha, page_support
 from src.models.entities.database import initialize_database
 from src.utils.uteis import Logger
 
-Logger.info("[==] Runnig server streamlit localhost in http://localhost:8501/ [==]")
-
-
 st.set_page_config(
     page_title="Sistema de Gerenciamento de Vendas",
     page_icon=":moneybag:",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
+
+Logger.info("[==] Runnig server streamlit localhost in http://localhost:8501/ [==]")
 
 
 @st.cache_resource
