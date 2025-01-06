@@ -7,3 +7,4 @@ python-dotenv==1.0.1
 python_bcrypt==0.3.2
 SQLAlchemy==2.0.30
 streamlit==1.41.1
+bcrypt==3.2.0
