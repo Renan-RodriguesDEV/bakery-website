@@ -61,7 +61,7 @@ def esquci_senha():
                     st.code(token_generator)
                     EmailSender().send_email(
                         usuario,
-                        f"Seu <b>token</b> de usuario para login em <a>https://BakeryVillage.com</a> é: <b>{token_generator}</b>",
+                        f"Seu <b>token</b> de usuario para login em <a>https://BakeryVillage.com</a> é: <code><b>{token_generator}</b></code>",
                     )
                 else:
                     st.error(f"Erro ao gerar nova senha!!")

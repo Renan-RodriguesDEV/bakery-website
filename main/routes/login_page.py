@@ -4,17 +4,14 @@ from src.utils.hasher import Hasher
 from src.utils.uteis import Logger
 
 
-@st.cache_data
 def autenticar_usuario(username, password, type_user):
     if type_user == "Owner/Employee":
         Logger.info(password)
         user = UserRepository().select_user(username, type_user)
         Logger.sucess(user)
         if user:
-            
             isAuth = Hasher().checkpswd(password, user.senha)
-            # Aqui você pode adicionar lógica de verificação com um banco de dados ou API
-            if (username == user.email or user.nome == username) and isAuth == True:
+            if (username == user.email or user.nome == username) and isAuth:
                 Logger.sucess("Logando o usuario")
                 return True
             Logger.error(
@@ -28,7 +25,7 @@ def autenticar_usuario(username, password, type_user):
             return False
         Logger.error(f"[===] - User: {user.nome} [===] Password: {user.cpf} - [===]")
         isAuth = Hasher().checkpswd(password, user.cpf)
-        if (username == user.nome or username == user.email) and isAuth == True:
+        if (username == user.nome or username == user.email) and isAuth:
             Logger.info("Autenticado com sucesso")
             return True
         Logger.error(f"Erro ao logar o usuario, {isAuth} | {username} | {user.nome}")
@@ -41,8 +38,6 @@ def tela_login():
     tipo_user = st.selectbox("Usuario", ["Owner/Employee", "Client"])
     Logger.sucess(tipo_user)
     username = st.text_input("Usuário", help="Insira seu nome de usuario")
-    st.session_state["usuario"] = tipo_user
-    st.session_state["username"] = username
     password = st.text_input(
         "Senha",
         type="password",
@@ -56,12 +51,15 @@ def tela_login():
     col1, col2 = x.columns([1, 1])
     if col1.button("Login", type="primary"):
         try:
-            if autenticar_usuario(username, password, type_user=tipo_user):
+            has_auth = autenticar_usuario(username, password, type_user=tipo_user)
+            if has_auth:
                 st.session_state["autenticado"] = True
                 st.session_state["usuario"] = tipo_user
                 st.session_state["username"] = username
-                if st.session_state["usuario"] == "Owner/Employee":
+                if tipo_user == "Owner/Employee":
                     st.session_state["owner"] = True
+                else:
+                    st.session_state["owner"] = False
                 Logger.info(f"Usuario {username} logado com sucesso como: {tipo_user}")
                 st.session_state["pagina"] = "homepage"  # Redireciona para a homepage
                 st.rerun()
@@ -78,5 +76,5 @@ def tela_login():
         st.session_state["pagina"] = "esqueci"
         st.rerun()
     if y.button("Support Page"):
-        st.session_state["pagina"] = "support"
+        st.session_state["pagina"] = "suporte"
         st.rerun()
