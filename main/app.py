@@ -6,7 +6,6 @@ from routes.compras import realizar_compra
 from routes.login_page import tela_login
 from routes.product_page import atualizar_divida, consulta_divida, consulta_produto
 from routes.support_page import esquci_senha, page_support
-from src.models.entities.database import initialize_database
 from src.utils.uteis import Logger
 
 st.set_page_config(
@@ -17,14 +16,6 @@ st.set_page_config(
 )
 
 Logger.info("[==] Runnig server streamlit localhost in http://localhost:8501/ [==]")
-
-
-@st.cache_resource
-def init_db():
-    return initialize_database()
-
-
-init_db()
 
 
 # Função para enviar feedback

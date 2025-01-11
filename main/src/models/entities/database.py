@@ -151,3 +151,7 @@ def initialize_database():
             database_handler.session.add(user)
             database_handler.session.commit()
             Logger.sucess(f"[INFO] User {user.nome} added successfully [INFO]")
+
+
+if __name__ == "__main__":
+    initialize_database()
