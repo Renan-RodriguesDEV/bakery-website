@@ -98,10 +98,10 @@ class UserRepository(DatabaseHandler):
                         user.senha = Hasher().hasherpswd(new_password)
                     else:
                         user.cpf = Hasher().hasherpswd(new_password)
-                    Logger.sucess(f"Senha atualizada para '{new_password}'")
+
                 if new_name:
                     user.nome = new_name
-                    Logger.sucess(f"Nome atualizado para '{new_name}'")
+
                 self.session.commit()
                 return True
             except Exception as e:

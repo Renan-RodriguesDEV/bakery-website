@@ -11,12 +11,9 @@ def autenticar_usuario(username, password, type_user):
         user = UserRepository().select_user(username, type_user)
         Logger.sucess(user)
         if user:
-            Logger.error(
-                f"[===] - User: {user.email} [===] Password: {user.senha} - [===]"
-            )
+            
             isAuth = Hasher().checkpswd(password, user.senha)
             # Aqui você pode adicionar lógica de verificação com um banco de dados ou API
-            Logger.sucess(f"Autenticando o usuario {isAuth}")
             if (username == user.email or user.nome == username) and isAuth == True:
                 Logger.sucess("Logando o usuario")
                 return True

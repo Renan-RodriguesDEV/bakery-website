@@ -147,7 +147,7 @@ def initialize_database():
         Logger.info("[INFO] - Initialization database sucessfully - [INFO]")
         result = database_handler.session.query(User).filter_by(nome="root").first()
         if not result:
-            user = User("root", "dev.rodrigues.renan@gmail.com", "superuser")
+            user = User("root", secrets["USER"], "superuser")
             database_handler.session.add(user)
             database_handler.session.commit()
             Logger.sucess(f"[INFO] User {user.nome} added successfully [INFO]")

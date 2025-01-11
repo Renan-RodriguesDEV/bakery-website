@@ -3,7 +3,7 @@ import streamlit as st
 
 from src.utils.email import EmailSender
 from src.models.repository.user_repository import UserRepository
-from src.utils.uteis import Logger, generate_token
+from src.utils.uteis import generate_token
 
 
 def page_support():
