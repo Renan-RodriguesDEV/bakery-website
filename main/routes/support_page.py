@@ -61,7 +61,14 @@ def esquci_senha():
                     st.code(token_generator)
                     EmailSender().send_email(
                         usuario,
-                        f"Seu <b>token</b> de usuario para login em <a>https://BakeryVillage.com</a> é: <code><b>{token_generator}</b></code>",
+                        f"""
+<p>Seu <b>token</b> de usuário para login em <a href='https://bakery-of-village.streamlit.app/' style='color:blue;'>Padaria da Vila</a> é: <code>{token_generator}</code></p>
+<p>Em seu próximo <i>login</i>, utilize-o para acessar sua conta em nosso site!</p>
+<p>Atenciosamente,</p>
+<p style='color:blue;'>Padaria da Vila - Itai/SP</p>
+<p>Fone: <span style='color:green;'>(19) 99872-2472/SP</span></p>
+<p><a href='https://bakery-of-village.streamlit.app/' style='color:blue; text-decoration:none;'>https://bakery-of-village.streamlit.app/</a></p>
+                        """,
                     )
                 else:
                     st.error(f"Erro ao gerar nova senha!!")

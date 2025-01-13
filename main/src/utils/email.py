@@ -36,7 +36,7 @@ class EmailSender:
             )
             Logger.info(f"Feedback enviado com sucesso para o email {self.__USER}!")
 
-    def send_email(self, email, text):
+    def send_email(self, email, text, subject="Atenção, Padaria da Vila informa!!"):
         """Envia feedback por email
 
         Args:
@@ -48,8 +48,10 @@ class EmailSender:
             # smtp.starttls()
             Logger.sucess("Logando no servidor SMTP...")
             smtp.login(user=str(self.__USER), password=str(self.__PASSWORD))
-            subject = "Reset Token WebAppBakary"
-            body = f"<p>Olá {email}, esse é o seu <b>reset-token</b></p><p>{text}<p>"
+            subject = subject
+            body = f"""
+<div><i>Olá {email}, </i></div>
+<div>{text}</div>"""
             mensagem = MIMEText(body, _subtype="html")
             mensagem["From"] = self.__USER
             mensagem["To"] = email
