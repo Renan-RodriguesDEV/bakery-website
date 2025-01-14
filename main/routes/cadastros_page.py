@@ -11,7 +11,9 @@ from src.models.repository.dataframes_repository import (
 # Função para o cadastro de produtos
 def cadastro_produto():
     st.title(":gray[Cadastro]/:red[Deleção] de Produtos")
-    selection = st.selectbox("Selecione a ação", ["Cadastro", "Deleção"])
+    selection = st.selectbox(
+        "**:blue[Selecione a ação]**", ["Cadastro", "Deleção", "Alterar"]
+    )
     if selection == "Cadastro":
         nome = st.text_input("Nome do Produto")
         preco = st.number_input("Preço", min_value=0.0, step=0.01)
@@ -28,6 +30,30 @@ def cadastro_produto():
             else:
                 ProductRepository().insert_product(nome, float(preco), int(qtde))
                 st.success(f"Produto {nome} cadastrado com sucesso!")
+    elif selection == "Alterar":
+        produto = st.selectbox(
+            "**:green[Selecione o produto]**",
+            select_all_produtos(),
+            help="selecione o produto que deseja alterar",
+        )
+        nome = st.text_input("Novo Nome do Produto")
+        preco = st.number_input("Novo Preço", min_value=0.0, step=0.01)
+        qtde = st.number_input("Nova Quantidade em estoque", min_value=0, step=1)
+        if st.button("Alterar", type="primary"):
+            with ProductRepository() as p:
+                produto_u = p.select_product(produto)
+                if not produto_u:
+                    st.error("Produto não encontrado")
+                else:
+                    if nome:
+                        produto_u.nome = nome
+                    if preco:
+                        produto_u.preco = preco
+                    if qtde:
+                        produto_u.qtde = qtde
+
+                    p.session.commit()
+                    st.success("Produto alterado com sucesso")
     else:
         produto = st.selectbox("Selecione o produto", select_all_produtos())
         Logger.info(f">>> Produto selecionado: {produto}")
@@ -45,7 +71,11 @@ def cadastro_produto():
 # Função para o cadastro de clientes
 def cadastro_cliente():
     st.title(":gray[Cadastro]/:red[Deleção] de Clientes")
-    action = st.selectbox("Selecione a ação", ["Cadastro", "Deleção"])
+    action = st.selectbox(
+        "**:blue[Selecione a ação]**",
+        ["Cadastro", "Deleção", "Alterar"],
+        help="Selecione a ação que deseja realizar",
+    )
     if action == "Cadastro":
         nome = st.text_input("Nome do Cliente")
         cpf = st.text_input("CPF do Cliente", placeholder="123.456.789-00")
@@ -71,6 +101,32 @@ def cadastro_cliente():
                     st.success(f"Cliente {nome} cadastrado com sucesso!")
                 else:
                     st.error(f"Não foi possivel cadastrar o cliente")
+    elif action == "Alterar":
+        cliente = st.selectbox(
+            "**:green[Selecione o cliente]**",
+            select_all_clientes(),
+            help="selecione o cliente que deseja alterar",
+        )
+        nome = st.text_input("Novo Nome do Cliente")
+        cpf = st.text_input("Novo CPF do Cliente", placeholder="123.456.789-00")
+        email = st.text_input("Novo Email do Cliente", placeholder="darkside@gmail.com")
+        telefone = st.text_input("Novo Telefone do Cliente")
+        if st.button("Alterar", type="primary"):
+            with UserRepository() as u:
+                cliente_u = u.select_user(cliente, "Client")
+                if not cliente_u:
+                    st.error("Usuário não encontrado")
+                else:
+                    if nome:
+                        cliente_u.nome = nome
+                    if cpf:
+                        cliente_u.cpf = cpf
+                    if email:
+                        cliente_u.email = email
+                    if telefone:
+                        cliente_u.telefone = telefone
+                    u.session.commit()
+                    st.success("Cliente alterado com sucesso")
     else:
         cliente = st.selectbox("Selecione o cliente", select_all_clientes())
         if st.button("Deletar Cliente", type="primary"):
