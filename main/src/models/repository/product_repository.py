@@ -22,6 +22,11 @@ class ProductRepository(DatabaseHandler):
             )
             return product
 
+    def select_product_by_id(self, id):
+        with self:
+            product = self.session.query(Produto).filter(Produto.id == id).first()
+            return product
+
     def select_product_price(self, nome):
         with self:
             product = self.session.query(Produto).filter_by(nome=nome).first()

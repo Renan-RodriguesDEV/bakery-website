@@ -1,4 +1,6 @@
 import datetime
+import os
+import sys
 from sqlalchemy import (
     create_engine,
     Column,
@@ -13,6 +15,8 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.sql import func
 from sqlalchemy.orm import sessionmaker
 from streamlit import secrets
+
+# sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 from src.utils.uteis import Logger
 from src.utils.hasher import Hasher
 
@@ -146,7 +150,7 @@ class Carrinho(Base):
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     id_cliente = Column("id_cliente", ForeignKey("clientes.id"), nullable=False)
     id_produto = Column("id_produto", ForeignKey("produtos.id"), nullable=False)
-    quantidade = Column("quantidade", Integer, nullable=False)
+    quantidade = Column("quantidade", DECIMAL(15, 2), nullable=False)
     data = Column("data", TIMESTAMP, server_default=func.now())
 
     def __init__(self, id_cliente, id_produto, quantidade):

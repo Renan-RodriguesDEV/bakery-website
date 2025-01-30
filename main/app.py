@@ -63,6 +63,13 @@ def homepage():
 
     # Opções de navegação
     if y.button(
+        "Carrinho",
+        use_container_width=True,
+        disabled=st.session_state["owner"],
+    ):
+        st.session_state["pagina"] = "cart"
+        st.rerun()
+    if y.button(
         "Comprar",
         use_container_width=True,
         disabled=st.session_state["owner"],
