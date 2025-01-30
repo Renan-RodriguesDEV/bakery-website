@@ -1,9 +1,10 @@
 import time
 import streamlit as st
 from routes.carrinho_compras import shopping_cart
+from routes.user_page import information
 from src.utils.email import EmailSender
-from routes.cadastro import cadastro_cliente, cadastro_produto, my_account
-from routes.compras import realizar_compra
+from routes.cadastros_page import cadastro_cliente, cadastro_produto, my_account
+from routes.compras_page import realizar_compra
 from routes.login_page import tela_login
 from routes.product_page import atualizar_divida, consulta_divida, consulta_produto
 from routes.support_page import esquci_senha, page_support
@@ -35,7 +36,7 @@ def send_feedback(feedback):
 def homepage():
     st.title(f"Bem-vindo, :gray[{st.session_state['username']}!]")
     st.subheader(f"Você está logado como: :gray[{st.session_state['usuario']}]")
-    x, y = st.columns([2, 1], gap="medium", vertical_alignment="top")
+    x, y = st.columns([2, 1], gap="small", vertical_alignment="top")
 
     feedback = x.text_area(
         "Feedback do cliente",
@@ -69,14 +70,14 @@ def homepage():
         st.session_state["pagina"] = "realizar_compra"
         st.rerun()
     if y.button(
-        "Cadastro de Produtos",
+        "Cadastro/Alteração de Produtos",
         use_container_width=True,
         disabled=not st.session_state["owner"],
     ):
         st.session_state["pagina"] = "cadastro_produto"
         st.rerun()
     if y.button(
-        "Cadastro de Clientes",
+        "Cadastro/Alteração de Clientes",
         use_container_width=True,
         disabled=not st.session_state["owner"],
     ):
@@ -99,16 +100,34 @@ def homepage():
         st.session_state["pagina"] = "atualizar_divida"
         st.rerun()
 
-    if st.sidebar.button("Logout"):
+    if st.sidebar.button(
+        "Logout",
+        use_container_width=True,
+        type="primary",
+    ):
         st.session_state["autenticado"] = False
         st.session_state["pagina"] = "login"
         st.rerun()
 
-    if st.sidebar.button("Support Page"):
+    if st.sidebar.button(
+        "Support Page",
+        use_container_width=True,
+    ):
         st.session_state["pagina"] = "suporte"
         st.rerun()
-    if st.sidebar.button("My Account"):
+    if st.sidebar.button(
+        "My Account",
+        use_container_width=True,
+    ):
         st.session_state["pagina"] = "conta"
+        st.rerun()
+    if st.sidebar.button(
+        "Informações de Clientes",
+        use_container_width=True,
+        disabled=not st.session_state["owner"],
+        type="primary",
+    ):
+        st.session_state["pagina"] = "informacoes"
         st.rerun()
 
 
@@ -148,6 +167,8 @@ if st.session_state["autenticado"]:
         esquci_senha()
     elif st.session_state["pagina"] == "cart":
         shopping_cart()
+    elif st.session_state["pagina"] == "informacoes":
+        information()
 
 else:
     # Se não estiver autenticado, ainda permite acesso à página de suporte
