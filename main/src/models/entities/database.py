@@ -12,17 +12,16 @@ from sqlalchemy import (
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.sql import func
 from sqlalchemy.orm import sessionmaker
+from streamlit import secrets
 from src.utils.uteis import Logger
 from src.utils.hasher import Hasher
-from streamlit import secrets
-
 
 _USERNAME = secrets["TEST_USER_DB"]
 _PASSWORD = secrets["TEST_PASSWORD_DB"]
 _HOST = secrets["TEST_HOST_DB"]
 _DATABASE = secrets["TEST_DATABASE_NAME"]
 
-print(_USERNAME, _PASSWORD, _HOST, _DATABASE)
+Logger.info(f"{_USERNAME} {_PASSWORD} {_HOST} {_DATABASE}")
 
 
 class DatabaseHandler:

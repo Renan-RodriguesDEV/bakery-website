@@ -1,6 +1,6 @@
 import time
 import streamlit as st
-from routes.carrinho_compras import shopping_cart
+from routes.carrinho_compras_page import shopping_cart
 from routes.user_page import information
 from src.utils.email import EmailSender
 from routes.cadastros_page import cadastro_cliente, cadastro_produto, my_account
