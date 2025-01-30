@@ -17,10 +17,12 @@ from src.utils.hasher import Hasher
 from streamlit import secrets
 
 
-_USERNAME = secrets["USER_DB"]
-_PASSWORD = secrets["PASSWORD_DB"]
-_HOST = secrets["HOST_DB"]
-_DATABASE = secrets["DATABASE_NAME"]
+_USERNAME = secrets["TEST_USER_DB"]
+_PASSWORD = secrets["TEST_PASSWORD_DB"]
+_HOST = secrets["TEST_HOST_DB"]
+_DATABASE = secrets["TEST_DATABASE_NAME"]
+
+print(_USERNAME, _PASSWORD, _HOST, _DATABASE)
 
 
 class DatabaseHandler:
@@ -140,6 +142,20 @@ class Divida(Base):
         self.data_modificacao = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
+class Carrinho(Base):
+    __tablename__ = "carrinho"
+    id = Column("id", Integer, primary_key=True, autoincrement=True)
+    id_cliente = Column("id_cliente", ForeignKey("clientes.id"), nullable=False)
+    id_produto = Column("id_produto", ForeignKey("produtos.id"), nullable=False)
+    quantidade = Column("quantidade", Integer, nullable=False)
+    data = Column("data", TIMESTAMP, server_default=func.now())
+
+    def __init__(self, id_cliente, id_produto, quantidade):
+        self.id_cliente = id_cliente
+        self.id_produto = id_produto
+        self.quantidade = quantidade
+
+
 def initialize_database():
     with DatabaseHandler() as database_handler:
         # Criação das tabelas no banco de dados
@@ -147,7 +163,7 @@ def initialize_database():
         Logger.info("[INFO] - Initialization database sucessfully - [INFO]")
         result = database_handler.session.query(User).filter_by(nome="root").first()
         if not result:
-            user = User("root", secrets["USER"], "superuser")
+            user = User("root", secrets["USER"], "admin")
             database_handler.session.add(user)
             database_handler.session.commit()
             Logger.sucess(f"[INFO] User {user.nome} added successfully [INFO]")

@@ -28,23 +28,15 @@ def realizar_compra():
             <p><span style='color: cyan;'>Valor Final: </span><strong>R$ {preco*quantidade}</strong></p>
             """
         )
-        if col1.button("Comprar", type="primary"):
-            try:
-                link_paryment = payment(str(produto), float(preco), int(quantidade))
-                Logger.sucess(f"link para pagamento {link_paryment}")
-                # Redireciona automaticamente
-                st.page_link(
-                    page=link_paryment, label=":green[Ir para o Pagamento]", icon="💸"
-                )
-
-                st.success(
-                    f"Venda registrada com sucesso no valor de {preco*quantidade}!"
-                )
-            except Exception as e:
-                st.error("Erro ao registrar a venda")
+        disable = True
+        if col1.button("Adicionar ao carrinho", type="primary"):
+            disable = False
+        if st.button("Ir para o carrinho", disabled=disable):
+            st.session_state["pagina"] = "cart"
+            st.rerun()
         col2.html(
             """
-<h4>Se preferir pague em pix 🪙</h4> 
+<h4>Se preferir pague agora com o pix 🪙</h4> 
 <p><b>Proprietario: </b> <span style='text-decoration: underline;'>Renan Rodrigues</span></p>
 <p>Chave:</p>"""
         )

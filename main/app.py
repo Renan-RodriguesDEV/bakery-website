@@ -1,5 +1,6 @@
 import time
 import streamlit as st
+from routes.carrinho_compras import shopping_cart
 from src.utils.email import EmailSender
 from routes.cadastro import cadastro_cliente, cadastro_produto, my_account
 from routes.compras import realizar_compra
@@ -145,6 +146,8 @@ if st.session_state["autenticado"]:
         my_account()
     elif st.session_state["pagina"] == "esqueci":
         esquci_senha()
+    elif st.session_state["pagina"] == "cart":
+        shopping_cart()
 
 else:
     # Se não estiver autenticado, ainda permite acesso à página de suporte

@@ -2,10 +2,11 @@ import pymysql
 import pandas as pd
 from streamlit import secrets
 
-_USERNAME = secrets["USER_DB"]
-_PASSWORD = secrets["PASSWORD_DB"]
-_HOST = secrets["HOST_DB"]
-_DATABASE = secrets["DATABASE_NAME"]
+_USERNAME = secrets["TEST_USER_DB"]
+_PASSWORD = secrets["TEST_PASSWORD_DB"]
+_HOST = secrets["TEST_HOST_DB"]
+_DATABASE = secrets["TEST_DATABASE_NAME"]
+
 db_data = {
     "host": _HOST,
     "user": _USERNAME,
@@ -13,6 +14,8 @@ db_data = {
     "database": _DATABASE,
     "cursorclass": pymysql.cursors.DictCursor,
 }
+
+print(db_data)
 
 
 # Função para selecionar todos os produtos
