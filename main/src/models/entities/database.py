@@ -2,6 +2,7 @@ import datetime
 import os
 import sys
 from sqlalchemy import (
+    VARCHAR,
     create_engine,
     Column,
     Integer,
@@ -74,13 +75,17 @@ class Cliente(Base):
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     nome = Column("nome", String(255))
     cpf = Column("cpf", String(255), nullable=True, unique=True)
+    senha = Column("senha", String(255), nullable=False)
     telefone = Column("telefone", String(15), nullable=True)
-    email = Column("email", String(255), nullable=True)
+    email = Column("email", String(255), nullable=True, unique=True)
     token = Column("token", String(255), nullable=True)
 
-    def __init__(self, nome, cpf=None, telefone=None, email=None, token=None):
+    def __init__(self, nome, cpf, telefone, email, senha=None, token=None):
         self.nome = nome
-        self.cpf = Hasher().hasherpswd(cpf) if cpf else None
+        self.cpf = cpf
+        if not senha:
+            senha = self.cpf
+        self.senha = Hasher().hasherpswd(senha) if senha else None
         self.telefone = telefone
         self.email = email
         self.token = token
@@ -90,7 +95,7 @@ class User(Base):
     __tablename__ = "users"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     nome = Column("nome", String(255), nullable=False)
-    email = Column("email", String(255), nullable=False)
+    email = Column("email", String(255), nullable=False, unique=True)
     senha = Column("senha", TEXT(500), nullable=True)  # Increased length for hash
 
     def __init__(self, nome, email, senha=None):
@@ -164,9 +169,13 @@ def initialize_database():
         # Criação das tabelas no banco de dados
         Base.metadata.create_all(database_handler.get_engine())
         Logger.info("[INFO] - Initialization database sucessfully - [INFO]")
-        result = database_handler.session.query(User).filter_by(nome="root").first()
+        result = (
+            database_handler.session.query(User)
+            .filter_by(nome="Renan Rodrigues")
+            .first()
+        )
         if not result:
-            user = User("root", secrets["USER"], "admin")
+            user = User("Renan Rodrigues", secrets["USER"], "admin")
             database_handler.session.add(user)
             database_handler.session.commit()
             Logger.sucess(f"[INFO] User {user.nome} added successfully [INFO]")

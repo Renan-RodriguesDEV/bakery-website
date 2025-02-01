@@ -23,8 +23,8 @@ def autenticar_usuario(username, password, type_user):
         if not user:
             Logger.error(f"Usuario {username} não encontrado")
             return False
-        Logger.error(f"[===] - User: {user.nome} [===] Password: {user.cpf} - [===]")
-        isAuth = Hasher().checkpswd(password, user.cpf)
+        Logger.error(f"[===] - User: {user.nome} [===] Password: {user.senha} - [===]")
+        isAuth = Hasher().checkpswd(password, user.senha)
         if (username == user.nome or username == user.email) and isAuth:
             Logger.info("Autenticado com sucesso")
             return True

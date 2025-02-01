@@ -1,3 +1,4 @@
+import sqlalchemy
 import streamlit as st
 from src.models.repository.product_repository import ProductRepository
 from src.models.repository.user_repository import UserRepository
@@ -6,6 +7,90 @@ from src.models.repository.dataframes_repository import (
     select_all_clientes,
     select_all_produtos,
 )
+
+
+def alter_client(cliente, nome=None, cpf=None, email=None, telefone=None):
+    with UserRepository() as u:
+        try:
+            cliente_u = u.select_user(cliente, "Client")
+            if not cliente_u:
+                st.error("Usuário não encontrado")
+            else:
+                if nome:
+                    cliente_u.nome = nome
+                    Logger.info(f"setting nome for {nome}")
+                if cpf:
+                    cliente_u.cpf = cpf
+                    Logger.info(f"setting cpf for {cpf}")
+                if email:
+                    cliente_u.email = email
+                    Logger.info(f"setting email for {email}")
+                if telefone:
+                    cliente_u.telefone = telefone
+                    Logger.info(f"setting telefone for {telefone}")
+                u.session.add(cliente_u)
+                u.session.commit()
+                st.success("Cliente alterado com sucesso")
+        except sqlalchemy.exc.IntegrityError as e:
+            Logger.error(f"Erro ao alterar dados do cliente: {e}")
+            st.error("Este email ou CPF já existe em um cadastro!!!")
+            st.warning("Tente novamente com dados diferentes!!!")
+        except Exception as e:
+            Logger.error(str(e))
+            st.error("Erro ao cadastrar o cliente")
+
+
+def register_client(nome, cpf, telefone, email):
+    try:
+        cpf = cpf.replace(".", "").replace("-", "")
+        cadasto = UserRepository().insert_user(
+            username=nome,
+            cpf=cpf,
+            telefone=telefone,
+            email=email,
+            type_user="Client",
+        )
+        if cadasto:
+            st.success(f"Cliente {nome} cadastrado com sucesso!")
+        else:
+            st.error(f"Não foi possivel cadastrar o cliente")
+    except sqlalchemy.exc.IntegrityError as e:
+        Logger.error(f"Erro ao alterar dados do cliente: {e}")
+        st.error("Este email ou CPF já existe em um cadastro!!!")
+        st.warning("Tente novamente com dados diferentes!!!")
+    except Exception as e:
+        Logger.error(str(e))
+        st.error(f"Erro ao alterar dados do cliente!!")
+
+
+def alter_product(produto, nome=None, preco=None, qtde=None):
+    with ProductRepository() as p:
+        try:
+            produto_u = p.select_product(produto)
+            if not produto_u:
+                st.error("Produto não encontrado")
+            else:
+                if nome:
+                    produto_u.nome = nome
+                if preco:
+                    produto_u.preco = preco
+                if qtde:
+                    produto_u.qtde = qtde
+                p.session.add(produto_u)
+                p.session.commit()
+                st.success("Produto alterado com sucesso")
+        except Exception as e:
+            Logger.error(str(e))
+            st.error("Erro ao cadastrar o produto")
+
+
+def register_product(nome, preco, qtde):
+    try:
+        ProductRepository().insert_product(nome, float(preco), int(qtde))
+        st.success(f"Produto {nome} cadastrado com sucesso!")
+    except Exception as e:
+        Logger.error(str(e))
+        st.error("Erro ao cadastrar o produto")
 
 
 # Função para o cadastro de produtos
@@ -28,8 +113,7 @@ def cadastro_produto():
             if flag:
                 st.error("Todos os campos são obrigatorios!! Por favor preencha todos")
             else:
-                ProductRepository().insert_product(nome, float(preco), int(qtde))
-                st.success(f"Produto {nome} cadastrado com sucesso!")
+                register_product(nome, preco, qtde)
     elif selection == "Alterar":
         produto = st.selectbox(
             "**:green[Selecione o produto]**",
@@ -40,20 +124,7 @@ def cadastro_produto():
         preco = st.number_input("Novo Preço", min_value=0.0, step=0.01)
         qtde = st.number_input("Nova Quantidade em estoque", min_value=0, step=1)
         if st.button("Alterar", type="primary"):
-            with ProductRepository() as p:
-                produto_u = p.select_product(produto)
-                if not produto_u:
-                    st.error("Produto não encontrado")
-                else:
-                    if nome:
-                        produto_u.nome = nome
-                    if preco:
-                        produto_u.preco = preco
-                    if qtde:
-                        produto_u.qtde = qtde
-
-                    p.session.commit()
-                    st.success("Produto alterado com sucesso")
+            alter_product(produto, nome, preco, qtde)
     else:
         produto = st.selectbox("Selecione o produto", select_all_produtos())
         Logger.info(f">>> Produto selecionado: {produto}")
@@ -89,18 +160,7 @@ def cadastro_cliente():
             if flag:
                 st.error("Todos os campos são obrigatorios!! Por favor preencha todos")
             else:
-                cpf = cpf.replace(".", "").replace("-", "")
-                cadasto = UserRepository().insert_user(
-                    username=nome,
-                    cpf=cpf,
-                    telefone=telefone,
-                    email=email,
-                    type_user="Client",
-                )
-                if cadasto:
-                    st.success(f"Cliente {nome} cadastrado com sucesso!")
-                else:
-                    st.error(f"Não foi possivel cadastrar o cliente")
+                register_client(nome, cpf, telefone, email)
     elif action == "Alterar":
         cliente = st.selectbox(
             "**:green[Selecione o cliente]**",
@@ -112,21 +172,7 @@ def cadastro_cliente():
         email = st.text_input("Novo Email do Cliente", placeholder="darkside@gmail.com")
         telefone = st.text_input("Novo Telefone do Cliente")
         if st.button("Alterar", type="primary"):
-            with UserRepository() as u:
-                cliente_u = u.select_user(cliente, "Client")
-                if not cliente_u:
-                    st.error("Usuário não encontrado")
-                else:
-                    if nome:
-                        cliente_u.nome = nome
-                    if cpf:
-                        cliente_u.cpf = cpf
-                    if email:
-                        cliente_u.email = email
-                    if telefone:
-                        cliente_u.telefone = telefone
-                    u.session.commit()
-                    st.success("Cliente alterado com sucesso")
+            alter_client(cliente, nome, cpf, email, telefone)
     else:
         cliente = st.selectbox("Selecione o cliente", select_all_clientes())
         if st.button("Deletar Cliente", type="primary"):

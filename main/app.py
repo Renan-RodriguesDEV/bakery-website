@@ -61,14 +61,15 @@ def homepage():
         time.sleep(3)
         st.rerun()
 
-    # Opções de navegação
-    if y.button(
-        "Carrinho",
-        use_container_width=True,
-        disabled=st.session_state["owner"],
-    ):
-        st.session_state["pagina"] = "cart"
-        st.rerun()
+    # Botão de Carrinho fixo na parte superior da página
+    # Posicionado à direita do header
+    top_nav = y.container()
+    with top_nav:
+        _, cart_col = st.columns([8, 1])
+        with cart_col:
+            if st.button("🛒", key="btn_cart_top", disabled=st.session_state["owner"]):
+                st.session_state["pagina"] = "cart"
+                st.rerun()
     if y.button(
         "Comprar",
         use_container_width=True,
@@ -76,20 +77,20 @@ def homepage():
     ):
         st.session_state["pagina"] = "realizar_compra"
         st.rerun()
-    if y.button(
-        "Cadastro/Alteração de Produtos",
-        use_container_width=True,
-        disabled=not st.session_state["owner"],
-    ):
-        st.session_state["pagina"] = "cadastro_produto"
-        st.rerun()
-    if y.button(
-        "Cadastro/Alteração de Clientes",
-        use_container_width=True,
-        disabled=not st.session_state["owner"],
-    ):
-        st.session_state["pagina"] = "cadastro_cliente"
-        st.rerun()
+    if st.session_state["owner"]:
+        if y.button(
+            "Cadastro/Alteração de Produtos",
+            use_container_width=True,
+        ):
+            st.session_state["pagina"] = "cadastro_produto"
+            st.rerun()
+    if st.session_state["owner"]:
+        if y.button(
+            "Cadastro/Alteração de Clientes",
+            use_container_width=True,
+        ):
+            st.session_state["pagina"] = "cadastro_cliente"
+            st.rerun()
 
     if y.button("Catalogo de Produtos", use_container_width=True):
         st.session_state["pagina"] = "consulta_produto"
@@ -99,13 +100,13 @@ def homepage():
         st.session_state["pagina"] = "consulta_divida"
         st.rerun()
 
-    if y.button(
-        "Alterar Pendencias",
-        use_container_width=True,
-        disabled=not st.session_state["owner"],
-    ):
-        st.session_state["pagina"] = "atualizar_divida"
-        st.rerun()
+    if st.session_state["owner"]:
+        if y.button(
+            "Alterar Pendencias",
+            use_container_width=True,
+        ):
+            st.session_state["pagina"] = "atualizar_divida"
+            st.rerun()
 
     if st.sidebar.button(
         "Logout",

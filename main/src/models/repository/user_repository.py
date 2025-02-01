@@ -94,10 +94,7 @@ class UserRepository(DatabaseHandler):
                         .first()
                     )
                 if new_password:
-                    if type_user == "Owner/Employee":
-                        user.senha = Hasher().hasherpswd(new_password)
-                    else:
-                        user.cpf = Hasher().hasherpswd(new_password)
+                    user.senha = Hasher().hasherpswd(new_password)
 
                 if new_name:
                     user.nome = new_name
@@ -136,7 +133,7 @@ class UserRepository(DatabaseHandler):
                     user.senha = Hasher().hasherpswd(new_password)
                 else:
                     user = self.session.query(Cliente).filter_by(email=username).first()
-                    user.cpf = Hasher().hasherpswd(new_password)
+                    user.senha = Hasher().hasherpswd(new_password)
                 self.session.commit()
                 return True
             except Exception as e:
