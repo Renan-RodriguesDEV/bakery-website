@@ -5,7 +5,7 @@ from src.models.repository.user_repository import UserRepository
 from src.utils.uteis import Logger
 from src.models.repository.dataframes_repository import (
     select_all_clientes,
-    select_all_produtos,
+    select_all_products,
 )
 
 
@@ -63,7 +63,7 @@ def register_client(nome, cpf, telefone, email):
         st.error(f"Erro ao alterar dados do cliente!!")
 
 
-def alter_product(produto, nome=None, preco=None, qtde=None):
+def alter_product(produto, nome=None, preco=None, qtde=None, categoria=None):
     with ProductRepository() as p:
         try:
             produto_u = p.select_product(produto)
@@ -76,6 +76,8 @@ def alter_product(produto, nome=None, preco=None, qtde=None):
                     produto_u.preco = preco
                 if qtde:
                     produto_u.qtde = qtde
+                if categoria:
+                    produto_u.categoria = categoria
                 p.session.add(produto_u)
                 p.session.commit()
                 st.success("Produto alterado com sucesso")
@@ -84,9 +86,9 @@ def alter_product(produto, nome=None, preco=None, qtde=None):
             st.error("Erro ao cadastrar o produto")
 
 
-def register_product(nome, preco, qtde):
+def register_product(nome, preco, qtde, categoria):
     try:
-        ProductRepository().insert_product(nome, float(preco), int(qtde))
+        ProductRepository().insert_product(nome, float(preco), int(qtde), categoria)
         st.success(f"Produto {nome} cadastrado com sucesso!")
     except Exception as e:
         Logger.error(str(e))
@@ -97,13 +99,25 @@ def register_product(nome, preco, qtde):
 def cadastro_produto():
     st.title(":gray[Cadastro]/:red[Deleção] de Produtos")
     selection = st.selectbox(
-        "**:blue[Selecione a ação]**", ["Cadastro", "Deleção", "Alterar"]
+        "**:green[Selecione a ação]**", ["Cadastro", "Deleção", "Alterar"]
     )
     if selection == "Cadastro":
-        nome = st.text_input("Nome do Produto")
-        preco = st.number_input("Preço", min_value=0.0, step=0.01)
-        qtde = st.number_input("Quantidade", min_value=0, step=1)
-        flag = True if not nome or not preco or not qtde else False
+        nome = st.text_input(":green[Nome do Produto]")
+        preco = st.number_input(":green[Preço]", min_value=0.0, step=0.01)
+        qtde = st.number_input(":green[Quantidade]", min_value=0, step=1)
+        categoria = st.selectbox(
+            ":green[Selecione uma da(s) categoria(s)]",
+            ["categoria", "Bebidas", "Doces", "Salgados", "Padaria", "Mercearia"],
+        )
+        flag = (
+            True
+            if not nome
+            or not preco
+            or not qtde
+            or not categoria
+            or categoria == "categoria"
+            else False
+        )
         if flag:
             st.warning("Todos os campos são obrigatorios!!")
         if st.button(
@@ -113,20 +127,26 @@ def cadastro_produto():
             if flag:
                 st.error("Todos os campos são obrigatorios!! Por favor preencha todos")
             else:
-                register_product(nome, preco, qtde)
+                register_product(nome, preco, qtde, categoria)
     elif selection == "Alterar":
         produto = st.selectbox(
             "**:green[Selecione o produto]**",
-            select_all_produtos(),
+            select_all_products(),
             help="selecione o produto que deseja alterar",
         )
-        nome = st.text_input("Novo Nome do Produto")
-        preco = st.number_input("Novo Preço", min_value=0.0, step=0.01)
-        qtde = st.number_input("Nova Quantidade em estoque", min_value=0, step=1)
+        nome = st.text_input(":orange[Novo Nome do Produto]")
+        preco = st.number_input(":orange[Novo Preço]", min_value=0.0, step=0.01)
+        qtde = st.number_input(
+            ":orange[Nova Quantidade em estoque]", min_value=0, step=1
+        )
+        categoria = st.selectbox(
+            ":orange[Selecione uma da(s) categoria(s)]",
+            ["categoria", "Bebidas", "Doces", "Salgados", "Padaria", "Mercearia"],
+        )
         if st.button("Alterar", type="primary"):
-            alter_product(produto, nome, preco, qtde)
+            alter_product(produto, nome, preco, qtde, categoria)
     else:
-        produto = st.selectbox("Selecione o produto", select_all_produtos())
+        produto = st.selectbox(":red[Selecione o produto]", select_all_products())
         Logger.info(f">>> Produto selecionado: {produto}")
         if st.button("Deletar Produto", type="primary"):
             deletion = ProductRepository().delete_product(produto)
@@ -205,6 +225,11 @@ def my_account():
         else:
             if type_user == "Client":
                 user_data = UserRepository().select_user(user, "Client")
+                x.image(
+                    "https://www.freeiconspng.com/uploads/head-icon-0.png",
+                    width=100,
+                    output_format="PNG",
+                )
                 x.write(f"Nome: {user_data.nome}")
                 x.write(f"Email: {user_data.email}")
                 x.write(f"Telefone: {user_data.telefone}")
@@ -234,6 +259,11 @@ def my_account():
                             "É necessario preencher algum dos campos para atualizar"
                         )
             else:
+                x.image(
+                    "https://www.freeiconspng.com/uploads/head-icon-0.png",
+                    width=100,
+                    output_format="PNG",
+                )
                 x.write(f"Nome: {user_data.nome}")
                 x.write(f"Email: {user_data.email}")
                 new_name = y.text_input(f"Nome: ", type="default")

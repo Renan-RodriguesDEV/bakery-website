@@ -1,53 +1,23 @@
--- Cria o banco de dados
-CREATE DATABASE IF NOT EXISTS db_comercio;
-USE db_comercio;
--- Tabela clientes
-CREATE TABLE IF NOT EXISTS clientes (
-    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(255) NOT NULL,
-    cpf VARCHAR(11) DEFAULT NULL,
-    telefone VARCHAR(15) DEFAULT NULL,
-    email VARCHAR(255) DEFAULT NULL
-);
--- Tabela produtos
-CREATE TABLE IF NOT EXISTS produtos (
-    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(255) NOT NULL,
-    preco DECIMAL(15, 2) NOT NULL,
-    estoque INT NOT NULL
-);
--- Tabela de usuarios do sistema
-CREATE TABLE IF NOT EXISTS users (
-    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(255) not null,
-    senha VARCHAR(8) not null
-);
--- Tabela intermediária cliente_produto para registrar compras
-CREATE TABLE IF NOT EXISTS cliente_produto (
-    id_cliente INT NOT NULL,
-    id_produto INT NOT NULL,
-    preco DECIMAL(15, 2) NOT NULL,
-    quantidade INT NOT NULL,
-    total decimal(15, 2) NOT NULL default 0,
-    data datetime NOT NULL default NOW(),
-    PRIMARY KEY (id_cliente, id_produto),
-    FOREIGN KEY (id_cliente) REFERENCES clientes(id),
-    FOREIGN KEY (id_produto) REFERENCES produtos(id)
-);
-drop table cliente_produto;
--- Trigger para atualizar o estoque de produtos quando a quantidade for alterada
--- DELIMITER // CREATE TRIGGER atualiza_estoque_cliente_produto
--- AFTER
--- INSERT ON cliente_produto FOR EACH ROW BEGIN -- Atualiza o estoque do produto
--- UPDATE produtos
--- SET estoque = estoque - NEW.quantidade
--- WHERE id = NEW.id_produto;
--- END // DELIMITER;
--- DELIMITER // create trigger atualiza_preco_total
--- after
--- insert on cliente_produto for each row begin
--- update cliente_produto c
--- set total = NEW.quantidade * NEW.preco
--- where id_produto = NEW.id_produto
---     and id_cliente;
--- end // DELIMITER;
+use db_comercio;
+alter table produtos add column categoria enum("Bebidas", "Doces", "Salgados", "Padaria", "Mercearia");
+select * from produtos;
+set SQL_SAFE_UPDATES = 0;
+UPDATE produtos SET categoria = 'Bebidas' WHERE nome = 'Coca Cola 2L';
+UPDATE produtos SET categoria = 'Bebidas' WHERE nome = 'Conquista 2L';
+UPDATE produtos SET categoria = 'Padaria' WHERE nome = 'Pão francês (Uni.)';
+UPDATE produtos SET categoria = 'Padaria' WHERE nome = 'Pão de forma panco (500g)';
+UPDATE produtos SET categoria = 'Bebidas' WHERE nome = 'Brahma lata 350ml (Uni.)';
+UPDATE produtos SET categoria = 'Bebidas' WHERE nome = 'Skol lata 350ml (Uni.)';
+UPDATE produtos SET categoria = 'Bebidas' WHERE nome = 'Antártica lata 350ml (Uni.)';
+UPDATE produtos SET categoria = 'Bebidas' WHERE nome = 'Crystal lata 350ml (Uni.)';
+UPDATE produtos SET categoria = 'Bebidas' WHERE nome = 'Caixinha de Crystal (12x)';
+UPDATE produtos SET categoria = 'Bebidas' WHERE nome = 'Caixinha de Brahma (12x)';
+UPDATE produtos SET categoria = 'Bebidas' WHERE nome = 'Caixinha de Skol (12x)';
+UPDATE produtos SET categoria = 'Bebidas' WHERE nome = 'Caixinha de Antártica (12x)';
+UPDATE produtos SET categoria = 'Bebidas' WHERE nome = 'Leite 1L';
+UPDATE produtos SET categoria = 'Padaria' WHERE nome = 'Sonho de padaria (Creme e outros)';
+UPDATE produtos SET categoria = 'Doces' WHERE nome = 'Rosca doce (Creme e outros)';
+UPDATE produtos SET categoria = 'Salgados' WHERE nome = 'Coxinha';
+UPDATE produtos SET categoria = 'Salgados' WHERE nome = 'Esfirra';
+UPDATE produtos SET categoria = 'Salgados' WHERE nome = 'Salsicha empanada';
+UPDATE produtos SET categoria = 'Mercearia' WHERE nome = 'Sabonete Granado';

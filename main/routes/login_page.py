@@ -8,7 +8,6 @@ def autenticar_usuario(username, password, type_user):
     if type_user == "Owner/Employee":
         Logger.info(password)
         user = UserRepository().select_user(username, type_user)
-        Logger.sucess(user)
         if user:
             isAuth = Hasher().checkpswd(password, user.senha)
             if (username == user.email or user.nome == username) and isAuth:
@@ -34,12 +33,18 @@ def autenticar_usuario(username, password, type_user):
 
 # Modificação na função tela_login
 def tela_login():
-    st.title("Faça seu Login para continuar")
-    tipo_user = st.selectbox("Usuario", ["Owner/Employee", "Client"])
+    st.title(
+        "Faça seu Login para continuar :grey[(_Escolha entre Owner/Client_)]",
+    )
+    tipo_user = st.selectbox(
+        ":green[**Usuario**]",
+        ["Client", "Owner/Employee"],
+        help="Login como usuario cliente e proprietario/funcionario",
+    )
     Logger.sucess(tipo_user)
     username = st.text_input("Usuário", help="Insira seu nome de usuario")
     password = st.text_input(
-        "Senha",
+        ":green[**Senha**]",
         type="password",
         max_chars=11,
         help="insira sua senha de usuario, clientes insiram o CPF cadastrado",

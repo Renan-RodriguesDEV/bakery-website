@@ -6,9 +6,9 @@ class ProductRepository(DatabaseHandler):
     def __init__(self):
         super().__init__()
 
-    def insert_product(self, name, price, stock):
+    def insert_product(self, name, price, stock, category):
         with self:
-            product = Produto(nome=name, preco=price, estoque=stock)
+            product = Produto(nome=name, preco=price, estoque=stock, categoria=category)
             self.session.add(product)
             self.session.commit()
             return True

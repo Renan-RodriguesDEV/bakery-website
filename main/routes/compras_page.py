@@ -3,33 +3,43 @@ import streamlit as st
 from src.models.repository.user_repository import UserRepository
 from src.models.repository.cart_repository import CartRepository
 from src.models.repository.product_repository import ProductRepository
-from src.controller.payments import payment
 from src.models.repository.dataframes_repository import (
-    select_all_produtos,
+    select_all_products,
 )
 from src.utils.uteis import Logger
 
 
 # Função para realizar a compra
 def realizar_compra():
-    st.title("Realizar Compra")
+    st.title(":green[Faça sua(s) Compra(s) 🛒]")
     # Simulação de consulta de dívida. Poderia ser ligado a um banco de dados.
-    df_produtos = select_all_produtos()
+    df_produtos = select_all_products()
     cliente_session = st.session_state["username"]
     st.write(f"Cliente: {cliente_session}")
     produto = st.selectbox("Selecione o produto", df_produtos)
     preco = ProductRepository().select_product_price(produto)
-    quantidade = st.number_input("Quantidade", min_value=1, step=1)
+    quantidade = st.number_input(
+        "Quantidade",
+        min_value=1,
+        step=1,
+        max_value=ProductRepository().select_product(produto).estoque,
+    )
+
     col1, col2 = st.columns([1, 1])
 
     if produto and preco:
-        col1.html(
-            f"""
-            <p><span style='color: cyan'>Produto: </span><strong>{produto}</strong></p>
-            <p><span style='color: cyan;'>Preço Unitário: </span><strong>R$ {preco}</strong></p>
-            <p><span style='color: cyan;'>Valor Final: </span><strong>R$ {preco*quantidade}</strong></p>
-            """
-        )
+        with st.container():
+            st.markdown(
+                f"""
+                <div style='background-color: #262730; padding: 10px; border-radius: 5px; width: 100%;font-size:18px'>
+                <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #ff4b4b'>Produto: </span><strong>{produto}</strong></p>
+                <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #ff4b4b'>Preço Unitário: </span><strong>R$ {preco}</strong></p>
+                <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #ff4b4b'>Valor Final: </span><strong>R$ {preco*quantidade}</strong></p>
+                </div>
+                <br/>
+                """,
+                unsafe_allow_html=True,
+            )
         disable = True
         if col1.button("Adicionar ao carrinho", type="primary"):
             cliente_obj = UserRepository().select_user(cliente_session, "Client")
@@ -47,7 +57,6 @@ def realizar_compra():
         if st.button("Ir para o carrinho", disabled=disable):
             st.session_state["pagina"] = "cart"
             st.rerun()
-     
 
     if st.button("Voltar"):
         st.session_state["pagina"] = "homepage"

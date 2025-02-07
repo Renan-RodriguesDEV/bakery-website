@@ -6,7 +6,8 @@ from src.utils.email import EmailSender
 from routes.cadastros_page import cadastro_cliente, cadastro_produto, my_account
 from routes.compras_page import realizar_compra
 from routes.login_page import tela_login
-from routes.product_page import atualizar_divida, consulta_divida, consulta_produto
+from routes.dividas_page import atualizar_divida, consulta_divida
+from routes.product_page import consulta_produto
 from routes.support_page import esquci_senha, page_support
 from src.utils.uteis import Logger
 
@@ -34,7 +35,10 @@ def send_feedback(feedback):
 
 # Função para a homepage
 def homepage():
-    st.title(f"Bem-vindo, :gray[{st.session_state['username']}!]")
+    st.markdown(
+        f"<h1 style='font-size:33px; color:white;'>Bem-vindo, <span style='color:red';font-style:italic;>{st.session_state['username']}<span/>!</h1>",
+        unsafe_allow_html=True,
+    )
     st.subheader(f"Você está logado como: :gray[{st.session_state['usuario']}]")
     x, y = st.columns([2, 1], gap="small", vertical_alignment="top")
 
@@ -137,6 +141,16 @@ def homepage():
     ):
         st.session_state["pagina"] = "informacoes"
         st.rerun()
+    st.html(
+        """
+    <style>
+    div[data-testid="stSidebarCollapsedControl"] button {
+        background-color: red ;
+        color: white ;
+    }
+    </style>
+    """,
+    )
 
 
 # Configurando a sessão para manter o estado do login e da página

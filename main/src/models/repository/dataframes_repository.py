@@ -19,7 +19,7 @@ print(db_data)
 
 
 # Função para selecionar todos os produtos
-def select_all_produtos():
+def select_all_products():
     connective = pymysql.connect(**db_data)
     with connective as connective:
         with connective.cursor() as cursor:
@@ -27,6 +27,15 @@ def select_all_produtos():
             df = pd.DataFrame(cursor.fetchall(), columns=["nome", "preco", "estoque"])
             df.columns = ["Nome", "Preço", "Estoque"]
             return df
+
+
+def search_product(name):
+    connective = pymysql.connect(**db_data)
+    with connective as connective:
+        with connective.cursor() as cursor:
+            cursor.execute("SELECT * FROM produtos WHERE nome LIKE%s", (f"%{name}%",))
+            data = cursor.fetchall()
+            return data if data else None
 
 
 # Função para selecionar todos os clientes
@@ -63,3 +72,19 @@ def select_all_sales_by_client(cliente):
             cursor.execute(query, (cliente,))
             data = cursor.fetchall()
             return pd.DataFrame(data) if data else None
+
+
+def select_all_products_by_category(category):
+    connective = pymysql.connect(**db_data)
+    with connective as connective:
+        with connective.cursor() as cursor:
+            query = """
+                SELECT nome, preco, estoque
+                FROM produtos
+                WHERE categoria = %s
+            """
+            cursor.execute(query, (category,))
+            data = cursor.fetchall()
+            df = pd.DataFrame(data)
+            df.columns = ["Nome", "Preço", "Estoque"]
+            return df if data else None

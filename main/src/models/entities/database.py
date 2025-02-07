@@ -1,6 +1,7 @@
 import datetime
 import os
 import sys
+from typing import Literal
 from sqlalchemy import (
     VARCHAR,
     create_engine,
@@ -11,6 +12,7 @@ from sqlalchemy import (
     ForeignKey,
     DECIMAL,
     TEXT,
+    Enum,
 )
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.sql import func
@@ -39,7 +41,10 @@ class DatabaseHandler:
         __host = host
         __database = database
         self.__str_url = f"mysql+pymysql://{__user}:{__password}@{__host}/{__database}"
-        self.__engine = create_engine(self.__str_url, echo=True)
+        self.__engine = create_engine(
+            self.__str_url,
+            #   echo=True
+        )
         self.session = None
 
     def get_engine(self):
@@ -62,11 +67,21 @@ class Produto(Base):
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     nome = Column("nome", TEXT(500), nullable=False)
     preco = Column("preco", DECIMAL(15, 2), nullable=False)
+    categoria = Column(
+        "categoria", Enum("Bebidas", "Doces", "Salgados", "Padaria", "Mercearia")
+    )
     estoque = Column("estoque", Integer, nullable=False)
 
-    def __init__(self, nome, preco, estoque):
+    def __init__(
+        self,
+        nome,
+        preco,
+        categoria: Literal["Bebidas", "Doces", "Salgados", "Padaria", "Mercearia"],
+        estoque,
+    ):
         self.nome = nome
         self.preco = preco
+        self.categoria = categoria
         self.estoque = estoque
 
 
