@@ -2,7 +2,7 @@ import sqlalchemy
 import streamlit as st
 from src.models.repository.product_repository import ProductRepository
 from src.models.repository.user_repository import UserRepository
-from src.utils.uteis import Logger, number_as_cpf, number_as_telephone
+from src.utils.uteis import Logger
 from src.models.repository.dataframes_repository import (
     select_all_clientes,
     select_all_products,
@@ -10,6 +10,15 @@ from src.models.repository.dataframes_repository import (
 
 
 def alter_client(cliente, nome=None, cpf=None, email=None, telefone=None):
+    """Altera os dados do cliente no banco de dados
+
+    Args:
+        cliente (str): username do cliente a alterar
+        nome (str, optional): nome. Defaults to None.
+        cpf (str, optional): cpf. Defaults to None.
+        email (str, optional): email. Defaults to None.
+        telefone (str/int, optional): numero de telefone. Defaults to None.
+    """
     with UserRepository() as u:
         try:
             cliente_u = u.select_user(cliente, "Cliente")
@@ -41,6 +50,14 @@ def alter_client(cliente, nome=None, cpf=None, email=None, telefone=None):
 
 
 def register_client(nome, cpf, telefone, email):
+    """Registra um novo cliente no banco de dados
+
+    Args:
+        nome (str): nome
+        cpf (str): cpf
+        telefone (str/int): telefone
+        email (str): email
+    """
     try:
         cpf = cpf.replace(".", "").replace("-", "")
         cadasto = UserRepository().insert_user(
@@ -64,6 +81,15 @@ def register_client(nome, cpf, telefone, email):
 
 
 def alter_product(produto, nome=None, preco=None, qtde=None, categoria=None):
+    """Altera o produtos no banco de dados
+
+    Args:
+        produto (str): nome do produto a alterar
+        nome (str, optional): nome. Defaults to None.
+        preco (float/int, optional): preco. Defaults to None.
+        qtde (int, optional): quantidade. Defaults to None.
+        categoria (str, optional): categoria. Defaults to None.
+    """
     with ProductRepository() as p:
         try:
             produto_u = p.select_product(produto)
@@ -97,7 +123,10 @@ def register_product(nome, preco, qtde, categoria):
 
 # Função para o cadastro de produtos
 def cadastro_produto():
-    st.title(":gray[Cadastro]/:red[Deleção] de Produtos")
+    """Pagina para cadastro de produtos"""
+    st.html(
+        "<h1 style='font-size:33px;color:darkgray;'><span style='color:#DAA520'>Cadastro(s)</span> e <span style='color:#8B4513'>Deleção(es)</span> de Produtos<h1/>"
+    )
     selection = st.selectbox(
         "**:green[Selecione a ação]**", ["Cadastro", "Deleção", "Alterar"]
     )
@@ -154,24 +183,26 @@ def cadastro_produto():
                 st.success(f"Produto {produto} deletado com sucesso!")
             else:
                 st.error(f"Não foi possivel apagar o produto")
-    if st.sidebar.button("Voltar"):
+    if st.sidebar.button("Ir para home", type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()
 
 
-# Função para o cadastro de clientes
 def cadastro_cliente():
-    st.title(":gray[Cadastro]/:red[Deleção] de Clientes")
+    """Pagina para cadastro de clientes"""
+    st.html(
+        "<h1 style='font-size:33px;color:darkgray;'><span style='color:#DAA520'>Cadastro(s)</span> e <span style='color:#8B4513'>Deleção(es)</span> de Clientes<h1/>"
+    )
     action = st.selectbox(
-        "**:blue[Selecione a ação]**",
+        "**:green[Selecione a ação]**",
         ["Cadastro", "Deleção", "Alterar"],
         help="Selecione a ação que deseja realizar",
     )
     if action == "Cadastro":
         nome = st.text_input("Nome do Cliente")
-        cpf = st.text_input("CPF do Cliente", placeholder="123.456.789-00")
-        email = st.text_input("Email do Cliente", placeholder="darkside@gmail.com")
-        telefone = st.text_input("Telefone do Cliente")
+        cpf = st.text_input("CPF do Cliente", placeholder="666.666.666-69")
+        email = st.text_input("Email do Cliente", placeholder="marcosmendes@gmail.com")
+        telefone = st.text_input("Telefone do Cliente", placeholder="(21) 77070-7070")
         flag = True if not cpf or not email or not nome or not telefone else False
         if flag:
             st.warning("Todos os campos são obrigatorios!!")
@@ -188,13 +219,17 @@ def cadastro_cliente():
             help="selecione o cliente que deseja alterar",
         )
         nome = st.text_input("Novo Nome do Cliente")
-        cpf = st.text_input("Novo CPF do Cliente", placeholder="123.456.789-00")
-        email = st.text_input("Novo Email do Cliente", placeholder="darkside@gmail.com")
-        telefone = st.text_input("Novo Telefone do Cliente")
+        cpf = st.text_input("Novo CPF do Cliente", placeholder="666.666.666-69")
+        email = st.text_input(
+            "Novo Email do Cliente", placeholder="marcosmendes@gmail.com"
+        )
+        telefone = st.text_input(
+            "Novo Telefone do Cliente", placeholder="(21) 77070-7070"
+        )
         if st.button("Alterar", type="primary"):
             alter_client(cliente, nome, cpf, email, telefone)
     else:
-        cliente = st.selectbox("Selecione o cliente", select_all_clientes())
+        cliente = st.selectbox(":red[Selecione o cliente]", select_all_clientes())
         if st.button("Deletar Cliente", type="primary"):
             Logger.info(f">>> Cliente á deletar: {cliente}")
             deletion = UserRepository().delete_user(cliente, "Cliente")
@@ -202,121 +237,7 @@ def cadastro_cliente():
                 st.success(f"Cliente {cliente} deletado com sucesso!")
             else:
                 st.error(f"Não foi possivel apagar o cliente")
+        st.warning("Atenção, essa ação é irreversível!!!")
     if st.sidebar.button("Ir para home", type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()
-
-
-def my_account():
-    if not "autenticado" in st.session_state or not "usuario" in st.session_state:
-        st.error("Você precisa estar logado para ver sua conta")
-        st.session_state["pagina"] = "login"
-        st.rerun()
-    else:
-        Logger.sucess(f'>>> Nome do usuario: {st.session_state["username"]}')
-        Logger.sucess(f'>>> Tipo de usuario:{st.session_state["usuario"]}')
-        st.title("Minha Conta")
-        user = st.session_state["username"]
-        type_user = st.session_state["usuario"]
-        user_data = UserRepository().select_user(user, type_user)
-        x, y = st.columns([1, 1])
-        if not user_data:
-            st.error("Usuário não encontrado")
-        else:
-            if type_user == "Cliente":
-                user_data = UserRepository().select_user(user, "Cliente")
-                x.image(
-                    "https://www.freeiconspng.com/uploads/head-icon-0.png",
-                    width=100,
-                    output_format="PNG",
-                )
-                x.write(f"Nome: {user_data.nome}")
-                x.write(f"Email: {user_data.email}")
-                x.write(f"CPF: {number_as_cpf(user_data.cpf)}")
-                x.write(f"Telefone: {number_as_telephone(user_data.telefone)}")
-                new_name = y.text_input(
-                    f"Nome: ", type="default", placeholder="Criptovenio Mendes"
-                )
-                new_pswd = y.text_input(f"Senha: ", type="password", max_chars=11)
-                new_email = y.text_input(
-                    f"Email: ", max_chars=100, placeholder="useremail@gmail.com"
-                )
-                new_telefone = y.text_input(
-                    f"Telefone: ", max_chars=15, placeholder="(21) 99999-9999"
-                )
-                new_cpf = y.text_input(
-                    f"CPF: ", max_chars=15, placeholder="(21) 99999-9999"
-                )
-                if new_name or new_pswd or new_email or new_telefone:
-                    flag = True
-                else:
-                    flag = False
-                    st.warning("Preencha algum dos campos para alteração")
-                if y.button("Atualizar", type="primary"):
-                    if flag:
-                        with UserRepository() as u:
-                            update = u.update_user(
-                                user,
-                                new_name,
-                                new_pswd,
-                                new_email,
-                                new_cpf,
-                                new_telefone,
-                                type_user="Cliente",
-                            )
-                            if update:
-                                st.success("Atualizado com sucesso")
-                                st.success(
-                                    "Aperte em voltar e depois faça o logout do usuario preenchendo com seus novos dados!!",
-                                    icon="😁",
-                                )
-                            else:
-                                st.error("Erro ao atualizar")
-                    else:
-                        st.error(
-                            "É necessario preencher algum dos campos para atualizar"
-                        )
-            else:
-                x.image(
-                    "https://www.freeiconspng.com/uploads/head-icon-0.png",
-                    width=100,
-                    output_format="PNG",
-                )
-                x.write(f"Nome: {user_data.nome}")
-                x.write(f"Email: {user_data.email}")
-                new_name = y.text_input(f"Nome: ", type="default")
-                new_pswd = y.text_input(f"Senha: ", type="password", max_chars=11)
-                new_email = y.text_input(
-                    f"Email: ", max_chars=100, placeholder="useremail@gmail.com"
-                )
-                if new_name or new_pswd or new_email:
-                    flag = True
-                else:
-                    flag = False
-                    st.warning("Preencha algum dos campos para alteração")
-                if y.button("Atualizar", type="primary"):
-                    if flag:
-                        with UserRepository() as u:
-                            update = u.update_user(
-                                user,
-                                new_name,
-                                new_pswd,
-                                new_email,
-                                type_user="Proprietario/Funcionario",
-                            )
-                            if update:
-                                st.success("Atualizado com sucesso")
-                                st.success(
-                                    "Aperte em voltar e depois faça o logout do usuario preenchendo com seus novos dados!!",
-                                    icon="😁",
-                                )
-                            else:
-                                st.error("Erro ao atualizar")
-                    else:
-                        st.error(
-                            "É necessario preencher algum dos campos para atualizar"
-                        )
-
-        if st.sidebar.button("Ir para home", type="primary"):
-            st.session_state["pagina"] = "homepage"
-            st.rerun()

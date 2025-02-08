@@ -38,7 +38,7 @@ def esquci_senha():
         max_chars=60,
     )
     type_user = y.selectbox(
-        "Qual seu tipo de Usuario?", ["Proprietario/Funcionario", "Cliente"]
+        "Qual seu tipo de Usuario?", ["Cliente", "Proprietario/Funcionario"]
     )
 
     if x.button("Recuperar Senha", type="primary"):
@@ -90,7 +90,7 @@ def send_feedback(feedback):
 
 
 def feedback_client():
-
+    """Pop up para envios de feedbacks"""
     feedback = st.text_area(
         "Feedback do cliente",
         placeholder="Deixe seu feedback aqui",

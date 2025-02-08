@@ -5,9 +5,20 @@ from src.utils.uteis import Logger
 
 
 def autenticar_usuario(username, password, type_user):
+    """Verifica a senha e usuario no database
+
+    Args:
+        username (str): _username_
+        password (str/sha56): _senha_
+        type_user (str): tipo de login
+
+    Returns:
+        bool: usuario autenticado or not autenticado
+    """
     if type_user == "Proprietario/Funcionario":
-        Logger.info(password)
+        Logger.info("Verificando Proprietario/Funcionario")
         user = UserRepository().select_user(username, type_user)
+        print(user)
         if user:
             isAuth = Hasher().checkpswd(password, user.senha)
             if (username == user.email or user.nome == username) and isAuth:
@@ -18,6 +29,7 @@ def autenticar_usuario(username, password, type_user):
             )
         return False
     elif type_user == "Cliente":
+        Logger.info("Verificando cliente")
         user = UserRepository().select_user(username, type_user)
         if not user:
             Logger.error(f"Usuario {username} não encontrado")
@@ -31,8 +43,8 @@ def autenticar_usuario(username, password, type_user):
     return False
 
 
-# Modificação na função tela_login
 def tela_login():
+    """Tela de login"""
     st.title(
         "Faça seu Login para continuar :grey[(_Escolha entre Proprietario/Funcionario_)]",
     )
@@ -66,7 +78,7 @@ def tela_login():
                 else:
                     st.session_state["owner"] = False
                 Logger.info(f"Usuario {username} logado com sucesso como: {tipo_user}")
-                st.session_state["pagina"] = "homepage"  # Redireciona para a homepage
+                st.session_state["pagina"] = "homepage"
                 st.rerun()
             else:
                 st.error("Usuário ou senha incorretos")

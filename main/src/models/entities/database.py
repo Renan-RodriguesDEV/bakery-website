@@ -84,6 +84,9 @@ class Produto(Base):
         self.categoria = categoria
         self.estoque = estoque
 
+    def __str__(self):
+        return f"Produto(id={self.id}, nome='{self.nome}', preco={self.preco}, categoria='{self.categoria}', estoque={self.estoque})"
+
 
 class Cliente(Base):
     __tablename__ = "clientes"
@@ -105,25 +108,29 @@ class Cliente(Base):
         self.email = email
         self.token = token
 
+    def __str__(self):
+        return f"Cliente(id={self.id}, nome='{self.nome}', cpf='{self.cpf}', telefone='{self.telefone}', email='{self.email}')"
+
 
 class User(Base):
     __tablename__ = "users"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     nome = Column("nome", String(255), nullable=False)
     email = Column("email", String(255), nullable=False, unique=True)
-    senha = Column("senha", TEXT(500), nullable=True)  # Increased length for hash
+    senha = Column("senha", String(255), nullable=False)
 
     def __init__(self, nome, email, senha=None):
         self.nome = nome
         self.email = email
         self.senha = Hasher().hasherpswd(senha) if senha else None
 
+    def __str__(self):
+        return f"User(id={self.id}, nome='{self.nome}', email='{self.email}')"
+
 
 class Cliente_Produto(Base):
     __tablename__ = "cliente_produto"
-    id = Column(
-        "id", Integer, primary_key=True, autoincrement=True
-    )  # Adiciona chave primária
+    id = Column("id", Integer, primary_key=True, autoincrement=True)
     id_cliente = Column("id_cliente", ForeignKey("clientes.id"), nullable=False)
     id_produto = Column("id_produto", ForeignKey("produtos.id"), nullable=False)
     preco = Column("preco", DECIMAL(15, 2))

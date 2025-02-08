@@ -1,9 +1,8 @@
-import time
 import streamlit as st
+from src.models.repository.user_repository import UserRepository
 from routes.carrinho_compras_page import shopping_cart
-from routes.user_page import information
-from src.utils.email import EmailSender
-from routes.cadastros_page import cadastro_cliente, cadastro_produto, my_account
+from routes.user_page import information, my_account
+from routes.cadastros_page import cadastro_cliente, cadastro_produto
 from routes.compras_page import realizar_compra
 from routes.login_page import tela_login
 from routes.dividas_page import atualizar_divida, consulta_divida
@@ -21,21 +20,30 @@ st.set_page_config(
 Logger.info("[==] Runnig server streamlit localhost in http://localhost:8501/ [==]")
 
 
-# Função para a homepage
+# Função para a renderizar a homepage
 def homepage():
+    nome_de_sessao = (
+        UserRepository()
+        .select_user(st.session_state["username"], st.session_state["usuario"])
+        .nome
+    )
+    st.session_state["nome_de_sessao"] = nome_de_sessao
     st.markdown(
-        f"<h1 style='font-size:33px; color:white;'>Bem-vindo, <span style='color:#8B4513';font-style:italic;>{st.session_state['username']}<span/>!</h1>",
+        f"<h1 style='font-size:33px; color:darkgray;'>Bem vindo de volta, <span style='color:#8B4513';font-style:italic;>{st.session_state['nome_de_sessao']}<span/>!</h1>",
         unsafe_allow_html=True,
     )
     st.html(
-        f"<h2>Status de login: <span style='color:#DAA520'> {st.session_state['usuario']}<span/></h2>"
+        f"<h2 style='color:darkgray'>Status de login: <span style='color:#DAA520'> {st.session_state['usuario']}<span/></h2>"
     )
     x, y = st.columns([2, 1], gap="small", vertical_alignment="top")
 
-    # Coordenadas da sua padaria/estabelecimento
-    latitude = -23.414  # exemplo: São Paulo
+    # Coordenadas da itai
+    latitude = -23.414
     longitude = -49.0927
-    x.write("Estamos localizados em 🚩:")
+    x.markdown(
+        "<span style='color:#8B4513'>Estamos localizados em</span> 📍:",
+        unsafe_allow_html=True,
+    )
     x.map(
         data={"latitude": [latitude], "longitude": [longitude]},
         use_container_width=True,
@@ -44,8 +52,6 @@ def homepage():
         size=(150, 150),
     )
 
-    # Botão de Carrinho fixo na parte superior da página
-    # Posicionado à direita do header
     top_nav = y.container()
     with top_nav:
         _, cart_col = st.columns([8, 1])
@@ -92,7 +98,7 @@ def homepage():
             st.rerun()
 
     if st.sidebar.button(
-        "Logout",
+        "Sair",
         use_container_width=True,
         type="primary",
     ):
@@ -101,13 +107,13 @@ def homepage():
         st.rerun()
 
     if st.sidebar.button(
-        "Support Page",
+        "Suporte ao Usuario",
         use_container_width=True,
     ):
         st.session_state["pagina"] = "suporte"
         st.rerun()
     if st.sidebar.button(
-        "My Account",
+        "Minha Conta",
         use_container_width=True,
     ):
         st.session_state["pagina"] = "conta"

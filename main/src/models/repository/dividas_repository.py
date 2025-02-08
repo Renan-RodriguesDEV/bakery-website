@@ -112,6 +112,7 @@ def register_sale(client, product, count: int = 0):
                     divida.valor += total
                 else:
                     divida = Divida(user, total)
+                product.estoque -= count
                 db.session.add(sale)
                 db.session.add(divida)
                 db.session.commit()

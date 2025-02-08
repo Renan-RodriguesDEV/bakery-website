@@ -16,17 +16,16 @@ def consulta_produto():
         "Selecione uma da(s) categoria(s)",
         ["categoria", "Bebidas", "Doces", "Salgados", "Padaria", "Mercearia"],
     )
-    print(categoria)
 
     produtos = (
         select_all_products()
         if not categoria or categoria == "categoria"
         else select_all_products_by_category(categoria)
     )
-    print(categoria)
     flag = True if produtos.empty else False
-    # Aqui você poderia listar os produtos cadastrados. Exemplo simples:
-    st.table(produtos)
+    df = DataFrame(produtos)
+    df["Preço"] = df["Preço"].map(lambda x: f"R$ {x:.2f}".replace(".", ","))
+    st.table(df)
     nome = st.text_input("Digite o nome do produto para consultar")
     produtos_select = search_product(nome)
     col1, col2 = st.columns([1, 1])

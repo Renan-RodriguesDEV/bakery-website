@@ -1,3 +1,4 @@
+import datetime
 import io
 
 import streamlit as st
@@ -18,7 +19,6 @@ from src.models.repository.dataframes_repository import (
 )
 
 
-# Função para a consulta de dívida de clientes
 def consulta_divida():
     """Pagina para a consulta de dívida de clientes"""
 
@@ -34,7 +34,6 @@ def consulta_divida():
 
     if st.session_state["owner"]:
         st.title("Consulta de Dívida de Clientes")
-        # Simulação de consulta de dívida. Poderia ser ligado a um banco de dados.
         df_clientes = select_all_clientes()
         if df_clientes.empty:
             st.subheader("Ops!! Houve algum erro no processo..")
@@ -57,12 +56,31 @@ def consulta_divida():
             unsafe_allow_html=True,
         )
 
+        dividas_completa = select_all_sales_by_client(cliente)
         if st.button("Consulta completa", type="primary"):
-            st.table(select_all_sales_by_client(cliente))
+            df_dividas_total = DataFrame(dividas_completa)
+            df_dividas_total["preco"] = df_dividas_total["preco"].map(
+                lambda x: f"R$ {x:.2f}".replace(".", ",")
+            )
+            df_dividas_total["total"] = df_dividas_total["total"].map(
+                lambda x: f"R$ {x:.2f}".replace(".", ",")
+            )
+            df_dividas_total["data"] = df_dividas_total["data"].map(
+                lambda x: x.strftime("%d/%m/%Y, %H:%M:%S")
+            )
+            df_dividas_total.columns = [
+                "Nome",
+                "Produto",
+                "Preço",
+                "Quantidade",
+                "Valor Final",
+                "Data",
+            ]
+            st.table(df_dividas_total)
         try:
             st.download_button(
                 label="Download divida",
-                data=converter_df_to_excel(select_all_sales_by_client(cliente)),
+                data=converter_df_to_excel(dividas_completa),
                 file_name="divida.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 type="primary",
@@ -94,7 +112,11 @@ def consulta_divida():
             st.write(f"Divida do cliente {cliente}: R$ {divida if divida else 0.00}")
             divida_total = select_all_sales_by_client(cliente)
             if divida_total:
-                st.table(divida_total)
+                df_dividas_total = DataFrame(divida_total)
+                df_dividas_total["preco"] = df_dividas_total["preco"].map(
+                    lambda x: f"R$ {x:.2f}".replace(".", ",")
+                )
+                st.table(df_dividas_total)
                 st.download_button(
                     label="Download divida",
                     data=converter_df_to_excel(select_all_sales_by_client(cliente)),
@@ -112,7 +134,6 @@ def consulta_divida():
 def atualizar_divida():
     """Pagina para atualizar a dívida de clientes"""
     st.title("Atualizar Dívida de Clientes")
-    # Simulação de consulta de dívida. Poderia ser ligado a um banco de dados.
     df_clientes = select_all_clientes()
     df_produtos = select_all_products()
     cliente = st.selectbox("Selecione o cliente", df_clientes["nome"].to_list())
@@ -132,9 +153,14 @@ def atualizar_divida():
         except Exception as e:
             st.warning("Produto não encontrado")
             Logger.error(str(e))
-        quantidade = st.number_input("Quantidade", min_value=1, step=1)
+        quantidade = st.number_input(
+            "Quantidade",
+            min_value=1,
+            step=1,
+            max_value=ProductRepository().select_product(produto).estoque,
+        )
         st.markdown(
-            f"<span style='font-size:30px; text-decoration:underline; font-family:JetBrains mono'>Valor final: :green[${preco * quantidade if (preco and quantidade)!=None else 0}]</span>",
+            f"<span style='font-size:30px; text-decoration:underline;'>Valor final: :green[${preco * quantidade if (preco and quantidade)!=None else 0}]</span>",
             unsafe_allow_html=True,
         )
         if st.button("Atualizar", type="primary", disabled=df_produtos.empty):

@@ -73,7 +73,7 @@ def select_all_sales_by_client(cliente):
             data = cursor.fetchall()
             return pd.DataFrame(data) if data else None
 
-
+# Função para selecionar todos os produtos por categoria
 def select_all_products_by_category(category):
     connective = pymysql.connect(**db_data)
     with connective as connective:

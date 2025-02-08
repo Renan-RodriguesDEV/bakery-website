@@ -10,10 +10,9 @@ from src.models.repository.dataframes_repository import (
 from src.utils.uteis import Logger
 
 
-# Função para realizar a compra
 def realizar_compra():
+    """Pagina de compras a fazer"""
     st.title(":orange[Faça sua(s) Compra(s) 🛒]")
-    # Simulação de consulta de dívida. Poderia ser ligado a um banco de dados.
     df_produtos = select_all_products()
     cliente_session = st.session_state["username"]
     st.write(f"Cliente: {cliente_session}")
@@ -44,10 +43,10 @@ def realizar_compra():
         with st.container():
             st.markdown(
                 f"""
-                <div style='background-color: #262730; padding: 10px; border-radius: 5px; width: 100%;font-size:18px'>
-                <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #DAA520'>Produto: </span><strong>{produto}</strong></p>
-                <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #DAA520'>Preço Unitário: </span><strong>R$ {preco}</strong></p>
-                <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #DAA520'>Valor Final: </span><strong>R$ {preco*quantidade}</strong></p>
+                <div style='background-color: #8B4513; padding: 10px; border-radius: 5px; width: 100%;font-size:18px'>
+                <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #FFFFFF'>Produto: </span><strong>{produto}</strong></p>
+                <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #FFFFFF'>Preço Unitário: </span><strong>R$ {preco}</strong></p>
+                <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #FFFFFF'>Valor Final: </span><strong>R$ {preco*quantidade}</strong></p>
                 </div>
                 <br/>
                 """,

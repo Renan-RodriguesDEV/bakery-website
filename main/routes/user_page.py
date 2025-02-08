@@ -1,5 +1,5 @@
 import streamlit as st
-
+from src.utils.uteis import number_as_cpf, number_as_telephone, Logger
 from src.models.repository.user_repository import UserRepository
 from src.models.repository.dataframes_repository import select_all_clientes
 
@@ -30,3 +30,120 @@ def information():
     if st.sidebar.button("Ir para home", type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()
+
+
+def my_account():
+    if not "autenticado" in st.session_state or not "usuario" in st.session_state:
+        st.error("Você precisa estar logado para ver sua conta")
+        st.session_state["pagina"] = "login"
+        st.rerun()
+    else:
+        Logger.sucess(f'>>> Nome do usuario: {st.session_state["username"]}')
+        Logger.sucess(f'>>> Tipo de usuario:{st.session_state["usuario"]}')
+        st.title("Minha Conta")
+        user = st.session_state["username"]
+        type_user = st.session_state["usuario"]
+        user_data = UserRepository().select_user(user, type_user)
+        x, y = st.columns([1, 1])
+        if not user_data:
+            st.error("Usuário não encontrado")
+        else:
+            if type_user == "Cliente":
+                user_data = UserRepository().select_user(user, "Cliente")
+                x.image(
+                    "https://www.freeiconspng.com/uploads/head-icon-0.png",
+                    width=100,
+                    output_format="PNG",
+                )
+                x.write(f"Nome: {user_data.nome}")
+                x.write(f"Email: {user_data.email}")
+                x.write(f"CPF: {number_as_cpf(user_data.cpf)}")
+                x.write(f"Telefone: {number_as_telephone(user_data.telefone)}")
+                new_name = y.text_input(
+                    f"Nome: ", type="default", placeholder="Criptovenio Mendes"
+                )
+                new_pswd = y.text_input(f"Senha: ", type="password", max_chars=11)
+                new_email = y.text_input(
+                    f"Email: ", max_chars=100, placeholder="useremail@gmail.com"
+                )
+                new_telefone = y.text_input(
+                    f"Telefone: ", max_chars=15, placeholder="(21) 99999-9999"
+                )
+                new_cpf = y.text_input(
+                    f"CPF: ", max_chars=15, placeholder="(21) 99999-9999"
+                )
+                if new_name or new_pswd or new_email or new_telefone:
+                    flag = True
+                else:
+                    flag = False
+                    st.warning("Preencha algum dos campos para alteração")
+                if y.button("Atualizar", type="primary"):
+                    if flag:
+                        with UserRepository() as u:
+                            update = u.update_user(
+                                user,
+                                new_name,
+                                new_pswd,
+                                new_email,
+                                new_cpf,
+                                new_telefone,
+                                type_user="Cliente",
+                            )
+                            if update:
+                                st.success("Atualizado com sucesso")
+                                st.success(
+                                    "Aperte em voltar e depois faça o logout do usuario preenchendo com seus novos dados!!",
+                                    icon="😁",
+                                )
+                            else:
+                                st.error("Erro ao atualizar")
+                    else:
+                        st.error(
+                            "É necessario preencher algum dos campos para atualizar"
+                        )
+            else:
+                x.image(
+                    "https://www.freeiconspng.com/uploads/head-icon-0.png",
+                    width=100,
+                    output_format="PNG",
+                )
+                x.write(f"Nome: {user_data.nome}")
+                x.write(f"Email: {user_data.email}")
+                new_name = y.text_input(
+                    f"Nome: ", type="default", placeholder="Criptovenio Mendes"
+                )
+                new_pswd = y.text_input(f"Senha: ", type="password", max_chars=11)
+                new_email = y.text_input(
+                    f"Email: ", max_chars=100, placeholder="useremail@gmail.com"
+                )
+                if new_name or new_pswd or new_email:
+                    flag = True
+                else:
+                    flag = False
+                    st.warning("Preencha algum dos campos para alteração")
+                if y.button("Atualizar", type="primary"):
+                    if flag:
+                        with UserRepository() as u:
+                            update = u.update_user(
+                                user,
+                                new_name,
+                                new_pswd,
+                                new_email,
+                                type_user="Proprietario/Funcionario",
+                            )
+                            if update:
+                                st.success("Atualizado com sucesso")
+                                st.success(
+                                    "Aperte em voltar e depois faça o logout do usuario preenchendo com seus novos dados!!",
+                                    icon="😁",
+                                )
+                            else:
+                                st.error("Erro ao atualizar")
+                    else:
+                        st.error(
+                            "É necessario preencher algum dos campos para atualizar"
+                        )
+
+        if st.sidebar.button("Ir para home", type="primary"):
+            st.session_state["pagina"] = "homepage"
+            st.rerun()
