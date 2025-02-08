@@ -12,7 +12,7 @@ from src.models.repository.dataframes_repository import (
 def alter_client(cliente, nome=None, cpf=None, email=None, telefone=None):
     with UserRepository() as u:
         try:
-            cliente_u = u.select_user(cliente, "Client")
+            cliente_u = u.select_user(cliente, "Cliente")
             if not cliente_u:
                 st.error("Usuário não encontrado")
             else:
@@ -48,7 +48,7 @@ def register_client(nome, cpf, telefone, email):
             cpf=cpf,
             telefone=telefone,
             email=email,
-            type_user="Client",
+            type_user="Cliente",
         )
         if cadasto:
             st.success(f"Cliente {nome} cadastrado com sucesso!")
@@ -197,7 +197,7 @@ def cadastro_cliente():
         cliente = st.selectbox("Selecione o cliente", select_all_clientes())
         if st.button("Deletar Cliente", type="primary"):
             Logger.info(f">>> Cliente á deletar: {cliente}")
-            deletion = UserRepository().delete_user(cliente, "Client")
+            deletion = UserRepository().delete_user(cliente, "Cliente")
             if deletion:
                 st.success(f"Cliente {cliente} deletado com sucesso!")
             else:
@@ -223,8 +223,8 @@ def my_account():
         if not user_data:
             st.error("Usuário não encontrado")
         else:
-            if type_user == "Client":
-                user_data = UserRepository().select_user(user, "Client")
+            if type_user == "Cliente":
+                user_data = UserRepository().select_user(user, "Cliente")
                 x.image(
                     "https://www.freeiconspng.com/uploads/head-icon-0.png",
                     width=100,
@@ -232,10 +232,22 @@ def my_account():
                 )
                 x.write(f"Nome: {user_data.nome}")
                 x.write(f"Email: {user_data.email}")
+                x.write(f"CPF: {user_data.cpf}")
                 x.write(f"Telefone: {user_data.telefone}")
-                new_name = y.text_input(f"Nome: ", type="default")
+                new_name = y.text_input(
+                    f"Nome: ", type="default", placeholder="Criptovenio Mendes"
+                )
                 new_pswd = y.text_input(f"Senha: ", type="password", max_chars=11)
-                if new_name or new_pswd:
+                new_email = y.text_input(
+                    f"Email: ", max_chars=100, placeholder="useremail@gmail.com"
+                )
+                new_telefone = y.text_input(
+                    f"Telefone: ", max_chars=15, placeholder="(21) 99999-9999"
+                )
+                new_cpf = y.text_input(
+                    f"CPF: ", max_chars=15, placeholder="(21) 99999-9999"
+                )
+                if new_name or new_pswd or new_email or new_telefone:
                     flag = True
                 else:
                     flag = False
@@ -244,7 +256,13 @@ def my_account():
                     if flag:
                         with UserRepository() as u:
                             update = u.update_user(
-                                user, new_name, new_pswd, type_user="Client"
+                                user,
+                                new_name,
+                                new_pswd,
+                                new_email,
+                                new_cpf,
+                                new_telefone,
+                                type_user="Cliente",
                             )
                             if update:
                                 st.success("Atualizado com sucesso")
@@ -277,7 +295,10 @@ def my_account():
                     if flag:
                         with UserRepository() as u:
                             update = u.update_user(
-                                user, new_name, new_pswd, type_user="Owner/Employee"
+                                user,
+                                new_name,
+                                new_pswd,
+                                type_user="Proprietario/Funcionario",
                             )
                             if update:
                                 st.success("Atualizado com sucesso")

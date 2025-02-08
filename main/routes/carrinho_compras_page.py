@@ -26,7 +26,7 @@ def shopping_cart():
                 ]
             )
             for carrinho in cart_repository.get_cart_by_user(
-                user_repository.select_user(user_session, "Client").id
+                user_repository.select_user(user_session, "Cliente").id
             )
         ],
     )
@@ -78,7 +78,7 @@ def shopping_cart():
         )
         for produto in produtos:
             cart_repository.remove_all_from_cart(
-                user_repository.select_user(user_session, "Client").id,
+                user_repository.select_user(user_session, "Cliente").id,
                 product_repository.select_product(produto).id,
             )
         Logger.warning("Produtos removidos !!")

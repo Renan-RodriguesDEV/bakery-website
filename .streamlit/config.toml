@@ -1,10 +1,15 @@
 [theme]
 
-# "dark" or "light"
+# "dark" or "light" 
 base = "dark"
 
-# primaryColor = "#ff01f0"
+# Cor amarela escura para botões primários
+primaryColor = "#DAA520"  # GoldenRod
 
-# secondaryBackgroundColor = "#7c7c7c"
+# Cor marrom para botões secundários
+secondaryBackgroundColor = "#8B4513"  # SaddleBrown
+
+# Cor do texto
+textColor = "#FFFFFF"  # Branco
 
 font = "sans serif"

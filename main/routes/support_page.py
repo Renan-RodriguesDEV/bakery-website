@@ -1,9 +1,10 @@
 import datetime
+import time
 import streamlit as st
 
 from src.utils.email import EmailSender
 from src.models.repository.user_repository import UserRepository
-from src.utils.uteis import generate_token
+from src.utils.uteis import Logger, generate_token
 
 
 def page_support():
@@ -32,18 +33,18 @@ def esquci_senha():
     x, y = st.columns([2, 1], gap="large", vertical_alignment="bottom")
     x.title("Bem vindo a pagina de Reset de Senhas")
     usuario = x.text_input(
-        "Por favor insira seu email de usuario ou email de desenv. caso seja Owner!!",
+        "Por favor insira seu email de usuario ou email de desenv. caso seja Funcionario!!",
         type="default",
         max_chars=60,
     )
-    type_user = y.selectbox("Qual seu tipo de Usuario?", ["Owner/Employee", "Client"])
+    type_user = y.selectbox(
+        "Qual seu tipo de Usuario?", ["Proprietario/Funcionario", "Cliente"]
+    )
 
     if x.button("Recuperar Senha", type="primary"):
         with UserRepository() as user:
             new_pass = None
             token_generator = generate_token()
-            # if type_user == "Client":
-            print(token_generator)
             user.set_token(token_generator)
             new_pass = user.reset_password(usuario, token_generator, type_user)
             if new_pass:
@@ -73,4 +74,42 @@ def esquci_senha():
     # Adicione botão de voltar
     if st.button("Voltar", type="primary"):
         st.session_state["pagina"] = "homepage"
+        st.rerun()
+
+
+# Função para enviar feedback
+@st.cache_data
+def send_feedback(feedback):
+    try:
+        EmailSender().send_feedback_email(str(st.session_state["username"]), feedback)
+
+        return True
+    except Exception as e:
+        Logger.error(str(e))
+        return False
+
+
+def feedback_client():
+
+    feedback = st.text_area(
+        "Feedback do cliente",
+        placeholder="Deixe seu feedback aqui",
+        max_chars=255,
+        height=200,  # Define a altura fixa para o text_area
+        help="O feedback é importante para melhorar a experiência do usuário, todos os feedbacks serão enviados para o email do proprietário",
+    )
+    stars = st.feedback(options="stars")
+    feedback += "\n" + f"Stars: {stars}"
+    if st.button("Enviar Feedback", type="primary"):
+
+        with st.status(
+            "Enviando feedback...", expanded=True, state="running"
+        ) as status:
+            boolean = send_feedback(feedback)
+            if boolean:
+                status.update(state="complete")
+                st.success(
+                    f"Feedback enviado com sucesso: {st.session_state['username']}"
+                )
+        time.sleep(3)
         st.rerun()

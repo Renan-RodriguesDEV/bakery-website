@@ -17,15 +17,15 @@ class UserRepository(DatabaseHandler):
         cpf=None,
         telefone=None,
         email=None,
-        type_user: Literal["Owner/Employee", "Client"] = "Client",
+        type_user: Literal["Proprietario/Funcionario", "Cliente"] = "Cliente",
     ):
         with self:
-            if type_user == "Owner/Employee":
+            if type_user == "Proprietario/Funcionario":
                 user = User(nome=username, senha=password)
                 self.session.add(user)
                 self.session.commit()
                 return True
-            elif type_user == "Client":
+            elif type_user == "Cliente":
                 user = Cliente(nome=username, cpf=cpf, telefone=telefone, email=email)
                 self.session.add(user)
                 self.session.commit()
@@ -33,10 +33,12 @@ class UserRepository(DatabaseHandler):
         return False
 
     def select_user(
-        self, username, type_user: Literal["Owner/Employee", "Client"] = "Client"
+        self,
+        username,
+        type_user: Literal["Proprietario/Funcionario", "Cliente"] = "Cliente",
     ):
         with self:
-            if type_user == "Owner/Employee":
+            if type_user == "Proprietario/Funcionario":
                 user = (
                     self.session.query(User)
                     .filter((User.email == username) | (User.nome == username))
@@ -45,7 +47,7 @@ class UserRepository(DatabaseHandler):
                 if user:
                     Logger.sucess(f"Usuario encontrado: {user.nome}")
                     return user
-            elif type_user == "Client":
+            elif type_user == "Cliente":
                 user = (
                     self.session.query(Cliente)
                     .filter((Cliente.nome == username) | (Cliente.email == username))
@@ -60,12 +62,14 @@ class UserRepository(DatabaseHandler):
         with self:
             return self.session.query(Cliente).filter_by(cpf=cpf).first()
 
-    def select_all_users(self, type_user: Literal["Owner/Employee", "Client"]):
+    def select_all_users(
+        self, type_user: Literal["Proprietario/Funcionario", "Cliente"]
+    ):
         with self:
-            if type_user == "Owner/Employee":
+            if type_user == "Proprietario/Funcionario":
                 users = self.session.query(User).all()
                 return users
-            elif type_user == "Client":
+            elif type_user == "Cliente":
                 users = self.session.query(Cliente).all()
                 return users
             return None
@@ -75,11 +79,14 @@ class UserRepository(DatabaseHandler):
         username=None,
         new_name=None,
         new_password=None,
-        type_user: Literal["Owner/Employee", "Client"] = "Client",
+        new_email=None,
+        new_cpf=None,
+        new_telefone=None,
+        type_user: Literal["Proprietario/Funcionario", "Cliente"] = "Cliente",
     ):
         with self:
             try:
-                if type_user == "Owner/Employee":
+                if type_user == "Proprietario/Funcionario":
                     user = (
                         self.session.query(User)
                         .filter((User.nome == username) | (User.email == username))
@@ -99,21 +106,31 @@ class UserRepository(DatabaseHandler):
                 if new_name:
                     user.nome = new_name
 
+                if new_telefone:
+                    user.telefone = new_telefone
+
+                if new_email:
+                    user.email = new_email
+                if new_cpf:
+                    user.cpf = new_cpf
+
                 self.session.commit()
                 return True
             except Exception as e:
                 Logger.error(e)
                 return False
 
-    def delete_user(self, username, type_user: Literal["Owner/Employee", "Client"]):
+    def delete_user(
+        self, username, type_user: Literal["Proprietario/Funcionario", "Cliente"]
+    ):
         with self:
             try:
-                if type_user == "Owner/Employee":
+                if type_user == "Proprietario/Funcionario":
                     user = self.session.query(User).filter_by(email=username).first()
                     self.session.delete(user)
                     self.session.commit()
                     return True
-                elif type_user == "Client":
+                elif type_user == "Cliente":
                     user = self.session.query(Cliente).filter_by(nome=username).first()
                     self.session.delete(user)
                     self.session.commit()
@@ -124,11 +141,14 @@ class UserRepository(DatabaseHandler):
         return False
 
     def reset_password(
-        self, username, new_password, type_user: Literal["Owner/Employee", "Client"]
+        self,
+        username,
+        new_password,
+        type_user: Literal["Proprietario/Funcionario", "Cliente"],
     ):
         with self:
             try:
-                if type_user == "Owner/Employee":
+                if type_user == "Proprietario/Funcionario":
                     user = self.session.query(User).filter_by(email=username).first()
                     user.senha = Hasher().hasherpswd(new_password)
                 else:

@@ -5,6 +5,7 @@ from src.models.repository.cart_repository import CartRepository
 from src.models.repository.product_repository import ProductRepository
 from src.models.repository.dataframes_repository import (
     select_all_products,
+    select_all_products_by_category,
 )
 from src.utils.uteis import Logger
 
@@ -16,7 +17,19 @@ def realizar_compra():
     df_produtos = select_all_products()
     cliente_session = st.session_state["username"]
     st.write(f"Cliente: {cliente_session}")
-    produto = st.selectbox("Selecione o produto", df_produtos)
+    categoria = st.selectbox(
+        "Selecione uma da(s) categoria(s)",
+        ["categoria", "Bebidas", "Doces", "Salgados", "Padaria", "Mercearia"],
+    )
+    print(categoria)
+    produto = st.selectbox(
+        "Selecione o produto",
+        (
+            df_produtos
+            if not categoria or categoria == "categoria"
+            else select_all_products_by_category(categoria)
+        ),
+    )
     preco = ProductRepository().select_product_price(produto)
     quantidade = st.number_input(
         "Quantidade",
@@ -42,7 +55,7 @@ def realizar_compra():
             )
         disable = True
         if col1.button("Adicionar ao carrinho", type="primary"):
-            cliente_obj = UserRepository().select_user(cliente_session, "Client")
+            cliente_obj = UserRepository().select_user(cliente_session, "Cliente")
             produto_obj = ProductRepository().select_product(produto)
             Logger.info(f"produto: {produto_obj}")
             Logger.info(f"cliente: {cliente_obj}")

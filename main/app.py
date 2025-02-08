@@ -15,55 +15,34 @@ st.set_page_config(
     page_title="Sistema de Gerenciamento de Vendas",
     page_icon=":moneybag:",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
 Logger.info("[==] Runnig server streamlit localhost in http://localhost:8501/ [==]")
 
 
-# Função para enviar feedback
-@st.cache_data
-def send_feedback(feedback):
-    try:
-        EmailSender().send_feedback_email(str(st.session_state["username"]), feedback)
-
-        return True
-    except Exception as e:
-        Logger.error(str(e))
-        return False
-
-
 # Função para a homepage
 def homepage():
     st.markdown(
-        f"<h1 style='font-size:33px; color:white;'>Bem-vindo, <span style='color:red';font-style:italic;>{st.session_state['username']}<span/>!</h1>",
+        f"<h1 style='font-size:33px; color:white;'>Bem-vindo, <span style='color:#8B4513';font-style:italic;>{st.session_state['username']}<span/>!</h1>",
         unsafe_allow_html=True,
     )
-    st.subheader(f"Você está logado como: :gray[{st.session_state['usuario']}]")
+    st.html(
+        f"<h2>Status de login: <span style='color:#DAA520'> {st.session_state['usuario']}<span/></h2>"
+    )
     x, y = st.columns([2, 1], gap="small", vertical_alignment="top")
 
-    feedback = x.text_area(
-        "Feedback do cliente",
-        placeholder="Deixe seu feedback aqui",
-        max_chars=255,
-        height=200,  # Define a altura fixa para o text_area
-        help="O feedback é importante para melhorar a experiência do usuário, todos os feedbacks serão enviados para o email do proprietário",
+    # Coordenadas da sua padaria/estabelecimento
+    latitude = -23.550520  # exemplo: São Paulo
+    longitude = -46.633308
+    x.write("Estamos localizados em 🚩:")
+    x.map(
+        data={"latitude": [latitude], "longitude": [longitude]},
+        use_container_width=True,
+        color="#DAA520",
+        height=400,
+        size=(500, 500),
     )
-    stars = x.feedback(options="stars")
-    feedback += "\n" + f"Stars: {stars}"
-    if x.button("Enviar Feedback", type="primary"):
-
-        with st.status(
-            "Enviando feedback...", expanded=True, state="running"
-        ) as status:
-            boolean = send_feedback(feedback)
-            if boolean:
-                status.update(state="complete")
-                st.success(
-                    f"Feedback enviado com sucesso: {st.session_state['username']}"
-                )
-        time.sleep(3)
-        st.rerun()
 
     # Botão de Carrinho fixo na parte superior da página
     # Posicionado à direita do header
@@ -162,9 +141,9 @@ if "pagina" not in st.session_state:
 # Inicializa "owner" com False por padrão, caso ainda não tenha sido definido
 if not "owner" in st.session_state or not st.session_state["owner"]:
     st.session_state["owner"] = False
-    st.session_state["usuario"] = "Client"
+    st.session_state["usuario"] = "Cliente"
 else:
-    st.session_state["usuario"] = "Owner/Employee"
+    st.session_state["usuario"] = "Proprietario/Funcionario"
 # Verifica se o usuário está autenticado
 if st.session_state["autenticado"]:
     if st.session_state["pagina"] == "homepage":

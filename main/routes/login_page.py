@@ -5,7 +5,7 @@ from src.utils.uteis import Logger
 
 
 def autenticar_usuario(username, password, type_user):
-    if type_user == "Owner/Employee":
+    if type_user == "Proprietario/Funcionario":
         Logger.info(password)
         user = UserRepository().select_user(username, type_user)
         if user:
@@ -17,7 +17,7 @@ def autenticar_usuario(username, password, type_user):
                 f"Erro ao logar o usuario {username}-{user.email} {password}-{user.senha}"
             )
         return False
-    elif type_user == "Client":
+    elif type_user == "Cliente":
         user = UserRepository().select_user(username, type_user)
         if not user:
             Logger.error(f"Usuario {username} não encontrado")
@@ -34,11 +34,11 @@ def autenticar_usuario(username, password, type_user):
 # Modificação na função tela_login
 def tela_login():
     st.title(
-        "Faça seu Login para continuar :grey[(_Escolha entre Owner/Client_)]",
+        "Faça seu Login para continuar :grey[(_Escolha entre Proprietario/Funcionario_)]",
     )
     tipo_user = st.selectbox(
         ":green[**Usuario**]",
-        ["Client", "Owner/Employee"],
+        ["Cliente", "Proprietario/Funcionario"],
         help="Login como usuario cliente e proprietario/funcionario",
     )
     Logger.sucess(tipo_user)
@@ -61,7 +61,7 @@ def tela_login():
                 st.session_state["autenticado"] = True
                 st.session_state["usuario"] = tipo_user
                 st.session_state["username"] = username
-                if tipo_user == "Owner/Employee":
+                if tipo_user == "Proprietario/Funcionario":
                     st.session_state["owner"] = True
                 else:
                     st.session_state["owner"] = False
