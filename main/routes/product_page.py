@@ -52,6 +52,6 @@ def consulta_produto():
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             disabled=flag,
         )
-    if st.button("Voltar"):
+    if st.sidebar.button("Ir para home", type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()

@@ -47,7 +47,7 @@ def tela_login():
         ":green[**Senha**]",
         type="password",
         max_chars=11,
-        help="insira sua senha de usuario, clientes insiram o CPF cadastrado",
+        help="insira sua senha de usuario, clientes insiram o CPF cadastrado sem os caracteres",
     )
 
     if username == "" or password == "":

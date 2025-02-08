@@ -2,7 +2,7 @@ from typing import Literal
 
 from src.utils.hasher import Hasher
 
-from ...utils.uteis import Logger
+from ...utils.uteis import Logger, str_as_number
 from ..entities.database import Cliente, DatabaseHandler, User
 
 
@@ -107,12 +107,12 @@ class UserRepository(DatabaseHandler):
                     user.nome = new_name
 
                 if new_telefone:
-                    user.telefone = new_telefone
+                    user.telefone = str_as_number(new_telefone)
 
                 if new_email:
                     user.email = new_email
                 if new_cpf:
-                    user.cpf = new_cpf
+                    user.cpf = str_as_number(new_cpf)
 
                 self.session.commit()
                 return True

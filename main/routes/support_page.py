@@ -23,7 +23,7 @@ def page_support():
         """<p>Caso tenha algum problema ou sugestão, por favor, entre em contato com o criador da pagina</p> <p>✉️ <a href='mailto:renanrodrigues7110@gmail.com' target='_blank'>renanrodrigues7110@gmail.com</a></p><p>📞 <a href='https://wa.me/+5519998722472' target='_blank'>(19) 99872-2472</a></p>"""
     )
     # Adicione botão de voltar
-    if st.button("Voltar", type="primary"):
+    if st.sidebar.button("Ir para home", type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()
 
@@ -72,7 +72,7 @@ def esquci_senha():
         """<p>Caso tenha algum problema ou sugestão, por favor, entre em contato com o criador da pagina</p> <p>✉️ <a href='mailto:renanrodrigues7110.com target='_blank'>renanrodrigues7110@gmail.com</a>"""
     )
     # Adicione botão de voltar
-    if st.button("Voltar", type="primary"):
+    if st.sidebar.button("Voltar", type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()
 

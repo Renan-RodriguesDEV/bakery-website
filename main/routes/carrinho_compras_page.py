@@ -82,6 +82,6 @@ def shopping_cart():
                 product_repository.select_product(produto).id,
             )
         Logger.warning("Produtos removidos !!")
-    if st.button("Ir para home"):
+    if st.sidebar.button("Ir para home",type='primary'):
         st.session_state["pagina"] = "homepage"
         st.rerun()

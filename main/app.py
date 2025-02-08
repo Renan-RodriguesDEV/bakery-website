@@ -33,15 +33,15 @@ def homepage():
     x, y = st.columns([2, 1], gap="small", vertical_alignment="top")
 
     # Coordenadas da sua padaria/estabelecimento
-    latitude = -23.550520  # exemplo: São Paulo
-    longitude = -46.633308
+    latitude = -23.414  # exemplo: São Paulo
+    longitude = -49.0927
     x.write("Estamos localizados em 🚩:")
     x.map(
         data={"latitude": [latitude], "longitude": [longitude]},
         use_container_width=True,
         color="#DAA520",
-        height=400,
-        size=(500, 500),
+        height=250,
+        size=(150, 150),
     )
 
     # Botão de Carrinho fixo na parte superior da página
@@ -124,7 +124,7 @@ def homepage():
         """
     <style>
     div[data-testid="stSidebarCollapsedControl"] button {
-        background-color: red ;
+        background-color: #DAA520 ;
         color: white ;
     }
     </style>

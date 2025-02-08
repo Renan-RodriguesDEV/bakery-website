@@ -49,3 +49,28 @@ def generate_token():
         token = secrets.token_urlsafe(8)  # Using smaller input to get ~11 chars
         if len(token) == 11:
             return token
+
+
+def str_as_number(string: str):
+    string = string.replace("-", "").replace("(", "").replace(")", "").replace(".", "")
+    return string.strip()
+
+
+def number_as_telephone(string: str):
+    # First clean the string to ensure only numbers
+    string = str_as_number(string)
+    # Format: (11) 99752-6985
+    if len(string) == 11:
+        return f"({string[0:2]}) {string[2:7]}-{string[7:]}"
+    elif len(string) == 10:
+        return f"({string[0:2]}) {string[2:6]}-{string[6:]}"
+    return string
+
+
+def number_as_cpf(string: str):
+    # First clean the string to ensure only numbers
+    string = str_as_number(string)
+    # Format: 444.888.999-30
+    if len(string) == 11:
+        return f"{string[0:3]}.{string[3:6]}.{string[6:9]}-{string[9:]}"
+    return string

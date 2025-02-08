@@ -9,7 +9,7 @@ from src.models.repository.dividas_repository import (
     update_dividas,
 )
 from src.models.repository.product_repository import ProductRepository
-from src.utils.uteis import Logger
+from src.utils.uteis import Logger, str_as_number
 
 from src.models.repository.dataframes_repository import (
     select_all_clientes,
@@ -40,7 +40,7 @@ def consulta_divida():
             st.subheader("Ops!! Houve algum erro no processo..")
             st.error("Nenhum cliente cadastrado")
             st.warning("Cadastre algum cliente antes de acessar está pagina")
-            if st.button("Voltar"):
+            if st.sidebar.button("Voltar"):
                 st.session_state["pagina"] = "homepage"
                 st.rerun()
             st.stop()
@@ -71,7 +71,7 @@ def consulta_divida():
             st.warning(f"Não dividas existentes para o cliente {cliente}")
             st.button(f"Dowload divida", disabled=True)
             Logger.error(str(e))
-        if st.button("Voltar"):
+        if st.sidebar.button("Voltar"):
             st.session_state["pagina"] = "homepage"
             st.rerun()
     else:
@@ -84,16 +84,16 @@ def consulta_divida():
             cpf = st.text_input(
                 "CPF",
                 help="Digite seu cpf completo como no cadastro, sem caracteres",
-                max_chars=11,
+                max_chars=14,
                 placeholder="123.456.789-00",
             )
             consultar = st.form_submit_button("Consultar")
 
         if consultar:
-            divida = select_debt_by_client(cliente, cpf)
+            divida = select_debt_by_client(cliente, str_as_number(cpf))
             st.write(f"Divida do cliente {cliente}: R$ {divida if divida else 0.00}")
             divida_total = select_all_sales_by_client(cliente)
-            if not divida_total.empty:
+            if divida_total:
                 st.table(divida_total)
                 st.download_button(
                     label="Download divida",
@@ -104,7 +104,7 @@ def consulta_divida():
             else:
                 st.error("Nenhuma divida encontrado !!!")
 
-        if st.button("Voltar"):
+        if st.sidebar.button("Ir para home", type="primary"):
             st.session_state["pagina"] = "homepage"
             st.rerun()
 
@@ -178,6 +178,6 @@ def atualizar_divida():
         else:
             st.error("Erro ao registrar a pagamento")
 
-    if st.button("Voltar"):
+    if st.sidebar.button("Ir para home", type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()

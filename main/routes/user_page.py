@@ -27,6 +27,6 @@ def information():
                 """,
                 unsafe_allow_html=True,
             )
-    if st.button("Voltar", type="primary"):
+    if st.sidebar.button("Ir para home", type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()

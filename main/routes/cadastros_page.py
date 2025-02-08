@@ -2,7 +2,7 @@ import sqlalchemy
 import streamlit as st
 from src.models.repository.product_repository import ProductRepository
 from src.models.repository.user_repository import UserRepository
-from src.utils.uteis import Logger
+from src.utils.uteis import Logger, number_as_cpf, number_as_telephone
 from src.models.repository.dataframes_repository import (
     select_all_clientes,
     select_all_products,
@@ -154,7 +154,7 @@ def cadastro_produto():
                 st.success(f"Produto {produto} deletado com sucesso!")
             else:
                 st.error(f"Não foi possivel apagar o produto")
-    if st.button("Voltar"):
+    if st.sidebar.button("Voltar"):
         st.session_state["pagina"] = "homepage"
         st.rerun()
 
@@ -183,7 +183,7 @@ def cadastro_cliente():
                 register_client(nome, cpf, telefone, email)
     elif action == "Alterar":
         cliente = st.selectbox(
-            "**:green[Selecione o cliente]**",
+            "**:orange[Selecione o cliente]**",
             select_all_clientes(),
             help="selecione o cliente que deseja alterar",
         )
@@ -202,7 +202,7 @@ def cadastro_cliente():
                 st.success(f"Cliente {cliente} deletado com sucesso!")
             else:
                 st.error(f"Não foi possivel apagar o cliente")
-    if st.button("Voltar"):
+    if st.sidebar.button("Ir para home", type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()
 
@@ -232,8 +232,8 @@ def my_account():
                 )
                 x.write(f"Nome: {user_data.nome}")
                 x.write(f"Email: {user_data.email}")
-                x.write(f"CPF: {user_data.cpf}")
-                x.write(f"Telefone: {user_data.telefone}")
+                x.write(f"CPF: {number_as_cpf(user_data.cpf)}")
+                x.write(f"Telefone: {number_as_telephone(user_data.telefone)}")
                 new_name = y.text_input(
                     f"Nome: ", type="default", placeholder="Criptovenio Mendes"
                 )
@@ -286,7 +286,10 @@ def my_account():
                 x.write(f"Email: {user_data.email}")
                 new_name = y.text_input(f"Nome: ", type="default")
                 new_pswd = y.text_input(f"Senha: ", type="password", max_chars=11)
-                if new_name or new_pswd:
+                new_email = y.text_input(
+                    f"Email: ", max_chars=100, placeholder="useremail@gmail.com"
+                )
+                if new_name or new_pswd or new_email:
                     flag = True
                 else:
                     flag = False
@@ -298,6 +301,7 @@ def my_account():
                                 user,
                                 new_name,
                                 new_pswd,
+                                new_email,
                                 type_user="Proprietario/Funcionario",
                             )
                             if update:
@@ -313,6 +317,6 @@ def my_account():
                             "É necessario preencher algum dos campos para atualizar"
                         )
 
-        if st.button("Voltar"):
+        if st.sidebar.button("Ir para home", type="primary"):
             st.session_state["pagina"] = "homepage"
             st.rerun()
