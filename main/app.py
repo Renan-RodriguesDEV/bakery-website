@@ -38,8 +38,7 @@ def homepage():
     x, y = st.columns([2, 1], gap="small", vertical_alignment="top")
 
     # Coordenadas da itai
-    latitude = -23.414
-    longitude = -49.0927
+    latitude, longitude = -23.406600592923784, -49.09880181525712
     x.markdown(
         "<span style='color:#8B4513'>Estamos localizados em</span> 📍:",
         unsafe_allow_html=True,

@@ -39,7 +39,7 @@ def consulta_divida():
             st.subheader("Ops!! Houve algum erro no processo..")
             st.error("Nenhum cliente cadastrado")
             st.warning("Cadastre algum cliente antes de acessar está pagina")
-            if st.sidebar.button("Voltar"):
+            if st.sidebar.button("Ir para home", type="primary"):
                 st.session_state["pagina"] = "homepage"
                 st.rerun()
             st.stop()
@@ -58,25 +58,26 @@ def consulta_divida():
 
         dividas_completa = select_all_sales_by_client(cliente)
         if st.button("Consulta completa", type="primary"):
-            df_dividas_total = DataFrame(dividas_completa)
-            df_dividas_total["preco"] = df_dividas_total["preco"].map(
-                lambda x: f"R$ {x:.2f}".replace(".", ",")
-            )
-            df_dividas_total["total"] = df_dividas_total["total"].map(
-                lambda x: f"R$ {x:.2f}".replace(".", ",")
-            )
-            df_dividas_total["data"] = df_dividas_total["data"].map(
-                lambda x: x.strftime("%d/%m/%Y, %H:%M:%S")
-            )
-            df_dividas_total.columns = [
-                "Nome",
-                "Produto",
-                "Preço",
-                "Quantidade",
-                "Valor Final",
-                "Data",
-            ]
-            st.table(df_dividas_total)
+            if dividas_completa is not None:
+                df_dividas_total = DataFrame(dividas_completa)
+                df_dividas_total["preco"] = df_dividas_total["preco"].map(
+                    lambda x: f"R$ {x:.2f}".replace(".", ",")
+                )
+                df_dividas_total["total"] = df_dividas_total["total"].map(
+                    lambda x: f"R$ {x:.2f}".replace(".", ",")
+                )
+                df_dividas_total["data"] = df_dividas_total["data"].map(
+                    lambda x: x.strftime("%d/%m/%Y, %H:%M:%S")
+                )
+                df_dividas_total.columns = [
+                    "Nome",
+                    "Produto",
+                    "Preço",
+                    "Quantidade",
+                    "Valor Final",
+                    "Data",
+                ]
+                st.table(df_dividas_total)
         try:
             st.download_button(
                 label="Download divida",
@@ -89,7 +90,7 @@ def consulta_divida():
             st.warning(f"Não dividas existentes para o cliente {cliente}")
             st.button(f"Dowload divida", disabled=True)
             Logger.error(str(e))
-        if st.sidebar.button("Voltar"):
+        if st.sidebar.button("Ir para home", type="primary"):
             st.session_state["pagina"] = "homepage"
             st.rerun()
     else:
@@ -110,16 +111,31 @@ def consulta_divida():
         if consultar:
             divida = select_debt_by_client(cliente, str_as_number(cpf))
             st.write(f"Divida do cliente {cliente}: R$ {divida if divida else 0.00}")
-            divida_total = select_all_sales_by_client(cliente)
-            if divida_total:
+            divida_total = select_all_sales_by_client(cliente, str_as_number(cpf))
+
+            if divida_total is not None:
                 df_dividas_total = DataFrame(divida_total)
                 df_dividas_total["preco"] = df_dividas_total["preco"].map(
                     lambda x: f"R$ {x:.2f}".replace(".", ",")
                 )
+                df_dividas_total["total"] = df_dividas_total["total"].map(
+                    lambda x: f"R$ {x:.2f}".replace(".", ",")
+                )
+                df_dividas_total["data"] = df_dividas_total["data"].map(
+                    lambda x: x.strftime("%d/%m/%Y, %H:%M:%S")
+                )
+                df_dividas_total.columns = [
+                    "Nome",
+                    "Produto",
+                    "Preço",
+                    "Quantidade",
+                    "Valor Final",
+                    "Data",
+                ]
                 st.table(df_dividas_total)
                 st.download_button(
                     label="Download divida",
-                    data=converter_df_to_excel(select_all_sales_by_client(cliente)),
+                    data=converter_df_to_excel(divida_total),
                     file_name="divida.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 )

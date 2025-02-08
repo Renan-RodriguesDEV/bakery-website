@@ -58,20 +58,24 @@ def select_count_by_name(name):
             return df
 
 
-def select_all_sales_by_client(cliente):
+def select_all_sales_by_client(cliente, cpf=None):
     connective = pymysql.connect(**db_data)
     with connective as connective:
         with connective.cursor() as cursor:
-            query = """
+            query = f"""
                 SELECT c.nome, p.nome AS produto, cp.preco, cp.quantidade, cp.total, cp.data
                 FROM cliente_produto cp 
                 JOIN clientes c ON cp.id_cliente = c.id
                 JOIN produtos p ON cp.id_produto = p.id
-                WHERE c.nome = %s
+                WHERE c.nome = %s {'OR c.cpf = %s' if cpf else ';'}
             """
-            cursor.execute(query, (cliente,))
+            if not cpf:
+                cursor.execute(query, (cliente,))
+            else:
+                cursor.execute(query, (cliente, cpf))
             data = cursor.fetchall()
             return pd.DataFrame(data) if data else None
+
 
 # Função para selecionar todos os produtos por categoria
 def select_all_products_by_category(category):
