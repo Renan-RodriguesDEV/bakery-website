@@ -1,4 +1,5 @@
 import streamlit as st
+from routes.minhas_compras_page import minhas_compras
 from src.models.repository.user_repository import UserRepository
 from routes.carrinho_compras_page import shopping_cart
 from routes.user_page import information, my_account
@@ -48,7 +49,7 @@ def homepage():
         use_container_width=True,
         color="#DAA520",
         height=250,
-        size=(150, 150),
+        size=(50, 50),
     )
 
     top_nav = y.container()
@@ -86,6 +87,10 @@ def homepage():
 
     if y.button("Consultar Pendencias", use_container_width=True):
         st.session_state["pagina"] = "consulta_divida"
+        st.rerun()
+
+    if y.button("Minhas compras", use_container_width=True):
+        st.session_state["pagina"] = "minhas_compras"
         st.rerun()
 
     if st.session_state["owner"]:
@@ -175,6 +180,8 @@ if st.session_state["autenticado"]:
         shopping_cart()
     elif st.session_state["pagina"] == "informacoes":
         information()
+    elif st.session_state["pagina"] == "minhas_compras":
+        minhas_compras()
 
 else:
     # Se não estiver autenticado, ainda permite acesso à página de suporte

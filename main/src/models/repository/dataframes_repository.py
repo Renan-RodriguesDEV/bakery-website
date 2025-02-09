@@ -1,21 +1,18 @@
 import pymysql
 import pandas as pd
-from streamlit import secrets
+from src.utils.uteis import Logger
+from src.models.configs.config_db import configs_db
 
-_USERNAME = secrets["TEST_USER_DB"]
-_PASSWORD = secrets["TEST_PASSWORD_DB"]
-_HOST = secrets["TEST_HOST_DB"]
-_DATABASE = secrets["TEST_DATABASE_NAME"]
 
 db_data = {
-    "host": _HOST,
-    "user": _USERNAME,
-    "password": _PASSWORD,
-    "database": _DATABASE,
+    "host": configs_db["host"],
+    "user": configs_db["username"],
+    "password": configs_db["password"],
+    "database": configs_db["database"],
     "cursorclass": pymysql.cursors.DictCursor,
 }
 
-print(db_data)
+Logger.info(db_data)
 
 
 # Função para selecionar todos os produtos
@@ -67,8 +64,9 @@ def select_all_sales_by_client(cliente, cpf=None):
                 FROM cliente_produto cp 
                 JOIN clientes c ON cp.id_cliente = c.id
                 JOIN produtos p ON cp.id_produto = p.id
-                WHERE c.nome = %s {'OR c.cpf = %s' if cpf else ';'}
+                WHERE c.email = %s {'OR c.cpf = %s' if cpf else ';'}
             """
+            Logger.warning(f"{query} , ({cliente},{cpf})")
             if not cpf:
                 cursor.execute(query, (cliente,))
             else:

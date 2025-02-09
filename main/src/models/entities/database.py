@@ -3,8 +3,6 @@ import os
 import sys
 from typing import Literal
 from sqlalchemy import (
-    VARCHAR,
-    create_engine,
     Column,
     Integer,
     String,
@@ -16,47 +14,13 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.sql import func
-from sqlalchemy.orm import sessionmaker
-from streamlit import secrets
+from src.models.entities.connection_handler import DatabaseHandler
+
 
 # sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 from src.utils.uteis import Logger
 from src.utils.hasher import Hasher
-
-_USERNAME = secrets["TEST_USER_DB"]
-_PASSWORD = secrets["TEST_PASSWORD_DB"]
-_HOST = secrets["TEST_HOST_DB"]
-_DATABASE = secrets["TEST_DATABASE_NAME"]
-
-Logger.info(f"{_USERNAME} {_PASSWORD} {_HOST} {_DATABASE}")
-
-
-class DatabaseHandler:
-
-    def __init__(
-        self, user=_USERNAME, password=_PASSWORD, host=_HOST, database=_DATABASE
-    ):
-        __user = user
-        __password = password
-        __host = host
-        __database = database
-        self.__str_url = f"mysql+pymysql://{__user}:{__password}@{__host}/{__database}"
-        self.__engine = create_engine(
-            self.__str_url,
-            #   echo=True
-        )
-        self.session = None
-
-    def get_engine(self):
-        return self.__engine
-
-    def __enter__(self):
-        session_make = sessionmaker(bind=self.__engine)
-        self.session = session_make()
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.session.close()
+from src.models.configs.config_geral import configs
 
 
 Base = declarative_base()
@@ -197,7 +161,7 @@ def initialize_database():
             .first()
         )
         if not result:
-            user = User("Renan Rodrigues", secrets["USER"], "admin")
+            user = User("Renan Rodrigues", configs["user"], "admin")
             database_handler.session.add(user)
             database_handler.session.commit()
             Logger.sucess(f"[INFO] User {user.nome} added successfully [INFO]")

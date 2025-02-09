@@ -1,11 +1,11 @@
 import smtplib
 from email.mime.text import MIMEText
-from streamlit import secrets
 from .uteis import Logger
+from src.models.configs.config_geral import configs
 
 
 class EmailSender:
-    def __init__(self, usermail=secrets["USER"], password=secrets["PASSWORD"]):
+    def __init__(self, usermail=configs["user"], password=configs["password"]):
         self.__USER = usermail
         self.__PASSWORD = password
 
