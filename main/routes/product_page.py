@@ -11,7 +11,44 @@ from src.models.repository.dataframes_repository import (
 
 def consulta_produto():
     """Pagina para consulta de produtos"""
-    st.title("Consulta de Produtos")
+    st.markdown(
+        "<h1 style='text-align: left; color: #DAA520;'>Consulta de Produtos</h1>",
+        unsafe_allow_html=True,
+    )
+    col1, col2 = st.columns(
+        [4, 1],
+    )
+    with col1.popover(
+        "Consultar",
+        use_container_width=True,
+        help="Consulte um produto pelo nome",
+        icon="🔍",
+    ):
+        nome = st.text_input(
+            "Digite o nome do produto para consultar",
+            key="nome_input",
+            value="",
+            label_visibility="collapsed",
+        )
+        produtos_select = search_product(nome)
+
+        if st.button("Procurar produto", type="primary"):
+            if produtos_select:
+                produtos_select = DataFrame(produtos_select)
+                produtos_select.drop("id", inplace=True, errors="ignore", axis=1)
+                produtos_select["preco"] = produtos_select["preco"].map(
+                    lambda x: f"R$ {x:.2f}".replace(".", ",")
+                )
+                produtos_select.columns = [
+                    "Produto",
+                    "Preço",
+                    "Estoque",
+                    "Categoria",
+                ]
+                st.table(produtos_select)
+            else:
+                st.error("Nenhum produto encontrado com esse nome")
+
     categoria = st.selectbox(
         "Selecione uma da(s) categoria(s)",
         ["categoria", "Bebidas", "Doces", "Salgados", "Padaria", "Mercearia"],
@@ -26,15 +63,6 @@ def consulta_produto():
     df = DataFrame(produtos)
     df["Preço"] = df["Preço"].map(lambda x: f"R$ {x:.2f}".replace(".", ","))
     st.table(df)
-    nome = st.text_input("Digite o nome do produto para consultar")
-    produtos_select = search_product(nome)
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        if st.button("Consultar", type="primary"):
-            if produtos_select:
-                st.table(produtos_select)
-            else:
-                st.error("Nenhum produto encontrado com esse nome")
 
     @st.cache_data
     def converter_df_to_excel(dataframe: DataFrame):
@@ -45,11 +73,15 @@ def consulta_produto():
 
     with col2:
         st.download_button(
-            "Download produtos",
+            "Baixar planilha",
+            icon="📁",
             data=converter_df_to_excel(produtos),
             file_name="produtos.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
             disabled=flag,
+            help="Baixe a lista de produtos em formato de planilha excel",
+            type="secondary",
+            use_container_width=True,
         )
     if st.sidebar.button("Ir para home", type="primary"):
         st.session_state["pagina"] = "homepage"

@@ -52,20 +52,17 @@ def homepage():
         size=(50, 50),
     )
 
-    top_nav = y.container()
-    with top_nav:
-        _, cart_col = st.columns([8, 1])
-        with cart_col:
-            if st.button("🛒", key="btn_cart_top", disabled=st.session_state["owner"]):
-                st.session_state["pagina"] = "cart"
-                st.rerun()
-    if y.button(
-        "Comprar",
-        use_container_width=True,
-        disabled=st.session_state["owner"],
-    ):
-        st.session_state["pagina"] = "realizar_compra"
-        st.rerun()
+    if not st.session_state["owner"]:
+        top_nav = y.container()
+        with top_nav:
+            _, cart_col = st.columns([8, 1])
+            with cart_col:
+                if st.button("🛒", key="btn_cart_top", help="carrinho de compras"):
+                    st.session_state["pagina"] = "cart"
+                    st.rerun()
+        if y.button("Comprar", use_container_width=True, help="faça suas compras"):
+            st.session_state["pagina"] = "realizar_compra"
+            st.rerun()
     if st.session_state["owner"]:
         if y.button(
             "Cadastro/Alteração de Produtos",
@@ -89,9 +86,10 @@ def homepage():
         st.session_state["pagina"] = "consulta_divida"
         st.rerun()
 
-    if y.button("Minhas compras", use_container_width=True):
-        st.session_state["pagina"] = "minhas_compras"
-        st.rerun()
+    if not st.session_state["owner"]:
+        if y.button("Minhas compras", use_container_width=True):
+            st.session_state["pagina"] = "minhas_compras"
+            st.rerun()
 
     if st.session_state["owner"]:
         if y.button(

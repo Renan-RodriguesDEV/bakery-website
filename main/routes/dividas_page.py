@@ -50,14 +50,19 @@ def consulta_divida():
         divida = select_debt_by_client(
             cliente,
         )
-        st.subheader(f"Divida do cliente :gray[{cliente}]", divider="red")
-        st.write(
-            f"""<p style="font-size:30px;">Valor atual: <span style="text-decoration:underline; color:green; font-weight:bold;">R$ {divida if divida else 0.00}</span></p>""",
+        st.subheader(f"**Divida do cliente** :gray[__{cliente}__]", divider="orange")
+        st.markdown(
+            f"""<p style="display: flex; justify-content: space-between; align-items: center; font-size: 30px; background-color: #8B4513; padding: 10px; border-radius: 8px;">
+            <span>Valor atual:</span>
+            <span style="text-decoration: underline; color: white; font-weight: bold;">R$ {divida if divida else 0.00}</span>
+            </p>""",
             unsafe_allow_html=True,
         )
-
+        col1, col2 = st.columns([4, 1])
         dividas_completa = select_all_sales_by_client(cliente)
-        if st.button("Consulta completa", type="primary"):
+        with col1.popover(
+            "Consulta completa", help="Consulte todas as dividas do cliente"
+        ):
             if dividas_completa is not None:
                 df_dividas_total = DataFrame(dividas_completa)
                 df_dividas_total["preco"] = df_dividas_total["preco"].map(
@@ -79,8 +84,10 @@ def consulta_divida():
                 ]
                 st.table(df_dividas_total)
         try:
-            st.download_button(
-                label="Download divida",
+            col2.download_button(
+                label="Baixar planilha .xlsx",
+                help="Baixe todas as dividas do cliente",
+                icon="🗃️",
                 data=converter_df_to_excel(dividas_completa),
                 file_name="divida.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -106,41 +113,48 @@ def consulta_divida():
                 max_chars=14,
                 placeholder="123.456.789-00",
             )
-            consultar = st.form_submit_button("Consultar")
+            # print('cpf:',cpf)
+            consultar = st.form_submit_button(
+                "Consultar", icon="🔍", help="Consultar divida do cliente"
+            )
+        if not cpf or not cliente:
+            st.info("Obs: Preencha todos os campos para consultar")
+        else:
+            if consultar:
+                divida = select_debt_by_client(cliente, str_as_number(cpf))
+                st.write(
+                    f"Divida do cliente {cliente}: R$ {divida if divida else 0.00}"
+                )
+                divida_total = select_all_sales_by_client(cliente, str_as_number(cpf))
 
-        if consultar:
-            divida = select_debt_by_client(cliente, str_as_number(cpf))
-            st.write(f"Divida do cliente {cliente}: R$ {divida if divida else 0.00}")
-            divida_total = select_all_sales_by_client(cliente, str_as_number(cpf))
-
-            if divida_total is not None:
-                df_dividas_total = DataFrame(divida_total)
-                df_dividas_total["preco"] = df_dividas_total["preco"].map(
-                    lambda x: f"R$ {x:.2f}".replace(".", ",")
-                )
-                df_dividas_total["total"] = df_dividas_total["total"].map(
-                    lambda x: f"R$ {x:.2f}".replace(".", ",")
-                )
-                df_dividas_total["data"] = df_dividas_total["data"].map(
-                    lambda x: x.strftime("%d/%m/%Y, %H:%M:%S")
-                )
-                df_dividas_total.columns = [
-                    "Nome",
-                    "Produto",
-                    "Preço",
-                    "Quantidade",
-                    "Valor Final",
-                    "Data",
-                ]
-                st.table(df_dividas_total)
-                st.download_button(
-                    label="Download divida",
-                    data=converter_df_to_excel(divida_total),
-                    file_name="divida.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                )
-            else:
-                st.error("Nenhuma divida encontrado !!!")
+                if divida_total is not None:
+                    df_dividas_total = DataFrame(divida_total)
+                    df_dividas_total["preco"] = df_dividas_total["preco"].map(
+                        lambda x: f"R$ {x:.2f}".replace(".", ",")
+                    )
+                    df_dividas_total["total"] = df_dividas_total["total"].map(
+                        lambda x: f"R$ {x:.2f}".replace(".", ",")
+                    )
+                    df_dividas_total["data"] = df_dividas_total["data"].map(
+                        lambda x: x.strftime("%d/%m/%Y, %H:%M:%S")
+                    )
+                    df_dividas_total.columns = [
+                        "Nome",
+                        "Produto",
+                        "Preço",
+                        "Quantidade",
+                        "Valor Final",
+                        "Data",
+                    ]
+                    st.table(df_dividas_total)
+                    st.download_button(
+                        label="Download divida",
+                        data=converter_df_to_excel(divida_total),
+                        file_name="divida.xlsx",
+                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    )
+                else:
+                    st.error("Nenhuma divida encontrado !!!")
 
         if st.sidebar.button("Ir para home", type="primary"):
             st.session_state["pagina"] = "homepage"

@@ -58,6 +58,28 @@ class UserRepository(DatabaseHandler):
                     return user
             return None
 
+    def select_user_by_email(
+        self,
+        user_email,
+        type_user: Literal["Proprietario/Funcionario", "Cliente"] = "Cliente",
+    ):
+        with self:
+            if type_user == "Proprietario/Funcionario":
+                user = self.session.query(User).filter(User.email == user_email).first()
+                if user:
+                    Logger.sucess(f"Usuario encontrado: {user.nome}")
+                    return user
+            elif type_user == "Cliente":
+                user = (
+                    self.session.query(Cliente)
+                    .filter(Cliente.email == user_email)
+                    .first()
+                )
+                if user:
+                    Logger.sucess(f"Usuario encontrado: {user.nome}")
+                    return user
+            return None
+
     def select_user_cpf(self, cpf):
         with self:
             return self.session.query(Cliente).filter_by(cpf=cpf).first()

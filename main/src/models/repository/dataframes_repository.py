@@ -55,7 +55,7 @@ def select_count_by_name(name):
             return df
 
 
-def select_all_sales_by_client(cliente, cpf=None):
+def select_all_sales_by_client(client_name=None, cpf=None, client_email=None):
     connective = pymysql.connect(**db_data)
     with connective as connective:
         with connective.cursor() as cursor:
@@ -64,13 +64,16 @@ def select_all_sales_by_client(cliente, cpf=None):
                 FROM cliente_produto cp 
                 JOIN clientes c ON cp.id_cliente = c.id
                 JOIN produtos p ON cp.id_produto = p.id
-                WHERE c.email = %s {'OR c.cpf = %s' if cpf else ';'}
+                WHERE {'c.nome = %s' if client_name else 'c.email = %s'}  {'OR c.cpf = %s' if cpf else ''}
             """
-            Logger.warning(f"{query} , ({cliente},{cpf})")
-            if not cpf:
-                cursor.execute(query, (cliente,))
+            Logger.warning(f"{query} , ({client_name},{cpf})")
+            if cpf:
+                cursor.execute(query, (client_name, cpf))
+                Logger.warning(f"{query} , ({client_name},{cpf})")
             else:
-                cursor.execute(query, (cliente, cpf))
+                cursor.execute(query, (client_name,))
+                Logger.warning(f"{query} , ({client_name})")
+
             data = cursor.fetchall()
             return pd.DataFrame(data) if data else None
 

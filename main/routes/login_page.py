@@ -17,8 +17,7 @@ def autenticar_usuario(username, password, type_user):
     """
     if type_user == "Proprietario/Funcionario":
         Logger.info("Verificando Proprietario/Funcionario")
-        user = UserRepository().select_user(username, type_user)
-        print(user)
+        user = UserRepository().select_user_by_email(username, type_user)
         if user:
             isAuth = Hasher().checkpswd(password, user.senha)
             if (username == user.email or user.nome == username) and isAuth:
@@ -30,7 +29,7 @@ def autenticar_usuario(username, password, type_user):
         return False
     elif type_user == "Cliente":
         Logger.info("Verificando cliente")
-        user = UserRepository().select_user(username, type_user)
+        user = UserRepository().select_user_by_email(username, type_user)
         if not user:
             Logger.error(f"Usuario {username} não encontrado")
             return False
