@@ -3,6 +3,7 @@ import os
 import sys
 from typing import Literal
 from sqlalchemy import (
+    Boolean,
     Column,
     Integer,
     String,
@@ -61,6 +62,7 @@ class Cliente(Base):
     telefone = Column("telefone", String(15), nullable=True)
     email = Column("email", String(255), nullable=True, unique=True)
     token = Column("token", String(255), nullable=True)
+    activate = Column("activate", Boolean, nullable=False, server_default="1")
 
     def __init__(self, nome, cpf, telefone, email, senha=None, token=None):
         self.nome = nome
@@ -128,6 +130,7 @@ class Divida(Base):
     id_cliente = Column("id_cliente", ForeignKey("clientes.id"), nullable=False)
     valor = Column("valor", DECIMAL(15, 2), nullable=False, default=0)
     pago = Column("pago", DECIMAL(15, 2), nullable=False, default=0)
+    activate = Column("activate", Boolean, nullable=False, server_default="1")
     data_modificacao = Column("data_modificacao", TIMESTAMP, server_default=func.now())
 
     def __init__(self, cliente, valor):

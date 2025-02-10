@@ -105,7 +105,9 @@ def consulta_divida():
 
         with st.form(key="consulta_form"):
             cliente = st.text_input(
-                "Email de cadastro", help="Digite o seu email completo como no cadastro"
+                "Email de cadastro",
+                help="Digite o seu email completo como no cadastro",
+                value=st.session_state["username"],
             )
             cpf = st.text_input(
                 "CPF",

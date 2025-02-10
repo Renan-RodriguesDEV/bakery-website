@@ -55,7 +55,13 @@ def generate_token():
 
 
 def str_as_number(string: str):
-    string = string.replace("-", "").replace("(", "").replace(")", "").replace(".", "")
+    string = (
+        string.replace("-", "")
+        .replace("(", "")
+        .replace(")", "")
+        .replace(".", "")
+        .replace("+", "")
+    )
     return string.strip()
 
 
@@ -73,6 +79,12 @@ def number_as_cpf(string: str):
     if len(string) == 11:
         return f"{string[0:3]}.{string[3:6]}.{string[6:9]}-{string[9:]}"
     return string
+
+
+def validate_email(email: str):
+    if "@" in email and not email.startswith("@") and not email.endswith("@"):
+        return True
+    return False
 
 
 def generate_qr_code(data):

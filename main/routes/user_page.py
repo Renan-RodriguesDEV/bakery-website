@@ -1,5 +1,5 @@
 import streamlit as st
-from src.utils.uteis import number_as_cpf, number_as_telephone, Logger
+from src.utils.uteis import number_as_cpf, number_as_telephone, Logger, validate_email
 from src.models.repository.user_repository import UserRepository
 from src.models.repository.dataframes_repository import select_all_clientes
 
@@ -70,10 +70,16 @@ def my_account():
                     f"Telefone: ", max_chars=15, placeholder="(21) 99999-9999"
                 )
                 new_cpf = y.text_input(
-                    f"CPF: ", max_chars=15, placeholder="(21) 99999-9999"
+                    f"CPF: ", max_chars=14, placeholder="666.666.666-69"
                 )
+                flag = False
                 if new_name or new_pswd or new_email or new_telefone:
-                    flag = True
+                    if not new_email:
+                        flag = True
+                    else:
+                        if not validate_email(new_email):
+                            flag = False
+                            st.error("Email invalido")
                 else:
                     flag = False
                     st.warning("Preencha algum dos campos para alteração")
@@ -97,10 +103,12 @@ def my_account():
                                 )
                             else:
                                 st.error("Erro ao atualizar")
+
                     else:
                         st.error(
                             "É necessario preencher algum dos campos para atualizar"
                         )
+
             else:
                 x.image(
                     "https://www.freeiconspng.com/uploads/head-icon-0.png",

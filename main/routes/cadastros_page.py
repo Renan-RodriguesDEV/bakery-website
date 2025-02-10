@@ -2,7 +2,7 @@ import sqlalchemy
 import streamlit as st
 from src.models.repository.product_repository import ProductRepository
 from src.models.repository.user_repository import UserRepository
-from src.utils.uteis import Logger
+from src.utils.uteis import Logger, str_as_number, validate_email
 from src.models.repository.dataframes_repository import (
     select_all_clientes,
     select_all_products,
@@ -29,12 +29,14 @@ def alter_client(cliente, nome=None, cpf=None, email=None, telefone=None):
                     cliente_u.nome = nome
                     Logger.info(f"setting nome for {nome}")
                 if cpf:
+                    str_as_number(cpf)
                     cliente_u.cpf = cpf
                     Logger.info(f"setting cpf for {cpf}")
                 if email:
                     cliente_u.email = email
                     Logger.info(f"setting email for {email}")
                 if telefone:
+                    str_as_number(telefone)
                     cliente_u.telefone = telefone
                     Logger.info(f"setting telefone for {telefone}")
                 u.session.add(cliente_u)
@@ -49,7 +51,7 @@ def alter_client(cliente, nome=None, cpf=None, email=None, telefone=None):
             st.error("Erro ao cadastrar o cliente")
 
 
-def register_client(nome, cpf, telefone, email):
+def register_client(nome: str, cpf: str, telefone: str, email: str):
     """Registra um novo cliente no banco de dados
 
     Args:
@@ -59,7 +61,8 @@ def register_client(nome, cpf, telefone, email):
         email (str): email
     """
     try:
-        cpf = cpf.replace(".", "").replace("-", "")
+        cpf = str_as_number(cpf)
+        telefone = str_as_number(cpf)
         cadasto = UserRepository().insert_user(
             username=nome,
             cpf=cpf,
@@ -200,9 +203,13 @@ def cadastro_cliente():
     )
     if action == "Cadastro":
         nome = st.text_input("Nome do Cliente")
-        cpf = st.text_input("CPF do Cliente", placeholder="666.666.666-69")
+        cpf = st.text_input(
+            "CPF do Cliente", placeholder="666.666.666-69", max_chars=14
+        )
         email = st.text_input("Email do Cliente", placeholder="marcosmendes@gmail.com")
-        telefone = st.text_input("Telefone do Cliente", placeholder="(21) 77070-7070")
+        telefone = st.text_input(
+            "Telefone do Cliente", placeholder="(21) 77070-7070", max_chars=15
+        )
         flag = True if not cpf or not email or not nome or not telefone else False
         if flag:
             st.warning("Todos os campos são obrigatorios!!")
@@ -211,7 +218,10 @@ def cadastro_cliente():
             if flag:
                 st.error("Todos os campos são obrigatorios!! Por favor preencha todos")
             else:
-                register_client(nome, cpf, telefone, email)
+                if validate_email(email):
+                    register_client(nome, cpf, telefone, email)
+                else:
+                    st.error("Email invalido")
     elif action == "Alterar":
         cliente = st.selectbox(
             "**:orange[Selecione o cliente]**",
@@ -227,7 +237,13 @@ def cadastro_cliente():
             "Novo Telefone do Cliente", placeholder="(21) 77070-7070"
         )
         if st.button("Alterar", type="primary"):
-            alter_client(cliente, nome, cpf, email, telefone)
+            if not email:
+                alter_client(cliente, nome, cpf, email, telefone)
+            elif email:
+                if validate_email(email):
+                    alter_client(cliente, nome, cpf, email, telefone)
+                else:
+                    st.error("Email invalido")
     else:
         cliente = st.selectbox(":red[Selecione o cliente]", select_all_clientes())
         if st.button("Deletar Cliente", type="primary"):

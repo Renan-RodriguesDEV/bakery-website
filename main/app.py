@@ -21,6 +21,21 @@ st.set_page_config(
 Logger.info("[==] Runnig server streamlit localhost in http://localhost:8501/ [==]")
 
 
+def throws_exception(func):
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            Logger.error(f"Erro: {e}")
+            st.error("Ocorreu um erro inesperado")
+            for key in st.session_state.keys():
+                del st.session_state[key]
+            return tela_login()
+
+    return wrapper
+
+
+@throws_exception
 # Função para a renderizar a homepage
 def homepage():
     nome_de_sessao = (

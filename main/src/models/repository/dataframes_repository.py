@@ -20,7 +20,7 @@ def select_all_products():
     connective = pymysql.connect(**db_data)
     with connective as connective:
         with connective.cursor() as cursor:
-            cursor.execute("SELECT nome,preco,estoque FROM produtos")
+            cursor.execute("SELECT nome,preco,estoque FROM produtos ORDER BY nome ")
             df = pd.DataFrame(cursor.fetchall(), columns=["nome", "preco", "estoque"])
             df.columns = ["Nome", "Preço", "Estoque"]
             return df
@@ -30,7 +30,9 @@ def search_product(name):
     connective = pymysql.connect(**db_data)
     with connective as connective:
         with connective.cursor() as cursor:
-            cursor.execute("SELECT * FROM produtos WHERE nome LIKE%s", (f"%{name}%",))
+            cursor.execute(
+                "SELECT * FROM produtos WHERE nome LIKE%s ORDER BY nome", (f"%{name}%",)
+            )
             data = cursor.fetchall()
             return data if data else None
 
@@ -40,7 +42,7 @@ def select_all_clientes():
     connective = pymysql.connect(**db_data)
     with connective as connective:
         with connective.cursor() as cursor:
-            cursor.execute("SELECT nome,cpf,telefone,email FROM clientes")
+            cursor.execute("SELECT nome,cpf,telefone,email FROM clientes ORDER BY nome")
             df = pd.DataFrame(cursor.fetchall(), columns=["nome"])
             return df
 
@@ -64,12 +66,15 @@ def select_all_sales_by_client(client_name=None, cpf=None, client_email=None):
                 FROM cliente_produto cp 
                 JOIN clientes c ON cp.id_cliente = c.id
                 JOIN produtos p ON cp.id_produto = p.id
-                WHERE {'c.nome = %s' if client_name else 'c.email = %s'}  {'OR c.cpf = %s' if cpf else ''}
+                WHERE {'c.nome = %s' if client_name else 'c.email = %s'}  {'OR c.cpf = %s' if cpf else ''} ORDER BY cp.data DESC
             """
             Logger.warning(f"{query} , ({client_name},{cpf})")
-            if cpf:
-                cursor.execute(query, (client_name, cpf))
-                Logger.warning(f"{query} , ({client_name},{cpf})")
+            if client_email:
+                if cpf:
+                    cursor.execute(query, (client_email, cpf))
+                    Logger.warning(f"{query} , ({client_email})")
+                cursor.execute(query, (client_email,))
+                Logger.warning(f"{query} , ({client_email},)")
             else:
                 cursor.execute(query, (client_name,))
                 Logger.warning(f"{query} , ({client_name})")
@@ -86,7 +91,7 @@ def select_all_products_by_category(category):
             query = """
                 SELECT nome, preco, estoque
                 FROM produtos
-                WHERE categoria = %s
+                WHERE categoria = %s ORDER BY nome
             """
             cursor.execute(query, (category,))
             data = cursor.fetchall()
