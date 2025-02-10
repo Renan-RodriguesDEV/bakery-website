@@ -135,14 +135,15 @@ def homepage():
     ):
         st.session_state["pagina"] = "conta"
         st.rerun()
-    if st.sidebar.button(
-        "Informações de Clientes",
-        use_container_width=True,
-        disabled=not st.session_state["owner"],
-        type="primary",
-    ):
-        st.session_state["pagina"] = "informacoes"
-        st.rerun()
+
+    if st.session_state["owner"]:
+        if st.sidebar.button(
+            "Informações de Clientes",
+            use_container_width=True,
+            type="primary",
+        ):
+            st.session_state["pagina"] = "informacoes"
+            st.rerun()
     st.html(
         """
     <style>
