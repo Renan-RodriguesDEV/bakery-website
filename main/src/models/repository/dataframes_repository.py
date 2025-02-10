@@ -61,24 +61,34 @@ def select_all_sales_by_client(client_name=None, cpf=None, client_email=None):
     connective = pymysql.connect(**db_data)
     with connective as connective:
         with connective.cursor() as cursor:
-            query = f"""
+            # Base da query
+            base_query = """
                 SELECT c.nome, p.nome AS produto, cp.preco, cp.quantidade, cp.total, cp.data
                 FROM cliente_produto cp 
                 JOIN clientes c ON cp.id_cliente = c.id
                 JOIN produtos p ON cp.id_produto = p.id
-                WHERE {'c.nome = %s' if client_name else 'c.email = %s'}  {'OR c.cpf = %s' if cpf else ''} ORDER BY cp.data DESC
+                WHERE {} ORDER BY cp.data DESC
             """
-            Logger.warning(f"{query} , ({client_name},{cpf})")
+
+            # Define condições e parâmetros baseado nos argumentos fornecidos
             if client_email:
                 if cpf:
+                    query = base_query.format("c.email = %s OR c.cpf = %s")
                     cursor.execute(query, (client_email, cpf))
-                    Logger.warning(f"{query} , ({client_email})")
-                cursor.execute(query, (client_email,))
-                Logger.warning(f"{query} , ({client_email},)")
+                else:
+                    query = base_query.format("c.email = %s")
+                    cursor.execute(query, (client_email,))
+            elif client_name:
+                if cpf:
+                    query = base_query.format("c.nome = %s OR c.cpf = %s")
+                    cursor.execute(query, (client_name, cpf))
+                else:
+                    query = base_query.format("c.nome = %s")
+                    cursor.execute(query, (client_name,))
             else:
-                cursor.execute(query, (client_name,))
-                Logger.warning(f"{query} , ({client_name})")
+                return None
 
+            Logger.warning(f"Query executada: {query}")
             data = cursor.fetchall()
             return pd.DataFrame(data) if data else None
 
