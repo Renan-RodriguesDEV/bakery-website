@@ -21,7 +21,7 @@ def shopping_cart():
     st.warning(
         "Após o pagamento retire seus produtos na loja!! após apertar em comprar seu carrinho será esvaziado"
     )
-    checkbox = st.checkbox("Selecionar todos")
+    select_all_checkbox = st.checkbox("Selecionar todos")
     itens_cart = [
         f" ➕ ".join(
             [
@@ -34,12 +34,21 @@ def shopping_cart():
             user_repository.select_user(user_session, "Cliente").id
         )
     ]
-
-    selecionados = st.multiselect(
-        "Selecione o que ira levar hoje!!!",
-        itens_cart,
-        default=itens_cart if checkbox else None,
-    )
+    with st.popover(
+        "Selecione o que irá levar hoje!!!",
+        icon="🛍️",
+        help="Seleção de produtos",
+        use_container_width=True,
+    ):
+        selecionados = []
+        itens_options = []
+        for item in itens_cart:
+            itens_options.append(st.checkbox(item))
+        for index, item in enumerate(itens_options):
+            if item:
+                selecionados.append(itens_cart[index])
+        if select_all_checkbox:
+            selecionados = [item for item in itens_cart]
     col1, col2 = st.columns([1, 1])
     col1.html(
         """
@@ -80,7 +89,8 @@ def shopping_cart():
             ],
         }
     )
-    col2.table(df)
+    print(df)
+    col2.table(df) if not df.empty else None
     col2.markdown("---")
     col2.html(
         f"<p style='font-size:20px;color:darkgray;text-align:right'>Total: <span style='color:#DAA520'>R$ {sum(selecionados_dict['precos']):.2f}</span></p>".replace(

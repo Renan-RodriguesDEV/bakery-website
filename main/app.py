@@ -1,4 +1,5 @@
 import streamlit as st
+from src.style.style import sidebar_formatter
 from routes.minhas_compras_page import minhas_compras
 from src.models.repository.user_repository import UserRepository
 from routes.carrinho_compras_page import shopping_cart
@@ -33,6 +34,9 @@ def throws_exception(func):
             return tela_login()
 
     return wrapper
+
+
+sidebar_formatter()
 
 
 @throws_exception
