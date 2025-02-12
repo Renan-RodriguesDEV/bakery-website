@@ -101,4 +101,4 @@ Este projeto está sob a licença MIT.
 
 ---
 
-Desenvolvido com ❤️ por Renan Rodrigues [(@_little_renan_.py)](https://instagram.com/@__little_renan__.py)
+Desenvolvido com ❤️ por Renan Rodrigues [(@_little_renan_.py)](https://instagram.com/__little_renan__.py)
