@@ -1,0 +1,16 @@
+li[role="option"] {
+  background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
+  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url("https://img.freepik.com/free-vector/hand-drawn-bakery-pattern-background_23-2150849903.jpg?semt=ais_hybrid");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  color: #ffffff; /* Better text color */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Text shadow for better readability */
+  transition: all 0.3s ease; /* Smooth transition for hover effect */
+}
+
+li[role="option"]:hover {
+  background-color: rgba(0, 0, 0, 0.3); /* Darkening overlay on hover */
+  cursor: pointer;
+}

@@ -1,5 +1,5 @@
 import streamlit as st
-from src.style.style import sidebar_formatter
+from src.style.style import load_css
 from routes.minhas_compras_page import minhas_compras
 from src.models.repository.user_repository import UserRepository
 from routes.carrinho_compras_page import shopping_cart
@@ -36,32 +36,16 @@ def throws_exception(func):
     return wrapper
 
 
-sidebar_formatter()
+load_css("header.css")
+load_css("sidebar.css")
+load_css("listtemplate.css")
+load_css("background.css")
 
 
 @throws_exception
 # Função para a renderizar a homepage
 def homepage():
-    st.html(
-        """<style>
-div[data-testid="stMainBlockContainer"] {
-  background-color: beige;
-}
-#bui109__anchor > button {
-  background-color: #8b4513;
-}
-#bui109__anchor > button:hover::before {
-  background-size: cover;
-  background-position: center;
-  opacity: 0.4;
-  z-index: -1;
-  transition: filter 0.3s;
-}
-header[data-testid="stHeader"] {
-  background-color: #b79300;
-}
-</style>"""
-    )
+    load_css("homepage.css")
     nome_de_sessao = (
         UserRepository()
         .select_user(st.session_state["username"], st.session_state["usuario"])
@@ -72,11 +56,11 @@ header[data-testid="stHeader"] {
         str(nome_de_sessao).split(" ")[0] + " " + str(nome_de_sessao).split(" ")[-1]
     )
     st.markdown(
-        f"<h1 style='font-size:33px; color:darkgray;'>Bem vindo de volta, <span style='color:#8B4513;font-style:italic;font-size:28px'><br>{name_header}</br><span/></h1>",
+        f"<h1 style='font-size:33px; color:black;'>Bem vindo de volta, <span style='color:#8B4513;font-style:italic;font-size:28px'><br>{name_header}</br><span/></h1>",
         unsafe_allow_html=True,
     )
     st.html(
-        f"<h2 style='color:darkgray'>Status de login: <span style='color:#DAA520'> {st.session_state['usuario']}<span/></h2>"
+        f"<h2 style='color:black'>Status de login: <span style='color:#8B4513'> {st.session_state['usuario']}<span/></h2>"
     )
     x, y = st.columns([2, 1], gap="small", vertical_alignment="top")
 

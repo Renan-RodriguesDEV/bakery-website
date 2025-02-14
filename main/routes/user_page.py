@@ -29,7 +29,7 @@ def information():
                 """,
                 unsafe_allow_html=True,
             )
-    if st.sidebar.button("Ir para home", type="primary"):
+    if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()
 
@@ -154,6 +154,6 @@ def my_account():
                             "É necessario preencher algum dos campos para atualizar"
                         )
 
-        if st.sidebar.button("Ir para home", type="primary"):
+        if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
             st.session_state["pagina"] = "homepage"
             st.rerun()

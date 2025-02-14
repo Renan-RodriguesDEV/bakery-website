@@ -144,6 +144,6 @@ def shopping_cart():
         #         cart_repository.remove_from_stoke(produto, qtde)
         #         Logger.warning(f"Removendo {qtde} x {produto} do estoque")
 
-    if st.sidebar.button("Ir para home", type="primary"):
+    if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()

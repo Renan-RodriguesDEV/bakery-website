@@ -91,6 +91,6 @@ def tela_login():
     ):
         st.session_state["pagina"] = "esqueci"
         st.rerun()
-    if y.button("Support Page"):
+    if y.button("Ajuda", help="Suporte ao usuario", type="secondary"):
         st.session_state["pagina"] = "suporte"
         st.rerun()

@@ -1,0 +1,22 @@
+div[data-testid="stMainBlockContainer"] {
+  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(75, 45, 0, 0.8)),
+    url("https://files.oaiusercontent.com/file-4GKRMabCyXaZnsz8m11ZSn?se=2025-02-14T17%3A30%3A20Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3D7edf39c8-e051-4638-b422-c3a9066b18bb.webp&sig=7E5P0QDgHKlsdpCogqv/sunJ69urBsN5mO0nR6%2BvqjQ%3D");
+  background-size: cover;
+  background-position: center;
+}
+table[data-testid="stTableStyledTable"] {
+  background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
+  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url("https://img.freepik.com/free-vector/hand-drawn-bakery-pattern-background_23-2150849903.jpg?semt=ais_hybrid");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  color: #ffffff;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  transition: all 0.3s ease;
+}
+
+table[data-testid="stTableStyledTable"]:hover {
+  background-color: rgba(0, 0, 0, 0.5); /* Lighter on hover */
+}

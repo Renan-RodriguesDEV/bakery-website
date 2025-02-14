@@ -30,12 +30,18 @@ def realizar_compra():
         ),
     )
     preco = ProductRepository().select_product_price(produto)
-    quantidade = st.number_input(
-        "Quantidade",
-        min_value=1,
-        step=1,
-        max_value=ProductRepository().select_product(produto).estoque,
-    )
+    estoque = ProductRepository().select_product(produto).estoque
+    if estoque:
+        quantidade = st.number_input(
+            "Quantidade",
+            value=1,
+            min_value=1,
+            step=1,
+            max_value=estoque,
+        )
+    else:
+        quantidade = 0
+        st.warning("Produto fora de estoque")
 
     col1, col2 = st.columns([1, 1])
 
@@ -53,7 +59,7 @@ def realizar_compra():
                 unsafe_allow_html=True,
             )
         disable = True
-        if col1.button("Adicionar ao carrinho", type="primary"):
+        if col1.button("Adicionar ao carrinho", type="primary", disabled=not estoque):
             cliente_obj = UserRepository().select_user(cliente_session, "Cliente")
             produto_obj = ProductRepository().select_product(produto)
             Logger.info(f"produto: {produto_obj}")
@@ -70,6 +76,6 @@ def realizar_compra():
             st.session_state["pagina"] = "cart"
             st.rerun()
 
-    if st.sidebar.button("Ir para home", type="primary"):
+    if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()
