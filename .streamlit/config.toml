@@ -2,6 +2,7 @@
 
 # "dark" or "light" 
 base = "dark"
+#base = "light"
 
 # Cor amarela escura para botões primários
 primaryColor = "#DAA520"  # GoldenRod

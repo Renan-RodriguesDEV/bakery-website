@@ -42,14 +42,37 @@ sidebar_formatter()
 @throws_exception
 # Função para a renderizar a homepage
 def homepage():
+    st.html(
+        """<style>
+div[data-testid="stMainBlockContainer"] {
+  background-color: beige;
+}
+#bui109__anchor > button {
+  background-color: #8b4513;
+}
+#bui109__anchor > button:hover::before {
+  background-size: cover;
+  background-position: center;
+  opacity: 0.4;
+  z-index: -1;
+  transition: filter 0.3s;
+}
+header[data-testid="stHeader"] {
+  background-color: #b79300;
+}
+</style>"""
+    )
     nome_de_sessao = (
         UserRepository()
         .select_user(st.session_state["username"], st.session_state["usuario"])
         .nome
     )
     st.session_state["nome_de_sessao"] = nome_de_sessao
+    name_header = (
+        str(nome_de_sessao).split(" ")[0] + " " + str(nome_de_sessao).split(" ")[-1]
+    )
     st.markdown(
-        f"<h1 style='font-size:33px; color:darkgray;'>Bem vindo de volta, <span style='color:#8B4513';font-style:italic;>{st.session_state['nome_de_sessao']}<span/>!</h1>",
+        f"<h1 style='font-size:33px; color:darkgray;'>Bem vindo de volta, <span style='color:#8B4513;font-style:italic;font-size:28px'><br>{name_header}</br><span/></h1>",
         unsafe_allow_html=True,
     )
     st.html(
@@ -76,45 +99,47 @@ def homepage():
         with top_nav:
             _, cart_col = st.columns([8, 1])
             with cart_col:
-                if st.button("🛒", key="btn_cart_top", help="carrinho de compras"):
+                if st.button(
+                    "🛒", key="btn_cart_top", help="carrinho de compras", type="primary"
+                ):
                     st.session_state["pagina"] = "cart"
                     st.rerun()
-        if y.button("Comprar", use_container_width=True, help="faça suas compras"):
+        if y.button(
+            "Comprar",
+            use_container_width=True,
+            help="faça suas compras",
+            type="primary",
+        ):
             st.session_state["pagina"] = "realizar_compra"
             st.rerun()
     if st.session_state["owner"]:
         if y.button(
-            "Cadastro/Alteração de Produtos",
-            use_container_width=True,
+            "Cadastro/Alteração de Produtos", use_container_width=True, type="primary"
         ):
             st.session_state["pagina"] = "cadastro_produto"
             st.rerun()
     if st.session_state["owner"]:
         if y.button(
-            "Cadastro/Alteração de Clientes",
-            use_container_width=True,
+            "Cadastro/Alteração de Clientes", use_container_width=True, type="primary"
         ):
             st.session_state["pagina"] = "cadastro_cliente"
             st.rerun()
 
-    if y.button("Catalogo de Produtos", use_container_width=True):
+    if y.button("Catalogo de Produtos", use_container_width=True, type="primary"):
         st.session_state["pagina"] = "consulta_produto"
         st.rerun()
 
-    if y.button("Consultar Pendencias", use_container_width=True):
+    if y.button("Consultar Pendencias", use_container_width=True, type="primary"):
         st.session_state["pagina"] = "consulta_divida"
         st.rerun()
 
     if not st.session_state["owner"]:
-        if y.button("Minhas compras", use_container_width=True):
+        if y.button("Minhas compras", use_container_width=True, type="primary"):
             st.session_state["pagina"] = "minhas_compras"
             st.rerun()
 
     if st.session_state["owner"]:
-        if y.button(
-            "Alterar Pendencias",
-            use_container_width=True,
-        ):
+        if y.button("Alterar Pendencias", use_container_width=True, type="primary"):
             st.session_state["pagina"] = "atualizar_divida"
             st.rerun()
 
