@@ -1,8 +1,8 @@
 import secrets
+import time
 import qrcode
 import io
 from colorama import Fore, Style, init
-from PIL import Image
 
 
 class Logger:
@@ -17,7 +17,9 @@ class Logger:
         Args:
             text (str): texto a ser exibido na cor verde
         """
-        print(f"{Style.BRIGHT}{Fore.GREEN}{text}{Style.RESET_ALL}")
+        print(
+            f"{time.strftime('%X')} {Style.BRIGHT}{Fore.GREEN}{text}{Style.RESET_ALL}"
+        )
 
     @staticmethod
     def warning(text):
@@ -26,7 +28,9 @@ class Logger:
         Args:
             text (str): texto a ser exibido na cor verde
         """
-        print(f"{Style.BRIGHT}{Fore.GREEN}{text}{Style.RESET_ALL}")
+        print(
+            f"{time.strftime('%X')} {Style.BRIGHT}{Fore.GREEN}{text}{Style.RESET_ALL}"
+        )
 
     @staticmethod
     def sucess(text):
@@ -35,7 +39,7 @@ class Logger:
         Args:
             text (str): texto a ser exibido na cor azul
         """
-        print(f"{Style.BRIGHT}{Fore.BLUE}{text}{Style.RESET_ALL}")
+        print(f"{time.strftime('%X')} {Style.BRIGHT}{Fore.BLUE}{text}{Style.RESET_ALL}")
 
     @staticmethod
     def error(text):
@@ -44,7 +48,7 @@ class Logger:
         Args:
             text (str): texto a ser exibido na cor vermelho
         """
-        print(f"{Style.BRIGHT}{Fore.RED}{text}{Style.RESET_ALL}")
+        print(f"{time.strftime('%X')} {Style.BRIGHT}{Fore.RED}{text}{Style.RESET_ALL}")
 
 
 def generate_token():
@@ -77,7 +81,7 @@ def number_as_cpf(string: str):
     # Verificar e garantir antens se tá numerico
     string = str_as_number(string)
     if len(string) == 11:
-        return f"{string[0:3]}.{string[3:6]}.{string[6:9]}-{string[9:]}"
+        return f"{time.strftime('%X')} {string[0:3]}.{string[3:6]}.{string[6:9]}-{string[9:]}"
     return string
 
 
