@@ -212,7 +212,7 @@ if st.session_state["autenticado"]:
 
 else:
     # Se não estiver autenticado, ainda permite acesso à página de suporte
-    if st.session_state["pagina"] == "support":
+    if st.session_state["pagina"] == "suporte":
         page_support()
     elif st.session_state["pagina"] == "esqueci":
         esquci_senha()
