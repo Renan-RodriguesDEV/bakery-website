@@ -105,6 +105,8 @@ def select_all_products_by_category(category):
             """
             cursor.execute(query, (category,))
             data = cursor.fetchall()
+            if not data:
+                return pd.DataFrame(columns=["Nome", "Preço", "Estoque"])
             df = pd.DataFrame(data)
             df.columns = ["Nome", "Preço", "Estoque"]
-            return df if data else None
+            return df
