@@ -53,7 +53,6 @@ def consulta_produto():
         "Selecione uma da(s) categoria(s)",
         ["categoria", "Bebidas", "Doces", "Salgados", "Padaria", "Mercearia"],
     )
-
     produtos = (
         select_all_products()
         if not categoria or categoria == "categoria"
@@ -62,7 +61,10 @@ def consulta_produto():
     flag = True if produtos.empty else False
     df = DataFrame(produtos)
     df["Preço"] = df["Preço"].map(lambda x: f"R$ {x:.2f}".replace(".", ","))
-    st.table(df)
+    if not produtos.empty:
+        st.table(df)
+    else:
+        st.warning("Nenhum produto encontrado!!")
 
     @st.cache_data
     def converter_df_to_excel(dataframe: DataFrame):

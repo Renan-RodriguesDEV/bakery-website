@@ -81,7 +81,7 @@ def number_as_cpf(string: str):
     # Verificar e garantir antens se tá numerico
     string = str_as_number(string)
     if len(string) == 11:
-        return f"{time.strftime('%X')} {string[0:3]}.{string[3:6]}.{string[6:9]}-{string[9:]}"
+        return f"{string[0:3]}.{string[3:6]}.{string[6:9]}-{string[9:]}"
     return string
 
 

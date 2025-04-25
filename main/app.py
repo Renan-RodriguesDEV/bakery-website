@@ -56,21 +56,47 @@ def homepage():
         str(nome_de_sessao).split(" ")[0] + " " + str(nome_de_sessao).split(" ")[-1]
     )
     st.markdown(
-        f"<h1 style='font-size:33px; color:black;'>Bem vindo de volta, <span style='color:#8B4513;font-style:italic;font-size:28px'><br>{name_header}</br><span/></h1>",
+        f"""
+        <div style='text-align: center; padding: 8px;'>
+            <h1 style='font-size: 32px; color: black;'>
+                Olá, <span style='color: #8B4513; font-weight: bold;'>{name_header}</span>!
+            </h1>
+            <p style='font-size: 24px; color: #666; font-style: italic;'>
+                Seja bem-vindo(a) ao nosso sistema de vendas
+            </p>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
-    st.html(
-        f"<h2 style='color:black'>Status de login: <span style='color:#8B4513'> {st.session_state['usuario']}<span/></h2>"
-    )
-    x, y = st.columns([2, 1], gap="small", vertical_alignment="top")
+    x, y = st.columns([2, 2], gap="large", vertical_alignment="top")
+    # y.html(
+    #     f"<h2 style='color:black'>Status de login: <span style='color:#8B4513'> {st.session_state['usuario']}<span/></h2>"
+    # )
+    x, y = st.columns([2, 2], gap="large", vertical_alignment="top")
 
     # Coordenadas da itai
     latitude, longitude = -23.406600592923784, -49.09880181525712
-    x.markdown(
-        "<span style='color:#8B4513'>Estamos localizados em</span> 📍:",
+    y.markdown(
+        """
+        <style>
+        .hover-effect-bold-italic {
+            font-style: italic;
+            font-weight: bold;
+        }
+        .custom-paragraph {
+            background-color: #8B4513; 
+            color: white; 
+            border: 2px solid #f0f0f0; 
+            font-size:20px; 
+            padding: 15px; 
+            border-radius: 8px;
+        }
+        </style>
+        <p class="custom-paragraph hover-effect-bold-italic">Estamos localizados em 📍:</p>
+        """,
         unsafe_allow_html=True,
     )
-    x.map(
+    y.map(
         data={"latitude": [latitude], "longitude": [longitude]},
         use_container_width=True,
         color="#DAA520",
@@ -79,16 +105,20 @@ def homepage():
     )
 
     if not st.session_state["owner"]:
-        top_nav = y.container()
+        top_nav = x.container()
         with top_nav:
-            _, cart_col = st.columns([8, 1])
+            cart_col, _ = st.columns([8, 1])
             with cart_col:
                 if st.button(
-                    "🛒", key="btn_cart_top", help="carrinho de compras", type="primary"
+                    "",
+                    key="btn_cart_top",
+                    help="carrinho de compras",
+                    type="primary",
+                    icon=":material/shopping_cart:",
                 ):
                     st.session_state["pagina"] = "cart"
                     st.rerun()
-        if y.button(
+        if x.button(
             "Comprar",
             use_container_width=True,
             help="faça suas compras",
@@ -97,33 +127,59 @@ def homepage():
             st.session_state["pagina"] = "realizar_compra"
             st.rerun()
     if st.session_state["owner"]:
-        if y.button(
-            "Cadastro/Alteração de Produtos", use_container_width=True, type="primary"
+        if x.button(
+            "Cadastro/Alteração de Produtos",
+            use_container_width=True,
+            type="primary",
+            help="cadastre ou altere produtos",
         ):
             st.session_state["pagina"] = "cadastro_produto"
             st.rerun()
     if st.session_state["owner"]:
-        if y.button(
-            "Cadastro/Alteração de Clientes", use_container_width=True, type="primary"
+        if x.button(
+            "Cadastro/Alteração de Clientes",
+            use_container_width=True,
+            type="primary",
+            help="cadastre ou altere clientes",
         ):
             st.session_state["pagina"] = "cadastro_cliente"
             st.rerun()
 
-    if y.button("Catalogo de Produtos", use_container_width=True, type="primary"):
+    if x.button(
+        "Catalogo de Produtos",
+        use_container_width=True,
+        type="primary",
+        help="consulte produtos",
+    ):
         st.session_state["pagina"] = "consulta_produto"
         st.rerun()
 
-    if y.button("Consultar Pendencias", use_container_width=True, type="primary"):
+    if x.button(
+        "Consultar Pendencias",
+        use_container_width=True,
+        type="primary",
+        help="consulte pendencias",
+    ):
         st.session_state["pagina"] = "consulta_divida"
         st.rerun()
 
     if not st.session_state["owner"]:
-        if y.button("Minhas compras", use_container_width=True, type="primary"):
+        if x.button(
+            "Minhas compras",
+            use_container_width=True,
+            type="primary",
+            help="consulte suas compras",
+        ):
             st.session_state["pagina"] = "minhas_compras"
             st.rerun()
 
     if st.session_state["owner"]:
-        if y.button("Alterar Pendencias", use_container_width=True, type="primary"):
+        if x.button(
+            "Alterar Pendencias",
+            use_container_width=True,
+            type="primary",
+            help="altere pendencias",
+        ):
             st.session_state["pagina"] = "atualizar_divida"
             st.rerun()
 

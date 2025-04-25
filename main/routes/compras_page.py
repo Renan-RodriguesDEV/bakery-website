@@ -30,7 +30,8 @@ def realizar_compra():
         ),
     )
     preco = ProductRepository().select_product_price(produto)
-    estoque = ProductRepository().select_product(produto).estoque
+    prod_objt = ProductRepository().select_product(produto)
+    estoque = prod_objt.estoque if prod_objt else 0
     if estoque:
         quantidade = st.number_input(
             "Quantidade",
