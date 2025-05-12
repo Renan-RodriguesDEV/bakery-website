@@ -73,6 +73,7 @@ class Cliente(Base):
         self.telefone = telefone
         self.email = email
         self.token = token
+        self.activate = 1
 
     def __str__(self):
         return f"Cliente(id={self.id}, nome='{self.nome}', cpf='{self.cpf}', telefone='{self.telefone}', email='{self.email}')"

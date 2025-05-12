@@ -1,8 +1,10 @@
 import sqlalchemy
 import streamlit as st
+from src.utils.email import EmailSender
 from src.models.repository.product_repository import ProductRepository
 from src.models.repository.user_repository import UserRepository
 from src.utils.uteis import Logger, str_as_number, validate_email
+from src.models.configs.config_geral import configs
 from src.models.repository.dataframes_repository import (
     select_all_clientes,
     select_all_products,
@@ -62,7 +64,8 @@ def register_client(nome: str, cpf: str, telefone: str, email: str):
     """
     try:
         cpf = str_as_number(cpf)
-        telefone = str_as_number(cpf)
+        telefone = str_as_number(telefone)
+
         cadasto = UserRepository().insert_user(
             username=nome,
             cpf=cpf,
@@ -259,5 +262,54 @@ def cadastro_cliente():
                 st.error(f"Não foi possivel apagar o cliente")
         st.warning("Atenção, essa ação é irreversível!!!")
     if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
+        st.session_state["pagina"] = "homepage"
+        st.rerun()
+
+
+def customer_registration():
+    """Pagina para registo de clientes para clientes"""
+    st.html(
+        "<h1 style='font-size:33px;color:darkgray;'><span style='color:#DAA520'>Cadastro(s)</span></span> de Clientes, <span style='color:#DAA520'>Registre-se</span><h1/>"
+    )
+    nome = st.text_input("Nome completo:", placeholder="Marcos Mendes")
+    cpf = st.text_input("CPF:", placeholder="666.666.666-69", max_chars=14)
+    senha = st.text_input("Senha:", type="password")
+    telefone = st.text_input("Telefone:", placeholder="(21) 77070-7070", max_chars=15)
+    email = st.text_input("Email:", placeholder="marcosmendes@gmail.com")
+    cpf = str_as_number(cpf)
+    telefone = str_as_number(telefone)
+    if st.button("Cadastrar", type="primary"):
+        if not validate_email(email):
+            st.error("Email invalido")
+        if not nome or not cpf or not senha or not telefone or not email:
+            st.warning("Todos os campos são obrigatorios!!")
+        else:
+            if UserRepository().insert_user(
+                nome, senha, cpf, telefone, email, "Cliente"
+            ):
+                email_sender = EmailSender()
+                message = f"""<html>
+    <p>Olá <b>{nome}</b>, seja bem-vindo ao nosso sistema!</p>
+    <p>Você se cadastrou com sucesso e agora pode aproveitar todos os nossos serviços.</p>
+    <p><b>Seus dados de acesso:</b><br>
+    Login: {email}<br>
+    Senha: {senha}</p>
+    <p>Caso tenha alguma dúvida ou precise de ajuda, não hesite em entrar em contato conosco.</p>
+    <p>Agradecemos por escolher nosso serviço!</p>
+    <p>Atenciosamente,<br>
+    Equipe de Suporte Padaria da Vila.</p>
+    </html>"""
+                email_sender.send_email(
+                    email, message, subject="Seja bem-vindo ao nosso sistema"
+                )
+                email_sender.send_email(
+                    configs["user"],
+                    message,
+                    subject="Novo cliente registrou-se em nosso sistema",
+                )
+                st.success(f"Cadastrado efetuado {nome}, retorne ao login!")
+            else:
+                st.error("Erro ao cadastrar o cliente")
+    if st.sidebar.button("Voltar", use_container_width=True, type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()

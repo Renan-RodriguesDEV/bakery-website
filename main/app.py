@@ -4,7 +4,11 @@ from routes.minhas_compras_page import minhas_compras
 from src.models.repository.user_repository import UserRepository
 from routes.carrinho_compras_page import shopping_cart
 from routes.user_page import information, my_account
-from routes.cadastros_page import cadastro_cliente, cadastro_produto
+from routes.cadastros_page import (
+    cadastro_cliente,
+    cadastro_produto,
+    customer_registration,
+)
 from routes.compras_page import realizar_compra
 from routes.login_page import tela_login
 from routes.dividas_page import atualizar_divida, consulta_divida
@@ -272,5 +276,7 @@ else:
         page_support()
     elif st.session_state["pagina"] == "esqueci":
         esquci_senha()
+    elif st.session_state["pagina"] == "customer_registration":
+        customer_registration()
     else:
         tela_login()

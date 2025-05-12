@@ -26,7 +26,14 @@ class UserRepository(DatabaseHandler):
                 self.session.commit()
                 return True
             elif type_user == "Cliente":
-                user = Cliente(nome=username, cpf=cpf, telefone=telefone, email=email)
+                password = password if password else cpf
+                user = Cliente(
+                    nome=username,
+                    cpf=cpf,
+                    telefone=telefone,
+                    email=email,
+                    senha=password,
+                )
                 self.session.add(user)
                 self.session.commit()
                 return True

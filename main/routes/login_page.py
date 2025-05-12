@@ -94,6 +94,14 @@ def tela_login():
         ):
             st.session_state["pagina"] = "esqueci"
             st.rerun()
-        if y.form_submit_button("Ajuda", help="Suporte ao usuario", type="secondary"):
+        help_col, register_col = y.columns([1, 1])
+        if help_col.form_submit_button(
+            "Ajuda", help="Suporte ao usuario", type="secondary"
+        ):
             st.session_state["pagina"] = "suporte"
+            st.rerun()
+        if register_col.form_submit_button(
+            "Cadastre-se", help="Tela de registro dos usuarios", type="secondary"
+        ):
+            st.session_state["pagina"] = "customer_registration"
             st.rerun()
