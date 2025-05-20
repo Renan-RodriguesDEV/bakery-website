@@ -112,7 +112,11 @@ def shopping_cart():
         if produtos and precos and quantidades:
             total_precos = sum(precos)
             payment_link, payment_id = payment(" x ".join(produtos), total_precos, 1)
+            if not payment_link and not payment_id:
+                st.error("Erro ao gerar o link para pagamento")
+                st.stop()
             Logger.info(f"link para pagamento {payment_link}")
+            Logger.info(f"ID para pagamento {payment_id}")
             col2.success(f"link para pagamento gerado com sucesso!!", icon="🔓")
 
         (

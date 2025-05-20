@@ -18,31 +18,34 @@ def payment(name_product: str, price: float, quantity: int):
                 "unit_price": price,
             }
         ],
-        "back_urls": {
-            "success": "http://localhost:8501/",
-            "failure": "http://localhost:8501/",
-            "pending": "http://localhost:8501/",
-        },
-        "auto_return": "all",
+        # "back_urls": {
+        #     "success": "http://localhost:8501/",
+        #     "failure": "http://localhost:8501/",
+        #     "pending": "http://localhost:8501/",
+        # },
+        # "auto_return": "all",
     }
     result = sdk.preference().create(payment_data)
-    # print(result["response"])
+    print(result)
+    if not "init_point" in result.get("response", {}):
+        return None, None
     return result["response"]["init_point"], result["response"]["id"]
 
 
 def get_payment_status(payment_id):
-    
-    filters = {
-	"sort": "date_created",
-	"criteria": "desc",
-	"external_reference": "ID_REF",
-	"range": "date_created",
-	"begin_date": "NOW-30DAYS",
-	"end_date": "NOW",
-	"store_id": "47792478",
-	"pos_id": "58930090"}
 
-    search_request = sdk.payment().search(filters);
+    filters = {
+        "sort": "date_created",
+        "criteria": "desc",
+        "external_reference": "ID_REF",
+        "range": "date_created",
+        "begin_date": "NOW-30DAYS",
+        "end_date": "NOW",
+        "store_id": "47792478",
+        "pos_id": "58930090",
+    }
+
+    search_request = sdk.payment().search(filters)
     print(search_request)
 
 
