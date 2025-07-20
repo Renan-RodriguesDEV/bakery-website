@@ -53,8 +53,8 @@ def minhas_compras():
                             <tr>
                                 <td style="color: white; padding: 10px;">{compra[1]}</td>
                                 <td style="color: white; padding: 10px;">{compra[3]}</td>
-                                <td style="color: white; padding: 10px;">R$ {str(compra[2]).replace('.', ',')}</td>
-                                <td style="color: #DAA520; padding: 10px;">R$ {str(compra[4]).replace('.', ',')}</td>
+                                <td style="color: white; padding: 10px;">R$ {str(compra[2]).replace(".", ",")}</td>
+                                <td style="color: #DAA520; padding: 10px;">R$ {str(compra[4]).replace(".", ",")}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -70,7 +70,7 @@ def minhas_compras():
                 use_container_width=True,
             ):
                 st.success('Status atualizado para "Retirado"', icon="🫡")
-                message = f"""<p>O cliente <b>{st.session_state['username']}</b> alterou o status da compra para <b>"já retirou"</b>, compra: <b>{compra[1]}</b>.</p>
+                message = f"""<p>O cliente <b>{st.session_state["username"]}</b> alterou o status da compra para <b>"já retirou"</b>, compra: <b>{compra[1]}</b>.</p>
                 <table border="1" style="border-collapse: collapse; width:100%;">
                     <thead>
                         <tr style="background-color: #f2f2f2;">
@@ -84,8 +84,8 @@ def minhas_compras():
                         <tr>
                             <td>{compra[1]}</td>
                             <td>{compra[3]}</td>
-                            <td>R$ {str(compra[2]).replace('.',',')}</td>
-                            <td>R$ {str(compra[4]).replace('.',',')}</td>
+                            <td>R$ {str(compra[2]).replace(".", ",")}</td>
+                            <td>R$ {str(compra[4]).replace(".", ",")}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -105,7 +105,7 @@ def minhas_compras():
                 use_container_width=True,
             ):
                 st.warning("Compareça até o local para retirar a compra")
-                message = f"""<p>O cliente <b>{st.session_state['username']}</b> informou que irá retirar a compra.</p>
+                message = f"""<p>O cliente <b>{st.session_state["username"]}</b> informou que irá retirar a compra.</p>
                 <table border="1" style="border-collapse: collapse; width:100%;">
                     <tr style="background-color: #f2f2f2;">
                         <th>Nome</th>
@@ -116,8 +116,8 @@ def minhas_compras():
                     <tr>
                         <td>{compra[1]}</td>
                         <td>{compra[3]}</td>
-                        <td>R$ {str(compra[2]).replace('.',',')}</td>
-                        <td>R$ {str(compra[4]).replace('.',',')}</td>
+                        <td>R$ {str(compra[2]).replace(".", ",")}</td>
+                        <td>R$ {str(compra[4]).replace(".", ",")}</td>
                     </tr>
                 </table>
                 """

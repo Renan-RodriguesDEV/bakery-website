@@ -53,7 +53,7 @@ def realizar_compra():
                 <div style='background-color: #8B4513; padding: 10px; border-radius: 5px; width: 100%;font-size:18px'>
                 <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #FFFFFF'>Produto: </span><strong>{produto}</strong></p>
                 <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #FFFFFF'>Preço Unitário: </span><strong>R$ {preco}</strong></p>
-                <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #FFFFFF'>Valor Final: </span><strong>R$ {preco*quantidade}</strong></p>
+                <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #FFFFFF'>Valor Final: </span><strong>R$ {preco * quantidade}</strong></p>
                 </div>
                 <br/>
                 """,
@@ -69,7 +69,7 @@ def realizar_compra():
                 with CartRepository() as cart_repository:
                     cart_repository.add_to_cart(cliente_obj, produto_obj, quantidade)
                 st.success(f" +{quantidade} {produto} adicionado ao carrinho 🛒")
-                st.success(f" +{preco*quantidade} adicionado ao valor do carrinho 💵")
+                st.success(f" +{preco * quantidade} adicionado ao valor do carrinho 💵")
                 disable = False
             else:
                 st.error("Erro ao adicionar ao carrinho")

@@ -33,7 +33,6 @@ def payment(name_product: str, price: float, quantity: int):
 
 
 def get_payment_status(payment_id):
-
     filters = {
         "sort": "date_created",
         "criteria": "desc",

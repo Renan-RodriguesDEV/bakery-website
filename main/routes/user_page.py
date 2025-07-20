@@ -40,8 +40,8 @@ def my_account():
         st.session_state["pagina"] = "login"
         st.rerun()
     else:
-        Logger.sucess(f'>>> Nome do usuario: {st.session_state["username"]}')
-        Logger.sucess(f'>>> Tipo de usuario:{st.session_state["usuario"]}')
+        Logger.sucess(f">>> Nome do usuario: {st.session_state['username']}")
+        Logger.sucess(f">>> Tipo de usuario:{st.session_state['usuario']}")
         st.title("Minha Conta")
         user = st.session_state["username"]
         type_user = st.session_state["usuario"]

@@ -9,7 +9,6 @@ Logger.info(
 
 
 class DatabaseHandler:
-
     def __init__(
         self,
         user=configs_db["username"],

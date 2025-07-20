@@ -6,7 +6,6 @@ from colorama import Fore, Style, init
 
 
 class Logger:
-
     def __init__(self):
         init(autoreset=True)
 

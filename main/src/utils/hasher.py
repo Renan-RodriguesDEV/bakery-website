@@ -8,5 +8,3 @@ class Hasher:
 
     def checkpswd(self, password, hashed):
         return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
-
-    

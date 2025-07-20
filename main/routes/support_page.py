@@ -101,7 +101,6 @@ def feedback_client():
     stars = st.feedback(options="stars")
     feedback += "\n" + f"Stars: {stars}"
     if st.button("Enviar Feedback", type="primary"):
-
         with st.status(
             "Enviando feedback...", expanded=True, state="running"
         ) as status:

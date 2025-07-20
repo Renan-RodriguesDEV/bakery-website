@@ -194,15 +194,14 @@ def atualizar_divida():
             max_value=ProductRepository().select_product(produto).estoque,
         )
         st.markdown(
-            f"<span style='font-size:30px; text-decoration:underline;'>Valor final: :green[${preco * quantidade if (preco and quantidade)!=None else 0}]</span>",
+            f"<span style='font-size:30px; text-decoration:underline;'>Valor final: :green[${preco * quantidade if (preco and quantidade) != None else 0}]</span>",
             unsafe_allow_html=True,
         )
         if st.button("Atualizar", type="primary", disabled=df_produtos.empty):
-
             is_register = register_sale(cliente, produto, quantidade)
             if is_register:
                 st.success(
-                    f"Venda registrada com sucesso no valor de R${preco*quantidade}!"
+                    f"Venda registrada com sucesso no valor de R${preco * quantidade}!"
                 )
             else:
                 st.error("Erro ao registrar a venda")
