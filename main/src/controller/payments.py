@@ -1,5 +1,6 @@
 import mercadopago
-import sys, os
+import sys
+import os
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 from src.models.configs.config_geral import configs
@@ -27,7 +28,7 @@ def payment(name_product: str, price: float, quantity: int):
     }
     result = sdk.preference().create(payment_data)
     print(result)
-    if not "init_point" in result.get("response", {}):
+    if "init_point" not in result.get("response", {}):
         return None, None
     return result["response"]["init_point"], result["response"]["id"]
 

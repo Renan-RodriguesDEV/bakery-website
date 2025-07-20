@@ -65,7 +65,7 @@ def esquci_senha():
                     """,
                 )
             else:
-                st.error(f"Erro ao gerar nova senha!!")
+                st.error("Erro ao gerar nova senha!!")
 
     y.write("Criador e support da pagina: @__little_renan.py")
     y.html(

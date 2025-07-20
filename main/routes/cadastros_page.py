@@ -76,14 +76,14 @@ def register_client(nome: str, cpf: str, telefone: str, email: str):
         if cadasto:
             st.success(f"Cliente {nome} cadastrado com sucesso!")
         else:
-            st.error(f"Não foi possivel cadastrar o cliente")
+            st.error("Não foi possivel cadastrar o cliente")
     except sqlalchemy.exc.IntegrityError as e:
         Logger.error(f"Erro ao alterar dados do cliente: {e}")
         st.error("Este email ou CPF já existe em um cadastro!!!")
         st.warning("Tente novamente com dados diferentes!!!")
     except Exception as e:
         Logger.error(str(e))
-        st.error(f"Erro ao alterar dados do cliente!!")
+        st.error("Erro ao alterar dados do cliente!!")
 
 
 def alter_product(produto, nome=None, preco=None, qtde=None, categoria=None):
@@ -188,7 +188,7 @@ def cadastro_produto():
             if deletion:
                 st.success(f"Produto {produto} deletado com sucesso!")
             else:
-                st.error(f"Não foi possivel apagar o produto")
+                st.error("Não foi possivel apagar o produto")
     if st.sidebar.button(
         "ir para home",
         use_container_width=True,
@@ -259,7 +259,7 @@ def cadastro_cliente():
             if deletion:
                 st.success(f"Cliente {cliente} deletado com sucesso!")
             else:
-                st.error(f"Não foi possivel apagar o cliente")
+                st.error("Não foi possivel apagar o cliente")
         st.warning("Atenção, essa ação é irreversível!!!")
     if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
         st.session_state["pagina"] = "homepage"

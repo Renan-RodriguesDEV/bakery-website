@@ -236,7 +236,7 @@ if "autenticado" not in st.session_state:
 if "pagina" not in st.session_state:
     st.session_state["pagina"] = "login"  # Define a página inicial como login
 # Inicializa "owner" com False por padrão, caso ainda não tenha sido definido
-if not "owner" in st.session_state or not st.session_state["owner"]:
+if "owner" not in st.session_state or not st.session_state["owner"]:
     st.session_state["owner"] = False
     st.session_state["usuario"] = "Cliente"
 else:

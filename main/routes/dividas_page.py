@@ -1,4 +1,3 @@
-import datetime
 import io
 
 import streamlit as st
@@ -97,7 +96,7 @@ def consulta_divida():
             )
         except Exception as e:
             st.warning(f"Não dividas existentes para o cliente {cliente}")
-            st.button(f"Dowload divida", disabled=True)
+            st.button("Dowload divida", disabled=True)
             Logger.error(str(e))
         if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
             st.session_state["pagina"] = "homepage"
@@ -194,7 +193,7 @@ def atualizar_divida():
             max_value=ProductRepository().select_product(produto).estoque,
         )
         st.markdown(
-            f"<span style='font-size:30px; text-decoration:underline;'>Valor final: :green[${preco * quantidade if (preco and quantidade) != None else 0}]</span>",
+            f"<span style='font-size:30px; text-decoration:underline;'>Valor final: :green[${preco * quantidade if (preco and quantidade) is not None else 0}]</span>",
             unsafe_allow_html=True,
         )
         if st.button("Atualizar", type="primary", disabled=df_produtos.empty):

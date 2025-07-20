@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 from src.models.repository.dividas_repository import register_sale
-from src.controller.payments import get_payment_status, payment
+from src.controller.payments import payment
 from src.utils.uteis import Logger, generate_qr_code
 from src.models.repository.cart_repository import CartRepository
 from src.models.repository.product_repository import ProductRepository
@@ -23,7 +23,7 @@ def shopping_cart():
     )
     select_all_checkbox = st.checkbox("Selecionar todos")
     itens_cart = [
-        f" ➕ ".join(
+        " ➕ ".join(
             [
                 f"item: {product_repository.select_product_by_id(carrinho.id_produto).nome}",
                 f"quantidade: {int(carrinho.quantidade)}",
@@ -117,7 +117,7 @@ def shopping_cart():
                 st.stop()
             Logger.info(f"link para pagamento {payment_link}")
             Logger.info(f"ID para pagamento {payment_id}")
-            col2.success(f"link para pagamento gerado com sucesso!!", icon="🔓")
+            col2.success("link para pagamento gerado com sucesso!!", icon="🔓")
 
         (
             col2.markdown(

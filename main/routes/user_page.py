@@ -35,7 +35,7 @@ def information():
 
 
 def my_account():
-    if not "autenticado" in st.session_state or not "usuario" in st.session_state:
+    if "autenticado" not in st.session_state or "usuario" not in st.session_state:
         st.error("Você precisa estar logado para ver sua conta")
         st.session_state["pagina"] = "login"
         st.rerun()
@@ -62,17 +62,17 @@ def my_account():
                 x.write(f"CPF: {number_as_cpf(user_data.cpf)}")
                 x.write(f"Telefone: {number_as_telephone(user_data.telefone)}")
                 new_name = y.text_input(
-                    f"Nome: ", type="default", placeholder="Criptovenio Mendes"
+                    "Nome: ", type="default", placeholder="Criptovenio Mendes"
                 )
-                new_pswd = y.text_input(f"Senha: ", type="password", max_chars=11)
+                new_pswd = y.text_input("Senha: ", type="password", max_chars=11)
                 new_email = y.text_input(
-                    f"Email: ", max_chars=100, placeholder="useremail@gmail.com"
+                    "Email: ", max_chars=100, placeholder="useremail@gmail.com"
                 )
                 new_telefone = y.text_input(
-                    f"Telefone: ", max_chars=15, placeholder="(21) 99999-9999"
+                    "Telefone: ", max_chars=15, placeholder="(21) 99999-9999"
                 )
                 new_cpf = y.text_input(
-                    f"CPF: ", max_chars=14, placeholder="666.666.666-69"
+                    "CPF: ", max_chars=14, placeholder="666.666.666-69"
                 )
                 flag = False
                 if new_name or new_pswd or new_email or new_telefone:
@@ -120,11 +120,11 @@ def my_account():
                 x.write(f"Nome: {user_data.nome}")
                 x.write(f"Email: {user_data.email}")
                 new_name = y.text_input(
-                    f"Nome: ", type="default", placeholder="Criptovenio Mendes"
+                    "Nome: ", type="default", placeholder="Criptovenio Mendes"
                 )
-                new_pswd = y.text_input(f"Senha: ", type="password", max_chars=11)
+                new_pswd = y.text_input("Senha: ", type="password", max_chars=11)
                 new_email = y.text_input(
-                    f"Email: ", max_chars=100, placeholder="useremail@gmail.com"
+                    "Email: ", max_chars=100, placeholder="useremail@gmail.com"
                 )
                 if new_name or new_pswd or new_email:
                     flag = True
