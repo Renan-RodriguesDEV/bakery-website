@@ -1,6 +1,7 @@
 colorama
 mercadopago
 pandas
+openpyxl
 Pillow
 PyMySQL
 bcrypt
