@@ -3,7 +3,8 @@ mercadopago
 pandas
 openpyxl
 Pillow
-PyMySQL
+# PyMySQL
+psycopg2
 bcrypt
 qrcode
 SQLAlchemy

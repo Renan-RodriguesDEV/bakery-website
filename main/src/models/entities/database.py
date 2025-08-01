@@ -1,26 +1,23 @@
 import datetime
 from typing import Literal
+
 from sqlalchemy import (
-    Boolean,
-    Column,
-    Integer,
-    String,
-    TIMESTAMP,
-    ForeignKey,
     DECIMAL,
     TEXT,
+    TIMESTAMP,
+    Boolean,
+    Column,
     Enum,
+    ForeignKey,
+    Integer,
+    String,
 )
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.sql import func
-from src.models.entities.connection_handler import DatabaseHandler
-
-
-# sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-from src.utils.uteis import Logger
-from src.utils.hasher import Hasher
 from src.models.configs.config_geral import configs
-
+from src.models.entities.connection_handler import DatabaseHandler
+from src.utils.hasher import Hasher
+from src.utils.uteis import Logger
 
 Base = declarative_base()
 
@@ -28,10 +25,18 @@ Base = declarative_base()
 class Produto(Base):
     __tablename__ = "produtos"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
-    nome = Column("nome", TEXT(500), nullable=False)
+    nome = Column("nome", TEXT, nullable=False)
     preco = Column("preco", DECIMAL(15, 2), nullable=False)
     categoria = Column(
-        "categoria", Enum("Bebidas", "Doces", "Salgados", "Padaria", "Mercearia")
+        "categoria",
+        Enum(
+            "Bebidas",
+            "Doces",
+            "Salgados",
+            "Padaria",
+            "Mercearia",
+            name="categoria_enum",
+        ),
     )
     estoque = Column("estoque", Integer, nullable=False)
 
@@ -60,7 +65,7 @@ class Cliente(Base):
     telefone = Column("telefone", String(15), nullable=True)
     email = Column("email", String(255), nullable=True, unique=True)
     token = Column("token", String(255), nullable=True)
-    activate = Column("activate", Boolean, nullable=False, server_default="1")
+    activate = Column("activate", Boolean, nullable=False, server_default="true")
 
     def __init__(self, nome, cpf, telefone, email, senha=None, token=None):
         self.nome = nome
@@ -71,7 +76,7 @@ class Cliente(Base):
         self.telefone = telefone
         self.email = email
         self.token = token
-        self.activate = 1
+        self.activate = True
 
     def __str__(self):
         return f"Cliente(id={self.id}, nome='{self.nome}', cpf='{self.cpf}', telefone='{self.telefone}', email='{self.email}')"
@@ -129,7 +134,7 @@ class Divida(Base):
     id_cliente = Column("id_cliente", ForeignKey("clientes.id"), nullable=False)
     valor = Column("valor", DECIMAL(15, 2), nullable=False, default=0)
     pago = Column("pago", DECIMAL(15, 2), nullable=False, default=0)
-    activate = Column("activate", Boolean, nullable=False, server_default="1")
+    activate = Column("activate", Boolean, nullable=False, server_default="true")
     data_modificacao = Column("data_modificacao", TIMESTAMP, server_default=func.now())
 
     def __init__(self, cliente, valor):

@@ -5,4 +5,5 @@ configs_db = {
     "password": secrets["TEST_PASSWORD_DB"],
     "host": secrets["TEST_HOST_DB"],
     "database": secrets["TEST_DATABASE_NAME"],
+    "connection_url": secrets["DATABASE_URL"],
 }

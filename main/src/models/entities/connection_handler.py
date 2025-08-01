@@ -1,30 +1,21 @@
+from contextlib import contextmanager
+
+import psycopg2
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from src.models.configs.config_db import configs_db
 from src.utils.uteis import Logger
 
-Logger.info(
-    f"{configs_db['username']} {configs_db['password']} {configs_db['host']} {configs_db['database']}"
-)
+Logger.info(f"Connecting with {configs_db['connection_url']}")
 
 
 class DatabaseHandler:
     def __init__(
         self,
-        user=configs_db["username"],
-        password=configs_db["password"],
-        host=configs_db["host"],
-        database=configs_db["database"],
+        connection_url=configs_db["connection_url"],
     ):
-        __user = user
-        __password = password
-        __host = host
-        __database = database
-        self.__str_url = f"mysql+pymysql://{__user}:{__password}@{__host}/{__database}"
-        self.__engine = create_engine(
-            self.__str_url,
-            #   echo=True
-        )
+        self.__str_url = connection_url
+        self.__engine = create_engine(self.__str_url, echo=True)
         self.session = None
 
     def get_engine(self):
@@ -37,3 +28,14 @@ class DatabaseHandler:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.session.close()
+
+
+@contextmanager
+def get_connection() -> psycopg2.extensions.connection:  # type: ignore
+    try:
+        connection = psycopg2.connect(configs_db["connection_url"])
+        yield connection
+    except Exception as e:
+        print(f"Erro in connection: {str(e)}")
+    finally:
+        connection.close()
