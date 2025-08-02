@@ -6,7 +6,7 @@ Sistema web desenvolvido em Python usando Streamlit para gerenciamento de uma pa
 
 - Python 3.8+
 - Streamlit 1.41.1
-- MySQL/MariaDB
+- PostgreSQL (Neon.tech ou outro host gratuito)
 - SQLAlchemy
 - Pandas
 - MercadoPago API
@@ -51,8 +51,9 @@ Sistema web desenvolvido em Python usando Streamlit para gerenciamento de uma pa
 pip install -r requirements.txt
 ```
 
-3. Configure as variáveis de ambiente no arquivo secrets.toml
-4. Execute o aplicativo:
+3. Configure as variáveis de ambiente no arquivo `secrets.toml` (veja exemplo abaixo)
+4. Crie o banco de dados PostgreSQL (recomendado Neon.tech, Railway, Supabase ou ElephantSQL)
+5. Execute o aplicativo:
 
 ```bash
 streamlit run main/app.py
@@ -64,11 +65,15 @@ streamlit run main/app.py
 USER = "email@exemplo.com"
 PASSWORD = "sua_senha"
 ACESS_TOKEN = "token_mercado_pago"
-TEST_USER_DB = "usuario_db"
-TEST_DATABASE_NAME = "nome_banco"
-TEST_HOST_DB = "localhost"
-TEST_PASSWORD_DB = "senha_db"
 PIX_KEY = "sua_chave_pix"
+TOKEN_TELEGRAM = "seu_token_telegram"
+
+# Dados do banco PostgreSQL
+TEST_USER_DB = "usuario_db"  # (opcional, se usar DATABASE_URL)
+TEST_DATABASE_NAME = "nome_banco"  # (opcional)
+TEST_HOST_DB = "host_postgres"  # (opcional)
+TEST_PASSWORD_DB = "senha_db"  # (opcional)
+DATABASE_URL = "postgresql://usuario:senha@host:porta/nome_banco?sslmode=require"
 ```
 
 ## 🎨 Customização
