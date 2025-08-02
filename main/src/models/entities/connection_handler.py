@@ -31,11 +31,13 @@ class DatabaseHandler:
 
 
 @contextmanager
-def get_connection() -> psycopg2.extensions.connection:  # type: ignore
+def get_connection():
     try:
+        print("Open connection")
         connection = psycopg2.connect(configs_db["connection_url"])
         yield connection
     except Exception as e:
         print(f"Erro in connection: {str(e)}")
     finally:
+        print("Closing connection")
         connection.close()

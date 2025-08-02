@@ -1,7 +1,13 @@
 import io
+from venv import logger
 
 import streamlit as st
 from pandas import DataFrame
+from src.models.repository.dataframes_repository import (
+    select_all_clientes,
+    select_all_products,
+    select_all_sales_by_client,
+)
 from src.models.repository.dividas_repository import (
     delete_dividas,
     register_sale,
@@ -10,12 +16,6 @@ from src.models.repository.dividas_repository import (
 )
 from src.models.repository.product_repository import ProductRepository
 from src.utils.uteis import Logger, str_as_number
-
-from src.models.repository.dataframes_repository import (
-    select_all_clientes,
-    select_all_products,
-    select_all_sales_by_client,
-)
 
 
 def consulta_divida():
@@ -65,7 +65,8 @@ def consulta_divida():
             "Consulta completa", help="Consulte todas as dividas do cliente"
         ):
             if dividas_completa is not None:
-                df_dividas_total = DataFrame(dividas_completa)
+                df_dividas_total = dividas_completa
+                logger.debug(df_dividas_total)
                 df_dividas_total["preco"] = df_dividas_total["preco"].map(
                     lambda x: f"R$ {x:.2f}".replace(".", ",")
                 )
