@@ -4,3 +4,4 @@ secrets.toml
 tests/
 venv
 .ruff_cache/
+.pytest_cache/
