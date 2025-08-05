@@ -33,12 +33,16 @@ def consulta_produto():
         produtos_select = search_product(nome)
 
         if st.button("Procurar produto", type="primary"):
-            if produtos_select is not None:
+            if produtos_select is not None and not produtos_select.empty:
                 produtos_select = DataFrame(produtos_select)
                 produtos_select.drop("id", inplace=True, errors="ignore", axis=1)
-                produtos_select["preco"] = produtos_select["preco"].map(
-                    lambda x: f"R$ {x:.2f}".replace(".", ",")
-                )
+        
+                # Verificar se a coluna 'preco' existe antes de acessá-la
+                if 'preco' in produtos_select.columns:
+                    produtos_select["preco"] = produtos_select["preco"].map(
+                        lambda x: f"R$ {x:.2f}".replace(".", ",")
+                    )
+        
                 produtos_select.columns = [
                     "Produto",
                     "Preço",

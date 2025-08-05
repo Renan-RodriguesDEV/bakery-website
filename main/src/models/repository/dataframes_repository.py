@@ -24,7 +24,10 @@ def search_product(name):
         data = cursor.fetchall()
         if not data:
             return pd.DataFrame(columns=["id", "nome", "preco", "estoque", "categoria"])
-        return pd.DataFrame(data)
+        
+        # Converte cada linha para dicionário para preservar os nomes das colunas
+        dict_data = [dict(row) for row in data]
+        return pd.DataFrame(dict_data)
 
 
 # Função para selecionar todos os clientes
