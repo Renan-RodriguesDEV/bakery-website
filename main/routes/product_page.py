@@ -33,7 +33,7 @@ def consulta_produto():
         produtos_select = search_product(nome)
 
         if st.button("Procurar produto", type="primary"):
-            if produtos_select:
+            if produtos_select is not None:
                 produtos_select = DataFrame(produtos_select)
                 produtos_select.drop("id", inplace=True, errors="ignore", axis=1)
                 produtos_select["preco"] = produtos_select["preco"].map(
