@@ -1,7 +1,9 @@
 import datetime
 from pathlib import Path
 
-from src.models.entities.connection_handler import get_connection
+from sqlalchemy import text
+
+from src.models.entities.connection_handler import get_db_session
 
 
 def backup_with_psycopg2():
@@ -13,14 +15,14 @@ def backup_with_psycopg2():
 
     try:
         # Conectar ao banco
-        with get_connection() as conn:
+        with get_db_session() as session:
             # Obter lista de tabelas
-            cur = conn.cursor()
-            cur.execute("""
+            tables = session.execute(
+                text("""
                 SELECT tablename FROM pg_tables 
                 WHERE schemaname = 'public'
             """)
-            tables = cur.fetchall()
+            ).fetchall()
 
             # Criar backup comprimido
             with open(backup_file, "w") as f:
@@ -28,16 +30,19 @@ def backup_with_psycopg2():
                     table_name = table[0]
 
                     # Dump da estrutura da tabela
-                    cur.execute(f"""
+                    session.execute(
+                        text(f"""
                         SELECT 'CREATE TABLE ' || '{table_name}' || ' (' ||
                         string_agg(column_name || ' ' || data_type, ', ') || ');'
                         FROM information_schema.columns 
                         WHERE table_name = '{table_name}'
                     """)
+                    ).fetchall()
 
                     # Dump dos dados
-                    cur.execute(f"SELECT * FROM {table_name}")
-                    rows = cur.fetchall()
+                    rows = session.execute(
+                        text(f"SELECT * FROM {table_name}")
+                    ).fetchall()
 
                     for row in rows:
                         # Escrever dados no arquivo

@@ -1,6 +1,5 @@
 from contextlib import contextmanager
 
-import psycopg2
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from src.models.configs.config_db import configs_db
@@ -31,13 +30,13 @@ class DatabaseHandler:
 
 
 @contextmanager
-def get_connection():
+def get_db_session():
     try:
-        print("Open connection")
-        connection = psycopg2.connect(configs_db["connection_url"])
-        yield connection
+        with DatabaseHandler() as handler:
+            yield handler.session
     except Exception as e:
+        if handler.session:
+            handler.session.rollback()
         print(f"Erro in connection: {str(e)}")
     finally:
         print("Closing connection")
-        connection.close()
