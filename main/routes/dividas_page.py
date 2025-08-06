@@ -3,6 +3,7 @@ from venv import logger
 
 import streamlit as st
 from pandas import DataFrame
+from src.utils.email import EmailSender
 from src.models.repository.dataframes_repository import (
     select_all_clientes,
     select_all_products,
@@ -15,6 +16,7 @@ from src.models.repository.dividas_repository import (
     update_dividas,
 )
 from src.models.repository.product_repository import ProductRepository
+from src.models.repository.user_repository import UserRepository
 from src.utils.uteis import Logger, str_as_number
 
 
@@ -222,6 +224,7 @@ def atualizar_divida():
                 st.error(
                     "Insira valores positivos ao remover a divida e não insira valores maiores que a divida!!!"
                 )
+            
         if col2.button(
             "Zerar divida",
             type="primary",
@@ -232,6 +235,8 @@ def atualizar_divida():
             st.success(
                 f"Pagamento registrado com sucesso!! a conta atual está em R$ {select_debt_by_client(cliente)}"
             )
+            # TODO: Enviar email de confirmação de pagamento
+            send_notify(cliente, valor_remover)
         elif is_pag is None or not is_pag:
             st.warning("Aguardando efetuação de pagamento")
         else:
@@ -240,3 +245,12 @@ def atualizar_divida():
     if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()
+
+@st.cache_data
+def send_notify(cliente,valor):
+    email_sender = EmailSender()
+    cliente_email = UserRepository().select_user(cliente,'Cliente').email
+    email_sender.send_email(email=cliente_email,text=f'Pagamento no valor de R${valor} registrado com sucesso!')
+    email_sender.send_email(email=st.secrets['USER'],text=f'Pagamento no valor de R${valor} registrado com sucesso!')
+    st.success(f'Cliente {cliente_email} e proprietário(s) notificados com sucesso!')
+    st.balloons()

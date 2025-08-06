@@ -13,10 +13,14 @@ def page_support():
     x.title("Bem vindo a pagina de support")
     feedback = x.text_area("Por favor descreva o ocorrido!!", max_chars=500, height=200)
 
-    if x.button("Enviar Feedback", type="primary"):
-        EmailSender().send_feedback_email(
-            name=st.session_state["usuario"], feedback=feedback
+    if x.button("Enviar Ocorrência", type="primary"):
+        boolean = send_feedback(
+            feedback=feedback
         )
+        if boolean:
+            st.success("Ocorrência enviada com sucesso!")
+        else:
+            st.error("Erro ao enviar ocorrência, tente novamente mais tarde!")
 
     y.write("Criador e support da pagina: @__little_renan.py")
     y.html(
@@ -56,12 +60,12 @@ def esquci_senha():
                 EmailSender().send_email(
                     usuario,
                     f"""
-<p>Seu <b>token</b> de usuário para login em <a href='https://bakery-of-village.streamlit.app/' style='color:blue;'>Padaria da Vila</a> é: <code>{token_generator}</code></p>
+<p>Seu <b>token</b> de usuário para login em <a href='https://padaria-da-vila.streamlit.app/' style='color:blue;'>Padaria da Vila</a> é: <code>{token_generator}</code></p>
 <p>Em seu próximo <i>login</i>, utilize-o para acessar sua conta em nosso site!</p>
 <p>Atenciosamente,</p>
 <p style='color:blue;'>Padaria da Vila - Itai/SP</p>
 <p>Fone: <span style='color:green;'>(19) 99872-2472/SP</span></p>
-<p><a href='https://bakery-of-village.streamlit.app/' style='color:blue; text-decoration:none;'>https://bakery-of-village.streamlit.app/</a></p>
+<p><a href='https://padaria-da-vila.streamlit.app/' style='color:blue; text-decoration:none;'>https://padaria-da-vila.streamlit.app/</a></p>
                     """,
                 )
             else:
