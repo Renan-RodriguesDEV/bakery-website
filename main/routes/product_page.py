@@ -3,9 +3,9 @@ import io
 import streamlit as st
 from pandas import DataFrame
 from src.models.repository.dataframes_repository import (
-    select_all_products_by_category,
-    select_all_products,
     search_product,
+    select_all_products,
+    select_all_products_by_category,
 )
 
 
@@ -36,13 +36,13 @@ def consulta_produto():
             if produtos_select is not None and not produtos_select.empty:
                 produtos_select = DataFrame(produtos_select)
                 produtos_select.drop("id", inplace=True, errors="ignore", axis=1)
-        
+
                 # Verificar se a coluna 'preco' existe antes de acessá-la
-                if 'preco' in produtos_select.columns:
+                if "preco" in produtos_select.columns:
                     produtos_select["preco"] = produtos_select["preco"].map(
                         lambda x: f"R$ {x:.2f}".replace(".", ",")
                     )
-        
+
                 produtos_select.columns = [
                     "Produto",
                     "Preço",
@@ -91,4 +91,7 @@ def consulta_produto():
         )
     if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
         st.session_state["pagina"] = "homepage"
+        st.rerun()
+    if st.sidebar.button("Comprar", use_container_width=True, type="primary"):
+        st.session_state["pagina"] = "realizar_compra"
         st.rerun()

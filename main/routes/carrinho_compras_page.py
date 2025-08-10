@@ -1,12 +1,12 @@
 import pandas as pd
 import streamlit as st
-from src.models.repository.dividas_repository import register_sale
 from src.controller.payments import payment
-from src.utils.uteis import Logger, generate_qr_code
+from src.models.configs.config_geral import configs
 from src.models.repository.cart_repository import CartRepository
+from src.models.repository.dividas_repository import register_sale
 from src.models.repository.product_repository import ProductRepository
 from src.models.repository.user_repository import UserRepository
-from src.models.configs.config_geral import configs
+from src.utils.uteis import Logger, generate_qr_code
 
 
 def shopping_cart():
@@ -150,4 +150,7 @@ def shopping_cart():
 
     if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
         st.session_state["pagina"] = "homepage"
+        st.rerun()
+    if st.sidebar.button("Comprar", use_container_width=True, type="primary"):
+        st.session_state["pagina"] = "realizar_compra"
         st.rerun()

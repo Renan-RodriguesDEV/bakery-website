@@ -1,14 +1,14 @@
 import sqlalchemy
 import streamlit as st
-from src.utils.email import EmailSender
-from src.models.repository.product_repository import ProductRepository
-from src.models.repository.user_repository import UserRepository
-from src.utils.uteis import Logger, str_as_number, validate_email
 from src.models.configs.config_geral import configs
 from src.models.repository.dataframes_repository import (
     select_all_clientes,
     select_all_products,
 )
+from src.models.repository.product_repository import ProductRepository
+from src.models.repository.user_repository import UserRepository
+from src.utils.email import EmailSender
+from src.utils.uteis import Logger, str_as_number, validate_email
 
 
 def alter_client(cliente, nome=None, cpf=None, email=None, telefone=None):
@@ -169,14 +169,31 @@ def cadastro_produto():
             select_all_products(),
             help="selecione o produto que deseja alterar",
         )
-        nome = st.text_input(":orange[Novo Nome do Produto]")
-        preco = st.number_input(":orange[Novo Preço]", min_value=0.0, step=0.01)
+        produto_obj = ProductRepository().select_product(produto)
+        nome = st.text_input(":orange[Novo Nome do Produto]", value=produto_obj.nome)
+        preco = st.number_input(
+            ":orange[Novo Preço]",
+            min_value=0.0,
+            step=0.01,
+            value=float(produto_obj.preco),
+        )
         qtde = st.number_input(
-            ":orange[Nova Quantidade em estoque]", min_value=0, step=1
+            ":orange[Nova Quantidade em estoque]",
+            min_value=0,
+            step=1,
+            value=int(produto_obj.estoque),
         )
         categoria = st.selectbox(
             ":orange[Selecione uma da(s) categoria(s)]",
-            ["categoria", "Bebidas", "Doces", "Salgados", "Padaria", "Mercearia"],
+            [
+                produto_obj.categoria,
+                "Bebidas",
+                "Doces",
+                "Salgados",
+                "Padaria",
+                "Mercearia",
+            ],
+            accept_new_options=False,
         )
         if st.button("Alterar", type="primary"):
             alter_product(produto, nome, preco, qtde, categoria)
@@ -235,13 +252,20 @@ def cadastro_cliente():
             select_all_clientes(),
             help="selecione o cliente que deseja alterar",
         )
-        nome = st.text_input("Novo Nome do Cliente")
-        cpf = st.text_input("Novo CPF do Cliente", placeholder="666.666.666-69")
+        cliente_obj = UserRepository().select_user(cliente)
+        nome = st.text_input("Novo Nome do Cliente", value=cliente_obj.nome)
+        cpf = st.text_input(
+            "Novo CPF do Cliente", placeholder="666.666.666-69", value=cliente_obj.cpf
+        )
         email = st.text_input(
-            "Novo Email do Cliente", placeholder="marcosmendes@gmail.com"
+            "Novo Email do Cliente",
+            placeholder="marcosmendes@gmail.com",
+            value=cliente_obj.email,
         )
         telefone = st.text_input(
-            "Novo Telefone do Cliente", placeholder="(21) 77070-7070"
+            "Novo Telefone do Cliente",
+            placeholder="(21) 77070-7070",
+            value=cliente_obj.telefone,
         )
         if st.button("Alterar", type="primary"):
             if not email:

@@ -1,12 +1,11 @@
 import streamlit as st
-
-from src.models.repository.user_repository import UserRepository
 from src.models.repository.cart_repository import CartRepository
-from src.models.repository.product_repository import ProductRepository
 from src.models.repository.dataframes_repository import (
     select_all_products,
     select_all_products_by_category,
 )
+from src.models.repository.product_repository import ProductRepository
+from src.models.repository.user_repository import UserRepository
 from src.utils.uteis import Logger
 
 
@@ -79,4 +78,9 @@ def realizar_compra():
 
     if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
         st.session_state["pagina"] = "homepage"
+        st.rerun()
+    if st.sidebar.button(
+        "ir para consulta de produtos", use_container_width=True, type="primary"
+    ):
+        st.session_state["pagina"] = "consulta_produto"
         st.rerun()

@@ -3,7 +3,6 @@ from venv import logger
 
 import streamlit as st
 from pandas import DataFrame
-from src.utils.email import EmailSender
 from src.models.repository.dataframes_repository import (
     select_all_clientes,
     select_all_products,
@@ -17,6 +16,7 @@ from src.models.repository.dividas_repository import (
 )
 from src.models.repository.product_repository import ProductRepository
 from src.models.repository.user_repository import UserRepository
+from src.utils.email import EmailSender
 from src.utils.uteis import Logger, str_as_number
 
 
@@ -103,6 +103,11 @@ def consulta_divida():
             Logger.error(str(e))
         if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
             st.session_state["pagina"] = "homepage"
+            st.rerun()
+        if st.sidebar.button(
+            "ir alterar pendencias", use_container_width=True, type="primary"
+        ):
+            st.session_state["pagina"] = "atualizar_divida"
             st.rerun()
     else:
         st.title("Consulta de Dívida de Clientes")
@@ -224,13 +229,14 @@ def atualizar_divida():
                 st.error(
                     "Insira valores positivos ao remover a divida e não insira valores maiores que a divida!!!"
                 )
-            
+
         if col2.button(
             "Zerar divida",
             type="primary",
             help="Atenção, essa ação não pode ser desfeita",
         ):
             is_pag = delete_dividas(cliente)
+            valor_remover = divida_total
         if is_pag is not None and is_pag:
             st.success(
                 f"Pagamento registrado com sucesso!! a conta atual está em R$ {select_debt_by_client(cliente)}"
@@ -245,12 +251,24 @@ def atualizar_divida():
     if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()
+    if st.sidebar.button(
+        "ir consultar dividas", use_container_width=True, type="primary"
+    ):
+        st.session_state["pagina"] = "consulta_divida"
+        st.rerun()
+
 
 @st.cache_data
-def send_notify(cliente,valor):
+def send_notify(cliente, valor):
     email_sender = EmailSender()
-    cliente_email = UserRepository().select_user(cliente,'Cliente').email
-    email_sender.send_email(email=cliente_email,text=f'Pagamento no valor de R${valor} registrado com sucesso!')
-    email_sender.send_email(email=st.secrets['USER'],text=f'Pagamento no valor de R${valor} registrado com sucesso!')
-    st.success(f'Cliente {cliente_email} e proprietário(s) notificados com sucesso!')
+    cliente_email = UserRepository().select_user(cliente, "Cliente").email
+    email_sender.send_email(
+        email=cliente_email,
+        text=f"Pagamento no valor de R${valor} registrado com sucesso!",
+    )
+    email_sender.send_email(
+        email=st.secrets["USER"],
+        text=f"Pagamento no valor de R${valor} registrado com sucesso!",
+    )
+    st.success(f"Cliente {cliente_email} e proprietário(s) notificados com sucesso!")
     st.balloons()
