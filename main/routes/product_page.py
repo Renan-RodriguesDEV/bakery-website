@@ -11,6 +11,8 @@ from src.models.repository.dataframes_repository import (
 
 def consulta_produto():
     """Pagina para consulta de produtos"""
+    produtos = select_all_products()
+
     st.markdown(
         "<h1 style='text-align: left; color: #DAA520;'>Consulta de Produtos</h1>",
         unsafe_allow_html=True,
@@ -30,6 +32,7 @@ def consulta_produto():
             value="",
             label_visibility="collapsed",
         )
+
         produtos_select = search_product(nome)
 
         if st.button("Procurar produto", type="primary"):
@@ -57,11 +60,9 @@ def consulta_produto():
         "Selecione uma da(s) categoria(s)",
         ["categoria", "Bebidas", "Doces", "Salgados", "Padaria", "Mercearia"],
     )
-    produtos = (
-        select_all_products()
-        if not categoria or categoria == "categoria"
-        else select_all_products_by_category(categoria)
-    )
+    if categoria and categoria != "categoria":
+        produtos = select_all_products_by_category(categoria)
+
     flag = True if produtos.empty else False
     df = DataFrame(produtos)
     df["Preço"] = df["Preço"].map(lambda x: f"R$ {x:.2f}".replace(".", ","))

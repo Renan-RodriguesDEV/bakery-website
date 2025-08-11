@@ -21,10 +21,12 @@ def select_all_products():
         return df
 
 
-def search_product(name):
+def search_product(name: str):
     with get_db_session() as session:
-        query = text("SELECT * FROM produtos WHERE nome LIKE :name ORDER BY nome")
-        result = session.execute(query, {"name": f"%{name}%"})
+        query = text(
+            "SELECT id, nome, preco, estoque, categoria FROM produtos WHERE LOWER(nome) LIKE :name ORDER BY nome"
+        )
+        result = session.execute(query, {"name": f"%{name.lower()}%"})
 
         # Converte para lista de dicionários
         data = [dict(row._mapping) for row in result]
@@ -60,7 +62,7 @@ def select_all_clientes():
 
 
 # Função para selecionar o estoque pelo nome do produto
-def select_count_by_name(name):
+def select_count_by_name(name: str):
     with get_db_session() as session:
         query = text("SELECT estoque FROM produtos WHERE nome = :name")
         result = session.execute(query, {"name": name})
