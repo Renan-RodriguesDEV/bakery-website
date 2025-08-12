@@ -32,10 +32,11 @@ def consulta_produto():
             value="",
             label_visibility="collapsed",
         )
-
-        produtos_select = search_product(nome)
+        produtos_select = None
 
         if st.button("Procurar produto", type="primary"):
+            if nome.strip():
+                produtos_select = search_product(nome.strip())
             if produtos_select is not None and not produtos_select.empty:
                 produtos_select = DataFrame(produtos_select)
                 produtos_select.drop("id", inplace=True, errors="ignore", axis=1)
@@ -93,6 +94,13 @@ def consulta_produto():
     if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
         st.session_state["pagina"] = "homepage"
         st.rerun()
-    if st.sidebar.button("Comprar", use_container_width=True, type="primary"):
-        st.session_state["pagina"] = "realizar_compra"
-        st.rerun()
+    if st.session_state["owner"]:
+        if st.sidebar.button(
+            "Editar Produtos", use_container_width=True, type="primary"
+        ):
+            st.session_state["pagina"] = "cadastro_produto"
+            st.rerun()
+    else:
+        if st.sidebar.button("Comprar", use_container_width=True, type="primary"):
+            st.session_state["pagina"] = "realizar_compra"
+            st.rerun()
