@@ -20,3 +20,103 @@ div[data-testid="stSidebarContent"]::before {
 div[data-testid="stSidebarContent"]:hover::before {
   filter: brightness(0.7);
 }
+
+/* pequenas melhorias e ícone de colapso (minimal, reversível) */
+:root {
+  --accent: #daa520;
+  --text: #ffffff;
+  --muted: rgba(255, 255, 255, 0.75);
+  --pad: 8px;
+}
+
+/* mantém conteúdo acima do background */
+div[data-testid="stSidebarContent"] > * {
+  position: relative;
+  z-index: 1;
+  padding: var(--pad) 0;
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial;
+}
+
+/* itens dentro da sidebar (opcional, suave) */
+div[data-testid="stSidebarContent"] .sidebar-item,
+div[data-testid="stSidebarContent"] .stButton > button {
+  margin: 6px 0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  text-align: left;
+  transition: background 0.12s ease, transform 0.12s ease;
+}
+
+/* estado hover leve para melhor affordance sem mudar drasticamente */
+div[data-testid="stSidebarContent"] .sidebar-item:hover,
+div[data-testid="stSidebarContent"] .stButton > button:hover {
+  background: rgba(218, 165, 32, 0.06);
+  transform: translateY(-2px);
+}
+
+/* controle de colapso: substitui o texto ">>" por ícone do Bootstrap (preserva leitura por leitores de tela) */
+div[data-testid="stSidebarCollapsedControl"] button,
+div[data-testid="stSidebarCollapsedControl"] > button {
+  background-color: var(--accent);
+  color: transparent; /* esconde visualmente o texto */
+  text-indent: -9999px; /* mantém texto no DOM para acessibilidade */
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 8px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+  transition: transform 0.14s ease, filter 0.12s ease;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+/* adiciona o SVG do Bootstrap Icons como pseudo-elemento */
+div[data-testid="stSidebarCollapsedControl"] button::after,
+div[data-testid="stSidebarCollapsedControl"] > button::after {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-image: url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/icons/chevron-right.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  filter: invert(1) sepia(1) saturate(0) hue-rotate(180deg) brightness(1.15);
+  transition: transform 0.18s ease, opacity 0.12s ease;
+  transform: rotate(0deg);
+  opacity: 0.98;
+}
+
+/* rotação quando expandido — muitos controles usam aria-expanded */
+div[data-testid="stSidebarCollapsedControl"]
+  button[aria-expanded="true"]::after,
+div[data-testid="stSidebarCollapsedControl"][aria-expanded="true"]
+  button::after,
+div[data-testid="stSidebarCollapsedControl"].expanded button::after {
+  transform: rotate(180deg);
+}
+
+/* foco acessível discreto */
+div[data-testid="stSidebarCollapsedControl"] button:focus-visible {
+  outline: 3px solid rgba(218, 165, 32, 0.18);
+  outline-offset: 2px;
+}
+
+/* responsividade mínima */
+@media (max-width: 420px) {
+  div[data-testid="stSidebarCollapsedControl"] button {
+    width: 36px;
+    height: 36px;
+  }
+  div[data-testid="stSidebarCollapsedControl"] button::after {
+    width: 16px;
+    height: 16px;
+  }
+}

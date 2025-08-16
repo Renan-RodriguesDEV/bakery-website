@@ -1,7 +1,7 @@
 import streamlit as st
-from src.utils.uteis import number_as_cpf, number_as_telephone, Logger, validate_email
-from src.models.repository.user_repository import UserRepository
 from src.models.repository.dataframes_repository import select_all_clientes
+from src.models.repository.user_repository import UserRepository
+from src.utils.uteis import Logger, number_as_cpf, number_as_telephone, validate_email
 
 
 def information():
@@ -29,7 +29,9 @@ def information():
                 """,
                 unsafe_allow_html=True,
             )
-    if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
+    if st.sidebar.button(
+        "Home",icon=':material/home:', help="Ir para homepage", use_container_width=True, type="primary"
+    ):
         st.session_state["pagina"] = "homepage"
         st.rerun()
 
@@ -154,6 +156,8 @@ def my_account():
                             "É necessario preencher algum dos campos para atualizar"
                         )
 
-        if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
+        if st.sidebar.button(
+            "Home", icon=':material/home:', help="Ir para homepage", use_container_width=True, type="primary"
+        ):
             st.session_state["pagina"] = "homepage"
             st.rerun()

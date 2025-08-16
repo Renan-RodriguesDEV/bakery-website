@@ -207,11 +207,20 @@ def cadastro_produto():
             else:
                 st.error("Não foi possivel apagar o produto")
     if st.sidebar.button(
-        "ir para home",
+        "Home",
+        icon=":material/home:",
+        help="Ir para homepage",
         use_container_width=True,
         type="primary",
     ):
         st.session_state["pagina"] = "homepage"
+        st.rerun()
+    if st.sidebar.button(
+        "Catalogo de Produtos",
+        use_container_width=True,
+        type="secondary",
+    ):
+        st.session_state["pagina"] = "consulta_produto"
         st.rerun()
 
 
@@ -285,7 +294,9 @@ def cadastro_cliente():
             else:
                 st.error("Não foi possivel apagar o cliente")
         st.warning("Atenção, essa ação é irreversível!!!")
-    if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
+    if st.sidebar.button(
+        "Home", icon=':material/home:', help="Ir para homepage", use_container_width=True, type="primary"
+    ):
         st.session_state["pagina"] = "homepage"
         st.rerun()
 

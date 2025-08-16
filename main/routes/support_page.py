@@ -1,9 +1,9 @@
 import datetime
 import time
-import streamlit as st
 
-from src.utils.email import EmailSender
+import streamlit as st
 from src.models.repository.user_repository import UserRepository
+from src.utils.email import EmailSender
 from src.utils.uteis import Logger, generate_token
 
 
@@ -14,9 +14,7 @@ def page_support():
     feedback = x.text_area("Por favor descreva o ocorrido!!", max_chars=500, height=200)
 
     if x.button("Enviar Ocorrência", type="primary"):
-        boolean = send_feedback(
-            feedback=feedback
-        )
+        boolean = send_feedback(feedback=feedback)
         if boolean:
             st.success("Ocorrência enviada com sucesso!")
         else:
@@ -27,7 +25,9 @@ def page_support():
         """<p>Caso tenha algum problema ou sugestão, por favor, entre em contato com o criador da pagina</p> <p>✉️ <a href='mailto:renanrodrigues7110@gmail.com' target='_blank'>renanrodrigues7110@gmail.com</a></p><p>📞 <a href='https://wa.me/+5519998722472' target='_blank'>(19) 99872-2472</a></p>"""
     )
     # Adicione botão de voltar
-    if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
+    if st.sidebar.button(
+        "Home", icon=':material/home:',help="Ir para homepage", use_container_width=True, type="primary"
+    ):
         st.session_state["pagina"] = "homepage"
         st.rerun()
 

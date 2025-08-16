@@ -1,7 +1,6 @@
 import streamlit as st
-
-from src.utils.email import EmailSender
 from src.models.repository.dataframes_repository import select_all_sales_by_client
+from src.utils.email import EmailSender
 
 
 def notify_status(_to, message):
@@ -126,6 +125,8 @@ def minhas_compras():
 
     else:
         st.info("Não há compra(s) para retirarda(s) ou atualização de status !!!")
-    if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
+    if st.sidebar.button(
+        "Home",icon=':material/home:', help="Ir para homepage", use_container_width=True, type="primary"
+    ):
         st.session_state["pagina"] = "homepage"
         st.rerun()

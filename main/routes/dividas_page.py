@@ -41,7 +41,11 @@ def consulta_divida():
             st.error("Nenhum cliente cadastrado")
             st.warning("Cadastre algum cliente antes de acessar está pagina")
             if st.sidebar.button(
-                "ir para home", use_container_width=True, type="primary"
+                "Home",
+                icon=":material/home:",
+                help="Ir para homepage",
+                use_container_width=True,
+                type="primary",
             ):
                 st.session_state["pagina"] = "homepage"
                 st.rerun()
@@ -101,11 +105,17 @@ def consulta_divida():
             st.warning(f"Não dividas existentes para o cliente {cliente}")
             st.button("Dowload divida", disabled=True)
             Logger.error(str(e))
-        if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
+        if st.sidebar.button(
+            "Home",
+            icon=":material/home:",
+            help="Ir para homepage",
+            use_container_width=True,
+            type="primary",
+        ):
             st.session_state["pagina"] = "homepage"
             st.rerun()
         if st.sidebar.button(
-            "ir alterar pendencias", use_container_width=True, type="primary"
+            "Editar pendencias", use_container_width=True, type="primary"
         ):
             st.session_state["pagina"] = "atualizar_divida"
             st.rerun()
@@ -167,7 +177,13 @@ def consulta_divida():
                 else:
                     st.error("Nenhuma divida encontrado !!!")
 
-        if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
+        if st.sidebar.button(
+            "Home",
+            icon=":material/home:",
+            help="Ir para homepage",
+            use_container_width=True,
+            type="primary",
+        ):
             st.session_state["pagina"] = "homepage"
             st.rerun()
 
@@ -248,7 +264,9 @@ def atualizar_divida():
         else:
             st.error("Erro ao registrar a pagamento")
 
-    if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
+    if st.sidebar.button(
+        "Home", icon=':material/home:',help="Ir para homepage", use_container_width=True, type="primary"
+    ):
         st.session_state["pagina"] = "homepage"
         st.rerun()
     if st.sidebar.button(

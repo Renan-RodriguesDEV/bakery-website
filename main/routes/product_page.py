@@ -91,7 +91,9 @@ def consulta_produto():
             type="secondary",
             use_container_width=True,
         )
-    if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
+    if st.sidebar.button(
+        "Home", icon=':material/home:',help="Ir para homepage", use_container_width=True, type="primary"
+    ):
         st.session_state["pagina"] = "homepage"
         st.rerun()
     if st.session_state["owner"]:

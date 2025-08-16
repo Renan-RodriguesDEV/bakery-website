@@ -72,15 +72,17 @@ def realizar_compra():
                 disable = False
             else:
                 st.error("Erro ao adicionar ao carrinho")
-        if st.button("Ir para o carrinho", disabled=disable):
+        if st.button("Carrinho de Compras", disabled=disable):
             st.session_state["pagina"] = "cart"
             st.rerun()
 
-    if st.sidebar.button("ir para home", use_container_width=True, type="primary"):
+    if st.sidebar.button(
+        "Home",icon=':material/home:', help="Ir para homepage", use_container_width=True, type="primary"
+    ):
         st.session_state["pagina"] = "homepage"
         st.rerun()
     if st.sidebar.button(
-        "ir para consulta de produtos", use_container_width=True, type="primary"
+        "Consulta de produtos", use_container_width=True, type="primary"
     ):
         st.session_state["pagina"] = "consulta_produto"
         st.rerun()

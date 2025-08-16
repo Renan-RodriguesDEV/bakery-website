@@ -1,19 +1,19 @@
 import streamlit as st
-from src.style.style import load_css
-from routes.minhas_compras_page import minhas_compras
-from src.models.repository.user_repository import UserRepository
-from routes.carrinho_compras_page import shopping_cart
-from routes.user_page import information, my_account
 from routes.cadastros_page import (
     cadastro_cliente,
     cadastro_produto,
     customer_registration,
 )
+from routes.carrinho_compras_page import shopping_cart
 from routes.compras_page import realizar_compra
-from routes.login_page import tela_login
 from routes.dividas_page import atualizar_divida, consulta_divida
+from routes.login_page import tela_login
+from routes.minhas_compras_page import minhas_compras
 from routes.product_page import consulta_produto
 from routes.support_page import esquci_senha, page_support
+from routes.user_page import information, my_account
+from src.models.repository.user_repository import UserRepository
+from src.style.style import load_css
 from src.utils.uteis import Logger
 
 st.set_page_config(
@@ -65,7 +65,7 @@ def homepage():
             <h1 style='font-size: 32px; color: black;'>
                 Olá, <span style='color: #8B4513; font-weight: bold;'>{name_header}</span>!
             </h1>
-            <p style='font-size: 24px; color: #666; font-style: italic;'>
+            <p style='font-size: 24px; color: #313; font-style: italic;'>
                 Seja bem-vindo(a) ao nosso sistema de vendas
             </p>
         </div>
@@ -81,22 +81,91 @@ def homepage():
     # Coordenadas da itai
     latitude, longitude = -23.406600592923784, -49.09880181525712
     y.markdown(
-        """
+        f"""
         <style>
-        .hover-effect-bold-italic {
-            font-style: italic;
-            font-weight: bold;
-        }
-        .custom-paragraph {
-            background-color: #8B4513; 
-            color: white; 
-            border: 2px solid #f0f0f0; 
-            font-size:20px; 
-            padding: 15px; 
+        :root {{
+            --accent: #DAA520;
+            --card-bg: rgba(255,255,255,0.04);
+            --text: #ffffff;
+            --muted: rgba(255,255,255,0.75);
+        }}
+        .location-card {{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--card-bg);
+            padding: 12px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+            color: var(--text);
+            max-width: 100%;
+        }}
+        .location-card:hover {{
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+        }}
+        .location-icon {{
+            font-size: 28px;
+            line-height: 1;
+            padding: 8px;
             border-radius: 8px;
-        }
+            background: rgba(218,165,32,0.12);
+            color: var(--accent);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            min-width:44px;
+            min-height:44px;
+        }}
+        .location-content {{
+            flex: 1;
+            min-width: 0;
+        }}
+        .location-title {{
+            margin: 0;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--text);
+        }}
+        .location-sub {{
+            margin: 2px 0 0 0;
+            font-size: 13px;
+            color: var(--muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }}
+        .map-btn {{
+            background: var(--accent);
+            color: #fff;
+            padding: 8px 10px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            transition: filter 0.12s ease, transform 0.12s ease;
+            border: none;
+        }}
+        .map-btn:hover {{
+            filter: brightness(0.95);
+            transform: translateY(-1px);
+        }}
+        @media (max-width:420px) {{
+            .location-card {{ gap: 8px; padding: 10px; }}
+            .location-icon {{ font-size: 24px; min-width:40px; min-height:40px; }}
+            .location-title {{ font-size: 15px; }}
+        }}
         </style>
-        <p class="custom-paragraph hover-effect-bold-italic">Estamos localizados em 📍:</p>
+        <div class="location-card" role="region" aria-label="Localização da loja">
+            <div class="location-icon" aria-hidden="true">📍</div>
+            <div class="location-content">
+                <p class="location-title">Estamos localizados em</p>
+                <p  class="location-sub">Clique em "Ver no mapa" para abrir a localização no Google Maps</p>
+            </div>
+            <a style="text-decoration:none; color:#fff" class="map-btn" href="https://www.google.com/maps/search/?api=1&query={latitude},{longitude}" target="_blank" rel="noopener noreferrer">Ver no mapa</a>
+        </div>
         """,
         unsafe_allow_html=True,
     )
@@ -132,7 +201,7 @@ def homepage():
             st.rerun()
     if st.session_state["owner"]:
         if x.button(
-            "Cadastro/Alteração de Produtos",
+            "Editar de Produtos",
             use_container_width=True,
             type="primary",
             help="cadastre ou altere produtos",
@@ -141,7 +210,7 @@ def homepage():
             st.rerun()
     if st.session_state["owner"]:
         if x.button(
-            "Cadastro/Alteração de Clientes",
+            "Editar de Clientes",
             use_container_width=True,
             type="primary",
             help="cadastre ou altere clientes",
@@ -179,7 +248,7 @@ def homepage():
 
     if st.session_state["owner"]:
         if x.button(
-            "Alterar Pendencias",
+            "Editar Pendencias",
             use_container_width=True,
             type="primary",
             help="altere pendencias",
