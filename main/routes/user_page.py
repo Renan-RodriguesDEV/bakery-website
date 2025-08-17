@@ -7,7 +7,7 @@ from src.utils.uteis import Logger, number_as_cpf, number_as_telephone, validate
 def information():
     st.title("Informações de clientes")
     cliente = st.selectbox("Selecione o cliente", select_all_clientes())
-    if st.button("Consultar") and cliente:
+    if st.button("Consultar", icon=":material/search:") and cliente:
         cliente_obj = None
         with UserRepository() as c:
             cliente_obj = c.select_user(cliente)
@@ -30,7 +30,11 @@ def information():
                 unsafe_allow_html=True,
             )
     if st.sidebar.button(
-        "Home",icon=':material/home:', help="Ir para homepage", use_container_width=True, type="primary"
+        "Home",
+        icon=":material/home:",
+        help="Ir para homepage",
+        use_container_width=True,
+        type="primary",
     ):
         st.session_state["pagina"] = "homepage"
         st.rerun()
@@ -157,7 +161,11 @@ def my_account():
                         )
 
         if st.sidebar.button(
-            "Home", icon=':material/home:', help="Ir para homepage", use_container_width=True, type="primary"
+            "Home",
+            icon=":material/home:",
+            help="Ir para homepage",
+            use_container_width=True,
+            type="primary",
         ):
             st.session_state["pagina"] = "homepage"
             st.rerun()

@@ -106,4 +106,4 @@ Este projeto está sob a licença MIT.
 
 ---
 
-Developer: Renan Rodrigues [(@little_renan.py)](https://instagram.com/__little_renan__.py)
+Developer: Renan Rodrigues [(@rodrigues_renan)](https://instagram.com/rodrigues_renan)

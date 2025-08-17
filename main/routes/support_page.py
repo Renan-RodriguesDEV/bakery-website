@@ -20,13 +20,17 @@ def page_support():
         else:
             st.error("Erro ao enviar ocorrência, tente novamente mais tarde!")
 
-    y.write("Criador e support da pagina: @__little_renan.py")
+    y.write("Criador e support da pagina: @rodrigues_renan")
     y.html(
         """<p>Caso tenha algum problema ou sugestão, por favor, entre em contato com o criador da pagina</p> <p>✉️ <a href='mailto:renanrodrigues7110@gmail.com' target='_blank'>renanrodrigues7110@gmail.com</a></p><p>📞 <a href='https://wa.me/+5519998722472' target='_blank'>(19) 99872-2472</a></p>"""
     )
     # Adicione botão de voltar
     if st.sidebar.button(
-        "Home", icon=':material/home:',help="Ir para homepage", use_container_width=True, type="primary"
+        "Home",
+        icon=":material/home:",
+        help="Ir para homepage",
+        use_container_width=True,
+        type="primary",
     ):
         st.session_state["pagina"] = "homepage"
         st.rerun()
@@ -71,7 +75,7 @@ def esquci_senha():
             else:
                 st.error("Erro ao gerar nova senha!!")
 
-    y.write("Criador e support da pagina: @__little_renan.py")
+    y.write("Criador e support da pagina: @rodrigues_renan")
     y.html(
         """<p>Caso tenha algum problema ou sugestão, por favor, entre em contato com o criador da pagina</p> <p>✉️ <a href='mailto:renanrodrigues7110.com target='_blank'>renanrodrigues7110@gmail.com</a>"""
     )

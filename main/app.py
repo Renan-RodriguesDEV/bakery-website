@@ -202,6 +202,7 @@ def homepage():
     if st.session_state["owner"]:
         if x.button(
             "Editar de Produtos",
+            icon=":material/edit:",
             use_container_width=True,
             type="primary",
             help="cadastre ou altere produtos",
@@ -211,6 +212,7 @@ def homepage():
     if st.session_state["owner"]:
         if x.button(
             "Editar de Clientes",
+            icon=":material/edit:",
             use_container_width=True,
             type="primary",
             help="cadastre ou altere clientes",
@@ -220,6 +222,7 @@ def homepage():
 
     if x.button(
         "Catalogo de Produtos",
+        icon=":material/list:",
         use_container_width=True,
         type="primary",
         help="consulte produtos",
@@ -229,6 +232,7 @@ def homepage():
 
     if x.button(
         "Consultar Pendencias",
+        icon=":material/search:",
         use_container_width=True,
         type="primary",
         help="consulte pendencias",
@@ -249,6 +253,7 @@ def homepage():
     if st.session_state["owner"]:
         if x.button(
             "Editar Pendencias",
+            icon=":material/edit:",
             use_container_width=True,
             type="primary",
             help="altere pendencias",
@@ -258,6 +263,8 @@ def homepage():
 
     if st.sidebar.button(
         "Sair",
+        icon=":material/logout:",
+        help="Sair do sistema",
         use_container_width=True,
         type="primary",
     ):
@@ -267,12 +274,15 @@ def homepage():
 
     if st.sidebar.button(
         "Suporte ao Usuario",
+        icon=":material/help:",
+        help="Suporte ao usuario",
         use_container_width=True,
     ):
         st.session_state["pagina"] = "suporte"
         st.rerun()
     if st.sidebar.button(
         "Minha Conta",
+        icon=":material/account_circle:",
         use_container_width=True,
     ):
         st.session_state["pagina"] = "conta"
@@ -281,6 +291,7 @@ def homepage():
     if st.session_state["owner"]:
         if st.sidebar.button(
             "Informações de Clientes",
+            icon=":material/info:",
             use_container_width=True,
             type="primary",
         ):

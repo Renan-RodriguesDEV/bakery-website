@@ -34,7 +34,10 @@ def consulta_divida():
             Logger.error(str(e))
 
     if st.session_state["owner"]:
-        st.title("Consulta de Dívida de Clientes")
+        st.title("Consulta de pendências de Clientes")
+        st.subheader(
+            ":grey[Consulte as pendências de dívidas dos clientes, para que possam ser atualizadas.]"
+        )
         df_clientes = select_all_clientes()
         if df_clientes.empty:
             st.subheader("Ops!! Houve algum erro no processo..")
@@ -57,13 +60,40 @@ def consulta_divida():
         divida = select_debt_by_client(
             cliente,
         )
-        st.subheader(f"**Divida do cliente** :gray[__{cliente}__]", divider="orange")
-        st.markdown(
-            f"""<p style="display: flex; justify-content: space-between; align-items: center; font-size: 30px; background-color: #8B4513; padding: 10px; border-radius: 8px;">
-            <span>Valor atual:</span>
-            <span style="text-decoration: underline; color: white; font-weight: bold;">R$ {divida if divida else 0.00}</span>
-            </p>""",
-            unsafe_allow_html=True,
+        st.subheader(f"**Cliente**: :gray[{cliente}]", divider="orange")
+        divida_total = divida if divida else 0.00
+        divida_display = (
+            f"R$ {float(divida_total):.2f}".replace(".", ",")
+            if divida_total is not None
+            else "R$ 0,00"
+        )
+
+        st.html(
+            f"""
+            <!-- Bootstrap + Icons -->
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+            <div class="container-fluid p-0 my-3">
+              <div class="card bg-transparent border-0 text-light" style="background: rgba(20,20,20,0.28); backdrop-filter: blur(6px); border-radius:12px; border:1px solid rgba(255,255,255,0.04); padding:14px;">
+                <div class="d-flex align-items-center justify-content-between w-100">
+                  <div>
+                    <small style="letter-spacing:0.6px; text-transform:uppercase; color:#bdbdbd; font-weight:600;">Valor atual</small>
+                    <div style="font-size:30px; font-weight:800; color:#ffffff; margin-top:6px;">{divida_display}</div>
+                    <div style="margin-top:6px; color:#9e9e9e; font-size:13px;">Resumo rápido • <span style="color:#8B4513; font-weight:600;">visão proprietários</span></div>
+                  </div>
+
+                  <div class="text-end">
+                    <div style="font-size:12px; color:#bfbfbf; margin-bottom:6px;">Status</div>
+                    <div style="display:inline-flex; align-items:center; gap:8px; padding:8px 14px; border-radius:10px; background: rgba(0,0,0,0.35); border:1px solid rgba(139,69,19,0.12);">
+                      <i class="bi bi-wallet2" style="color:#8B4513; font-size:18px;"></i>
+                      <span style="color:#8B4513; font-weight:700; font-size:15px;">Saldo</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            """
         )
         col1, col2 = st.columns([4, 1])
         dividas_completa = select_all_sales_by_client(cliente)
@@ -115,12 +145,18 @@ def consulta_divida():
             st.session_state["pagina"] = "homepage"
             st.rerun()
         if st.sidebar.button(
-            "Editar pendencias", use_container_width=True, type="primary"
+            "Editar pendencias",
+            icon=":material/edit:",
+            use_container_width=True,
+            type="primary",
         ):
             st.session_state["pagina"] = "atualizar_divida"
             st.rerun()
     else:
-        st.title("Consulta de Dívida de Clientes")
+        st.title("Consulta de pendencias de Clientes")
+        st.subheader(
+            ":grey[Consulte as pendências de dívidas dos clientes, para que possam ser atualizadas.]"
+        )
 
         with st.form(key="consulta_form"):
             cliente = st.text_input(
@@ -134,7 +170,6 @@ def consulta_divida():
                 max_chars=14,
                 placeholder="123.456.789-00",
             )
-            # print('cpf:',cpf)
             consultar = st.form_submit_button(
                 "Consultar", icon="🔍", help="Consultar divida do cliente"
             )
@@ -190,7 +225,14 @@ def consulta_divida():
 
 def atualizar_divida():
     """Pagina para atualizar a dívida de clientes"""
-    st.title("Atualizar Dívida de Clientes")
+    st.title(
+        """
+Edite as pendências de dívidas dos clientes. 
+    """
+    )
+    st.subheader(
+        ":grey[Aqui você pode adicionar ou remover dívidas de clientes específicos.]"
+    )
     df_clientes = select_all_clientes()
     df_produtos = select_all_products()
     cliente = st.selectbox("Selecione o cliente", df_clientes["nome"].to_list())
@@ -216,9 +258,53 @@ def atualizar_divida():
             step=1,
             max_value=ProductRepository().select_product(produto).estoque,
         )
-        st.markdown(
-            f"<span style='font-size:30px; text-decoration:underline;'>Valor final: :green[${preco * quantidade if (preco and quantidade) is not None else 0}]</span>",
-            unsafe_allow_html=True,
+        valor_total = preco * quantidade if preco is not None else 0
+        # Garantindo que os valores estão formatados corretamente antes de inserir no HTML
+        preco_formatado = (
+            f"R$ {preco:.2f}".replace(".", ",") if preco is not None else "R$ 0,00"
+        )
+        valor_total_formatado = (
+            f"R$ {valor_total:.2f}".replace(".", ",")
+            if valor_total is not None
+            else "R$ 0,00"
+        )
+
+        # HTML simplificado para garantir compatibilidade
+        st.html(
+            f"""
+            <div style="display:flex; flex-direction:column; gap:10px; padding:18px; border-radius:12px; background:#1e1e1e; border:1px solid #333; box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+                <div style="font-size:16px; color:#8B4513; font-weight:700; margin-bottom:8px; border-bottom:1px solid #444; padding-bottom:8px;">
+                    Resumo da transação
+                </div>
+                
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:20px;">
+                    <div style="flex:1; background:#2a2a2a; border-radius:8px; padding:12px; border-left:4px solid #8B4513;">
+                        <div style="font-size:13px; color:#999; font-weight:600; margin-bottom:6px;">
+                            <i class="fas fa-tag" style="margin-right:5px;"></i>Preço unitário
+                        </div>
+                        <div style="font-size:18px; font-weight:700; color:#eee;">{preco_formatado}</div>
+                    </div>
+                    
+                    <div style="flex:1; background:#2a2a2a; border-radius:8px; padding:12px; border-left:4px solid #8B4513;">
+                        <div style="font-size:13px; color:#999; font-weight:600; margin-bottom:6px;">
+                            <i class="fas fa-cubes" style="margin-right:5px;"></i>Quantidade
+                        </div>
+                        <div style="font-size:18px; font-weight:700; color:#eee;">{quantidade}</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top:10px; text-align:center;">
+                    <div style="font-size:13px; color:#999; font-weight:600; margin-bottom:8px;">
+                        <i class="fas fa-calculator" style="margin-right:5px;"></i>Valor final
+                    </div>
+                    <div style="display:inline-block; background:#212e21; color:#4ade80; padding:10px 16px; border-radius:10px; font-size:22px; font-weight:800; box-shadow:0 2px 8px rgba(0,0,0,0.2);">
+                        {valor_total_formatado}
+                    </div>
+                </div>
+            </div>
+            
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+            """,
         )
         if st.button("Atualizar", type="primary", disabled=df_produtos.empty):
             is_register = register_sale(cliente, produto, quantidade)
@@ -265,12 +351,19 @@ def atualizar_divida():
             st.error("Erro ao registrar a pagamento")
 
     if st.sidebar.button(
-        "Home", icon=':material/home:',help="Ir para homepage", use_container_width=True, type="primary"
+        "Home",
+        icon=":material/home:",
+        help="Ir para homepage",
+        use_container_width=True,
+        type="primary",
     ):
         st.session_state["pagina"] = "homepage"
         st.rerun()
     if st.sidebar.button(
-        "ir consultar dividas", use_container_width=True, type="primary"
+        "Consultar dividas",
+        icon=":material/search:",
+        use_container_width=True,
+        type="primary",
     ):
         st.session_state["pagina"] = "consulta_divida"
         st.rerun()

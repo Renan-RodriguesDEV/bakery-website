@@ -217,6 +217,7 @@ def cadastro_produto():
         st.rerun()
     if st.sidebar.button(
         "Catalogo de Produtos",
+        icon=":material/list:",
         use_container_width=True,
         type="secondary",
     ):
@@ -295,7 +296,11 @@ def cadastro_cliente():
                 st.error("Não foi possivel apagar o cliente")
         st.warning("Atenção, essa ação é irreversível!!!")
     if st.sidebar.button(
-        "Home", icon=':material/home:', help="Ir para homepage", use_container_width=True, type="primary"
+        "Home",
+        icon=":material/home:",
+        help="Ir para homepage",
+        use_container_width=True,
+        type="primary",
     ):
         st.session_state["pagina"] = "homepage"
         st.rerun()

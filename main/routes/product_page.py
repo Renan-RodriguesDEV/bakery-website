@@ -98,7 +98,7 @@ def consulta_produto():
         st.rerun()
     if st.session_state["owner"]:
         if st.sidebar.button(
-            "Editar Produtos", use_container_width=True, type="primary"
+            "Editar Produtos",icon=":material/edit:", use_container_width=True, type="primary"
         ):
             st.session_state["pagina"] = "cadastro_produto"
             st.rerun()
