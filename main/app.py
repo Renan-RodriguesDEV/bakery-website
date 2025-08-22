@@ -222,7 +222,7 @@ def homepage():
 
     if x.button(
         "Catalogo de Produtos",
-        icon=":material/list:",
+        icon=":material/store:",
         use_container_width=True,
         type="primary",
         help="consulte produtos",

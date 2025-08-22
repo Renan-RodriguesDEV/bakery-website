@@ -217,7 +217,7 @@ def cadastro_produto():
         st.rerun()
     if st.sidebar.button(
         "Catalogo de Produtos",
-        icon=":material/list:",
+        icon=":material/store:",
         use_container_width=True,
         type="secondary",
     ):

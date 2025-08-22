@@ -11,11 +11,56 @@ from src.models.repository.dataframes_repository import (
 
 def consulta_produto():
     """Pagina para consulta de produtos"""
-    produtos = select_all_products()
+    items_per_page = st.slider(
+        "Itens por página",
+        max_value=50,
+        min_value=10,
+        value=10,
+        step=1,
+        help="Selecione o número de itens por página",
+    )
+    current_page = st.sidebar.number_input("Pagina", min_value=1, step=1, max_value=100)
 
-    st.markdown(
-        "<h1 style='text-align: left; color: #DAA520;'>Consulta de Produtos</h1>",
-        unsafe_allow_html=True,
+    produtos = select_all_products(limit=items_per_page, offset=current_page)
+
+    st.html(
+        """
+    <style>
+        .custom-header {
+            background-color: #1e1e1e;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            margin-bottom: 25px;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+        }
+        .custom-header:hover {
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
+        }
+        .custom-header h1 {
+            color: #DAA520;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 600;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        @media (max-width: 768px) {
+            .custom-header {
+                padding: 20px;
+            }
+            .custom-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+    <div class="custom-header">
+        <h1>Consulta de Produtos</h1>
+    </div>
+    """,
     )
     col1, col2 = st.columns(
         [4, 1],
@@ -92,13 +137,20 @@ def consulta_produto():
             use_container_width=True,
         )
     if st.sidebar.button(
-        "Home", icon=':material/home:',help="Ir para homepage", use_container_width=True, type="primary"
+        "Home",
+        icon=":material/home:",
+        help="Ir para homepage",
+        use_container_width=True,
+        type="primary",
     ):
         st.session_state["pagina"] = "homepage"
         st.rerun()
     if st.session_state["owner"]:
         if st.sidebar.button(
-            "Editar Produtos",icon=":material/edit:", use_container_width=True, type="primary"
+            "Editar Produtos",
+            icon=":material/edit:",
+            use_container_width=True,
+            type="primary",
         ):
             st.session_state["pagina"] = "cadastro_produto"
             st.rerun()

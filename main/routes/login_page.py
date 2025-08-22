@@ -66,7 +66,7 @@ def tela_login():
             st.warning("Por favor, preencha os campos de usuário e senha")
         x, y = st.columns([2, 1], gap="large")
         col1, col2 = x.columns([1, 1])
-        if col1.form_submit_button("Login", type="primary"):
+        if col1.form_submit_button("Login", type="primary", icon=":material/login:"):
             try:
                 has_auth = autenticar_usuario(username, password, type_user=tipo_user)
                 if has_auth:
@@ -91,17 +91,21 @@ def tela_login():
             "Esqueci minha senha",
             help="Reseta senha enviando token por email!!",
             type="primary",
+            icon=":material/lock_open:",
         ):
             st.session_state["pagina"] = "esqueci"
             st.rerun()
         help_col, register_col = y.columns([1, 1])
         if help_col.form_submit_button(
-            "Ajuda", help="Suporte ao usuario", type="secondary"
+            "Ajuda", help="Suporte ao usuario", type="secondary", icon=":material/help:"
         ):
             st.session_state["pagina"] = "suporte"
             st.rerun()
         if register_col.form_submit_button(
-            "Cadastre-se", help="Tela de registro dos usuarios", type="secondary"
+            "Cadastre-se",
+            help="Tela de registro dos usuarios",
+            type="secondary",
+            icon=":material/person_add:",
         ):
             st.session_state["pagina"] = "customer_registration"
             st.rerun()
