@@ -104,6 +104,7 @@ def shopping_cart():
         type="primary",
         help="Clique para finalizar a compra pelo mercado pago",
         disabled=True if not selecionados else False,
+        icon=":material/shopping_cart_checkout:",
     ):
         produtos = selecionados_dict["produtos"]
         precos = selecionados_dict["precos"]
@@ -149,10 +150,19 @@ def shopping_cart():
         #         Logger.warning(f"Removendo {qtde} x {produto} do estoque")
 
     if st.sidebar.button(
-        "Home", icon=':material/home:', help="Ir para homepage", use_container_width=True, type="primary"
+        "Home",
+        icon=":material/home:",
+        help="Ir para homepage",
+        use_container_width=True,
+        type="primary",
     ):
         st.session_state["pagina"] = "homepage"
         st.rerun()
-    if st.sidebar.button("Comprar", use_container_width=True, type="primary"):
+    if st.sidebar.button(
+        "Comprar",
+        icon=":material/add_shopping_cart:",
+        use_container_width=True,
+        type="primary",
+    ):
         st.session_state["pagina"] = "realizar_compra"
         st.rerun()

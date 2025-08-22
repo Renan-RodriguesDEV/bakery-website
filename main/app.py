@@ -196,6 +196,7 @@ def homepage():
             use_container_width=True,
             help="faça suas compras",
             type="primary",
+            icon=":material/add_shopping_cart:",
         ):
             st.session_state["pagina"] = "realizar_compra"
             st.rerun()
@@ -246,6 +247,7 @@ def homepage():
             use_container_width=True,
             type="primary",
             help="consulte suas compras",
+            icon=":material/cases:",
         ):
             st.session_state["pagina"] = "minhas_compras"
             st.rerun()

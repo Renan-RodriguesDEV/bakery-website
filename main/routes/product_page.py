@@ -155,6 +155,11 @@ def consulta_produto():
             st.session_state["pagina"] = "cadastro_produto"
             st.rerun()
     else:
-        if st.sidebar.button("Comprar", use_container_width=True, type="primary"):
+        if st.sidebar.button(
+            "Comprar",
+            icon=":material/add_shopping_cart:",
+            use_container_width=True,
+            type="primary",
+        ):
             st.session_state["pagina"] = "realizar_compra"
             st.rerun()
