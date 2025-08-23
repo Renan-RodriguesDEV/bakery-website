@@ -1,6 +1,8 @@
 import json
 
 import pika
+from utilities import check
+
 from notifications import Notifications
 
 
@@ -24,5 +26,18 @@ except pika.exceptions.AMQPConnectionError:
     print("Failed to connect to RabbitMQ server.")
 if __name__ == "__main__":
     if publisher:
-        message = json.dumps({"status": "Orders its ok"})
-        publisher.publish(message)
+        try:
+            results = check()
+        except Exception as e:
+            print(f"Error checking database: {e}")
+            results = []
+        for result in results:
+            # message = json.dumps({"status": "Orders its ok"})
+            message = json.dumps(
+                {
+                    "status": "warning" if result.get("estoque") > 0 else "danger",
+                    "products": f"Orders {result.get('nome')} its don't ok",
+                }
+            )
+            publisher.publish(message)
+        publisher.channel.close()
