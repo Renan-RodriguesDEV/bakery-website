@@ -9,3 +9,4 @@ bcrypt
 qrcode
 SQLAlchemy
 streamlit
+pika
