@@ -11,6 +11,7 @@ class Publisher(Notifications):
         super().__init__(host, port, username, password)
 
     def publish(self, body, exchange="my_exchange", routing_key=""):
+        print(f"Publishing message: {body}")
         self.channel.basic_publish(
             exchange=exchange,
             routing_key=routing_key,
@@ -36,7 +37,7 @@ if __name__ == "__main__":
             message = json.dumps(
                 {
                     "status": "warning" if result.get("estoque") > 0 else "danger",
-                    "products": f"Orders {result.get('nome')} its don't ok",
+                    "message": f"Orders {result.get('nome')} its don't ok",
                 }
             )
             publisher.publish(message)

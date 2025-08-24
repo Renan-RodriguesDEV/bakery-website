@@ -10,11 +10,13 @@ from sqlalchemy.orm import sessionmaker
 load_dotenv()
 
 
-def check(url=os.getenv("DATABASE_URL")):
+def check(stock=30, url=os.getenv("DATABASE_URL")):
     engine = create_engine(url)
     session = sessionmaker(bind=engine)()
     with session.begin():
-        result = session.execute(text("SELECT * FROM produtos WHERE estoque <= 100"))
+        result = session.execute(
+            text("SELECT * FROM produtos WHERE estoque <= :stock"), {"stock": stock}
+        )
 
         results = result.fetchall()
 

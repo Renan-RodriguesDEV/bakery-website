@@ -13,6 +13,7 @@ class Consumer(Notifications):
         super().__init__(host, port, username, password)
 
     def start(self, callback, queue="my_queue"):
+        print("Starting consumer...")
         self.channel.queue_declare(queue=queue, durable=True)
         self.channel.basic_consume(
             queue=queue, auto_ack=True, on_message_callback=callback
@@ -27,7 +28,7 @@ def callback(ch, method, properties, body):
     dict_body = json.loads(body)
     print(f"Message type: {type(body)}")
     if "warning" in dict_body.get("status", "").lower():
-        notify("Atenção, estoque está abaixo do mínimo!", dict_body.get("products"))
+        notify("Atenção, estoque está abaixo do mínimo!", dict_body.get("message"))
     elif "danger" in dict_body.get("status", "").lower():
         notify("Atenção, estoque está esgotado!", dict_body.get("products"))
 
