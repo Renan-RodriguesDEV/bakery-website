@@ -10,6 +10,7 @@ Sistema web desenvolvido em Python usando Streamlit para gerenciamento de uma pa
 - SQLAlchemy
 - Pandas
 - MercadoPago API
+- RabbitMQ (pika) — fila de mensagens para notificações e processamento assíncrono
 
 ## 📋 Funcionalidades
 
@@ -32,6 +33,7 @@ Sistema web desenvolvido em Python usando Streamlit para gerenciamento de uma pa
 - Gestão de dívidas
 - Relatórios de vendas
 - Visualização de feedbacks
+- Processamento assíncrono e notificações via RabbitMQ
 
 ## 🗄️ Estrutura do Banco de Dados
 
@@ -53,7 +55,8 @@ pip install -r requirements.txt
 
 3. Configure as variáveis de ambiente no arquivo `secrets.toml` (veja exemplo abaixo)
 4. Crie o banco de dados PostgreSQL (recomendado Neon.tech, Railway, Supabase ou ElephantSQL)
-5. Execute o aplicativo:
+5. Configure uma instância RabbitMQ (ex.: CloudAMQP) e defina a URL no `secrets.toml` (link: https://customer.cloudamqp.com/instance/)
+6. Execute o aplicativo:
 
 ```bash
 streamlit run main/app.py
@@ -67,6 +70,10 @@ PASSWORD = "sua_senha"
 ACESS_TOKEN = "token_mercado_pago"
 PIX_KEY = "sua_chave_pix"
 TOKEN_TELEGRAM = "seu_token_telegram"
+
+# RabbitMQ (pika) - exemplo de URL amqps
+# Exemplo CloudAMQP: amqps://usuario:senha@hostname/vhost
+RABBITMQ_URL = "amqps://usuario:senha@host/vhost"
 
 # Dados do banco PostgreSQL
 TEST_USER_DB = "usuario_db"  # (opcional, se usar DATABASE_URL)
