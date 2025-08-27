@@ -104,14 +104,16 @@ def alter_product(produto, nome=None, preco=None, qtde=None, categoria=None):
             else:
                 if nome:
                     produto_u.nome = nome
-                if preco:
+                if preco is not None:
                     produto_u.preco = preco
-                if qtde:
-                    produto_u.qtde = qtde
+                if qtde is not None:
+                    produto_u.estoque = qtde
                 if categoria:
                     produto_u.categoria = categoria
                 p.session.add(produto_u)
                 p.session.commit()
+                p.session.refresh(produto_u)
+                print("estoque:", produto_u.estoque)
                 st.success("Produto alterado com sucesso")
         except Exception as e:
             Logger.error(str(e))
@@ -196,7 +198,9 @@ def cadastro_produto():
             accept_new_options=False,
         )
         if st.button("Alterar", type="primary"):
-            alter_product(produto, nome, preco, qtde, categoria)
+            print("*" * 50)
+            print(produto, nome, preco, qtde, categoria)
+            alter_product(produto, nome, preco, int(qtde), categoria)
     else:
         produto = st.selectbox(":red[Selecione o produto]", select_all_products())
         Logger.info(f">>> Produto selecionado: {produto}")

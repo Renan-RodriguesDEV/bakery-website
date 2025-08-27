@@ -37,7 +37,8 @@ if __name__ == "__main__":
             message = json.dumps(
                 {
                     "status": "warning" if result.get("estoque") > 0 else "danger",
-                    "message": f"Orders {result.get('nome')} its don't ok",
+                    "message": f"Produto {result.get('nome')} está com problema de estoque!",
+                    "stock": result.get("estoque"),
                 }
             )
             publisher.publish(message)

@@ -11,7 +11,9 @@ from utilities import check
 
 def run_publisher():
     while True:
+        print("Verificando resultados")
         results = check()
+        print(f"Total de produtos abaixo de estoque: {len(results)}")
         for product in results:
             msg = json.dumps(
                 {
@@ -22,7 +24,7 @@ def run_publisher():
                 }
             )
             publisher.publish(msg)
-        time.sleep(60 * 60)  # Await 1 hours to check again
+        time.sleep(60 * 1)  # Await 1 hours to check again
 
 
 def run_consumer():

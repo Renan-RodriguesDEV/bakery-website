@@ -11,7 +11,7 @@ load_dotenv()
 
 
 def check(stock=30, url=os.getenv("DATABASE_URL")):
-    engine = create_engine(url)
+    engine = create_engine(url, echo=True)
     session = sessionmaker(bind=engine)()
     with session.begin():
         result = session.execute(
@@ -29,7 +29,7 @@ def notify(message, typed: Literal["warning", "danger"]):
     with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
         smtp.login(os.getenv("EMAIL_ADDRESS"), os.getenv("EMAIL_PASSWORD"))
 
-        subject = f"Notification - {typed.capitalize()}"
+        subject = f"Notification - {str(typed).capitalize()}"
         body = message
         msg = MIMEText(body, "plain")
         msg["Subject"] = subject

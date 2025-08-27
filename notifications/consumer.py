@@ -28,9 +28,15 @@ def callback(ch, method, properties, body):
     dict_body = json.loads(body)
     print(f"Message type: {type(body)}")
     if "warning" in dict_body.get("status", "").lower():
-        notify("Atenção, estoque está abaixo do mínimo!", dict_body.get("message"))
+        notify(
+            f"Atenção, estoque está abaixo do mínimo! em estoque {dict_body.get('stock')}",
+            dict_body.get("message"),
+        )
     elif "danger" in dict_body.get("status", "").lower():
-        notify("Atenção, estoque está esgotado!", dict_body.get("products"))
+        notify(
+            f"Atenção, estoque está esgotado! em estoque ({dict_body.get('stock')})",
+            dict_body.get("product"),
+        )
 
 
 try:

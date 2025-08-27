@@ -1,5 +1,5 @@
-from ..entities.database import DatabaseHandler, Produto
 from ...utils.uteis import Logger
+from ..entities.database import DatabaseHandler, Produto
 
 
 class ProductRepository(DatabaseHandler):
@@ -43,6 +43,7 @@ class ProductRepository(DatabaseHandler):
                 product = self.session.query(Produto).filter_by(nome=name).first()
                 product.preco = new_price
                 self.session.commit()
+                self.session.refresh(product)
                 return True
             except Exception as e:
                 Logger.error(e)
@@ -54,6 +55,7 @@ class ProductRepository(DatabaseHandler):
                 product = self.session.query(Produto).filter_by(nome=name).first()
                 product.estoque = new_stock
                 self.session.commit()
+                self.session.refresh(product)
                 return True
             except Exception as e:
                 Logger.error(e)
