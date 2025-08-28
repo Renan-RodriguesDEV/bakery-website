@@ -1,4 +1,7 @@
 import datetime
+
+# import os
+# import sys
 from typing import Literal
 
 from sqlalchemy import (
@@ -11,9 +14,13 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
+    Text,
 )
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.sql import func
+
+# print("current dir", os.path.join(os.getcwd(), "main"))
+# sys.path.append(os.path.join(os.getcwd(), "main"))
 from src.models.configs.config_geral import configs
 from src.models.entities.connection_handler import DatabaseHandler
 from src.utils.hasher import Hasher
@@ -155,6 +162,20 @@ class Carrinho(Base):
         self.id_cliente = id_cliente
         self.id_produto = id_produto
         self.quantidade = quantidade
+
+
+class Notifications(Base):
+    __tablename__ = "notifications"
+    id = Column("id", Integer, primary_key=True, autoincrement=True)
+    message = Column("message", Text, nullable=False)
+    is_read = Column("is_read", Boolean, nullable=False, server_default="false")
+    created_at = Column(
+        "created_at", TIMESTAMP, server_default=func.now(), nullable=False
+    )
+
+    def __init__(self, message, is_read=False):
+        self.message = message
+        self.is_read = is_read
 
 
 def initialize_database():

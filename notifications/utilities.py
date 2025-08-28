@@ -39,3 +39,16 @@ def notify(message, typed: Literal["warning", "danger"]):
         smtp.sendmail(
             os.getenv("EMAIL_ADDRESS"), os.getenv("EMAIL_RECIPIENT"), msg.as_string()
         )
+
+
+def save_notification(message, url=os.getenv("DATABASE_URL")):
+    engine = create_engine(url, echo=True)
+    try:
+        with engine.connect() as conn:
+            conn.execute(
+                text("INSERT INTO notifications (message) VALUES (:value)"),
+                {"value": message},
+            )
+            conn.commit()
+    except Exception as e:
+        print(f"Error saving notification: {e}")

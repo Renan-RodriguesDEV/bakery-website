@@ -1,4 +1,5 @@
 import streamlit as st
+from src.models.repository.notifications_repository import NotificationsRepository
 from routes.cadastros_page import (
     cadastro_cliente,
     cadastro_produto,
@@ -299,6 +300,31 @@ def homepage():
         ):
             st.session_state["pagina"] = "informacoes"
             st.rerun()
+    
+    if st.session_state.get("owner"):
+        notifications_repository = NotificationsRepository()
+        unread = notifications_repository.get_unread_notifications()
+        count_unread = len(unread)
+
+        # botão com contador
+        if st.sidebar.button(f"🔔 Notificações ({count_unread})"):
+            # abre popover listando notificações
+            with st.popover("Notificações"):
+                if not unread:
+                    st.info("Nenhuma notificação nova.")
+                else:
+                    to_mark = []
+                    for n in unread:
+                        cols = st.columns([8, 1])
+                        cols[0].markdown(
+                            f"**{n.message}**  \n<small>{n.created_at}</small>",
+                            unsafe_allow_html=True,
+                        )
+                        if cols[1].button("Marcar lida", key=f"read_{n.id}"):
+                            to_mark.append(n.id)
+                    if to_mark:
+                        notifications_repository.mark_as_read(to_mark)
+                        st.rerun()
     st.html(
         """
     <style>

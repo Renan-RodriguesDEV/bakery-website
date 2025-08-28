@@ -3,7 +3,7 @@ import sys
 
 import pika
 import pika.exceptions
-from utilities import notify
+from utilities import notify, save_notification
 
 from notifications import Notifications
 
@@ -27,6 +27,10 @@ def callback(ch, method, properties, body):
     print(f"Message type: {type(body)}")
     dict_body = json.loads(body)
     print(f"Message type: {type(body)}")
+
+  
+    message = f"{dict_body.get('status')} - {dict_body.get('message')}\nEstoque total: {dict_body.get('stock')}"
+    save_notification(message)
     if "warning" in dict_body.get("status", "").lower():
         notify(
             f"Atenção, estoque está abaixo do mínimo! em estoque {dict_body.get('stock')}",
