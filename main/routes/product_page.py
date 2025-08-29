@@ -11,7 +11,8 @@ from src.models.repository.dataframes_repository import (
 
 def consulta_produto():
     """Pagina para consulta de produtos"""
-    items_per_page = st.slider(
+    cols = st.sidebar.columns([2, 2])
+    items_per_page = cols[0].slider(
         "Itens por página",
         max_value=50,
         min_value=10,
@@ -19,7 +20,7 @@ def consulta_produto():
         step=1,
         help="Selecione o número de itens por página",
     )
-    current_page = st.sidebar.number_input("Pagina", min_value=1, step=1, max_value=100)
+    current_page = cols[1].number_input("Pagina", min_value=1, step=1, max_value=100)
 
     produtos = select_all_products(limit=items_per_page, offset=current_page)
 
@@ -62,6 +63,7 @@ def consulta_produto():
     </div>
     """,
     )
+
     col1, col2 = st.columns(
         [4, 1],
     )

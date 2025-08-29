@@ -354,6 +354,11 @@ def customer_registration():
                 st.success(f"Cadastrado efetuado {nome}, retorne ao login!")
             else:
                 st.error("Erro ao cadastrar o cliente")
-    if st.sidebar.button("Voltar", use_container_width=True, type="primary"):
+    if st.sidebar.button(
+        "Voltar",
+        use_container_width=True,
+        type="primary",
+        icon=":material/arrow_back:",
+    ):
         st.session_state["pagina"] = "homepage"
         st.rerun()

@@ -77,12 +77,19 @@ def realizar_compra():
             st.rerun()
 
     if st.sidebar.button(
-        "Home",icon=':material/home:', help="Ir para homepage", use_container_width=True, type="primary"
+        "Home",
+        icon=":material/home:",
+        help="Ir para homepage",
+        use_container_width=True,
+        type="primary",
     ):
         st.session_state["pagina"] = "homepage"
         st.rerun()
     if st.sidebar.button(
-        "Consulta de produtos", use_container_width=True, type="primary"
+        "Consulta de produtos",
+        use_container_width=True,
+        type="primary",
+        icon=":material/search:",
     ):
         st.session_state["pagina"] = "consulta_produto"
         st.rerun()

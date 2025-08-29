@@ -1,6 +1,7 @@
 div[data-testid="stSidebarContent"] {
   position: relative;
   background: none;
+  transition: width 0.3s ease; /* Adiciona transição suave para expandir/contrair */
 }
 div[data-testid="stSidebarContent"]::before {
   content: "";
@@ -22,12 +23,12 @@ div[data-testid="stSidebarContent"]:hover::before {
 }
 
 /* pequenas melhorias e ícone de colapso (minimal, reversível) */
-:root {
+/* :root {
   --accent: #daa520;
   --text: #ffffff;
   --muted: rgba(255, 255, 255, 0.75);
   --pad: 8px;
-}
+} */
 
 /* mantém conteúdo acima do background */
 div[data-testid="stSidebarContent"] > * {
@@ -60,8 +61,8 @@ div[data-testid="stSidebarContent"] .stButton > button:hover {
 div[data-testid="stSidebarCollapsedControl"] button,
 div[data-testid="stSidebarCollapsedControl"] > button {
   background-color: var(--accent);
-  color: transparent; /* esconde visualmente o texto */
-  text-indent: -9999px; /* mantém texto no DOM para acessibilidade */
+  color: transparent;
+  text-indent: -9999px;
   width: 40px;
   height: 40px;
   padding: 0;

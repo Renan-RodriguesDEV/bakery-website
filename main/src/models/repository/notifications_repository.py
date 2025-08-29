@@ -30,7 +30,8 @@ class NotificationsRepository(DatabaseHandler):
                 .first()
             )
 
-            is_updated = notification.update({"is_read": True})
+            notification.is_read = True
             self.session.commit()
             self.session.refresh(notification)
-            return is_updated
+            return True
+        return False

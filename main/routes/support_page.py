@@ -80,7 +80,9 @@ def esquci_senha():
         """<p>Caso tenha algum problema ou sugestão, por favor, entre em contato com o criador da pagina</p> <p>✉️ <a href='mailto:renanrodrigues7110.com target='_blank'>renanrodrigues7110@gmail.com</a>"""
     )
     # Adicione botão de voltar
-    if st.sidebar.button("Voltar", type="primary"):
+    if st.sidebar.button(
+        "Voltar", type="primary", icon=":material/arrow_back:", use_container_width=True
+    ):
         st.session_state["pagina"] = "homepage"
         st.rerun()
 

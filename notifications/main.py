@@ -18,9 +18,7 @@ def run_publisher():
             msg = json.dumps(
                 {
                     "status": "warning" if product.get("estoque") > 0 else "danger",
-                    "product": f"Product: ({product.get('nome')}) is low in stock"
-                    if product.get("estoque") > 0
-                    else f"Product: ({product.get('nome')}) is out of stock",
+                    "product": product.get("nome"),
                     "stock": product.get("estoque"),
                 }
             )

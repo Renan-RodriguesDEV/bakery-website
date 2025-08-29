@@ -37,7 +37,7 @@ if __name__ == "__main__":
             message = json.dumps(
                 {
                     "status": "warning" if result.get("estoque") > 0 else "danger",
-                    "product": f"Produto {result.get('nome')} está com problema de estoque!",
+                    "product": result.get("nome"),
                     "stock": result.get("estoque"),
                 }
             )
