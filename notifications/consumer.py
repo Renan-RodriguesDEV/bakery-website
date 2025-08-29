@@ -22,24 +22,33 @@ class Consumer(Notifications):
 
 
 def callback(ch, method, properties, body):
-    body = body.decode()
+    body = body.decode("utf-8")
     print(f"Received message: {body}")
     print(f"Message type: {type(body)}")
-    dict_body = json.loads(body)
+    try:
+        dict_body = json.loads(body)
+    except Exception as e:
+        print(f"Error parsing message {body}: {e}")
+        return
     print(f"Message type: {type(body)}")
 
-  
-    message = f"{dict_body.get('status')} - {dict_body.get('message')}\nEstoque total: {dict_body.get('stock')}"
+    status = dict_body.get("status", "").title()
+    product = dict_body.get("product", "")
+    stock = dict_body.get("stock")
+    if not status or not product or stock is None:
+        print(f"Invalid message format: {body}")
+        return
+    message = f"{status} - {product}\nEstoque total: {stock}"
     save_notification(message)
-    if "warning" in dict_body.get("status", "").lower():
+    if "Warning" in status:
         notify(
-            f"Atenção, estoque está abaixo do mínimo! em estoque {dict_body.get('stock')}",
-            dict_body.get("message"),
+            f"Atenção, estoque de ({product}) está abaixo do mínimo! em estoque {stock}",
+            "warning",
         )
-    elif "danger" in dict_body.get("status", "").lower():
+    elif "Danger" in status:
         notify(
-            f"Atenção, estoque está esgotado! em estoque ({dict_body.get('stock')})",
-            dict_body.get("product"),
+            f"Atenção, estoque de ({product}) está esgotado! em estoque ({stock})",
+            "danger",
         )
 
 

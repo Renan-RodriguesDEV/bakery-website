@@ -21,6 +21,7 @@ def run_publisher():
                     "product": f"Product: ({product.get('nome')}) is low in stock"
                     if product.get("estoque") > 0
                     else f"Product: ({product.get('nome')}) is out of stock",
+                    "stock": product.get("estoque"),
                 }
             )
             publisher.publish(msg)

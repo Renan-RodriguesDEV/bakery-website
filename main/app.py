@@ -1,5 +1,4 @@
 import streamlit as st
-from src.models.repository.notifications_repository import NotificationsRepository
 from routes.cadastros_page import (
     cadastro_cliente,
     cadastro_produto,
@@ -10,9 +9,11 @@ from routes.compras_page import realizar_compra
 from routes.dividas_page import atualizar_divida, consulta_divida
 from routes.login_page import tela_login
 from routes.minhas_compras_page import minhas_compras
+from routes.notifications import modal_notifications
 from routes.product_page import consulta_produto
 from routes.support_page import esquci_senha, page_support
 from routes.user_page import information, my_account
+from src.models.repository.notifications_repository import NotificationsRepository
 from src.models.repository.user_repository import UserRepository
 from src.style.style import load_css
 from src.utils.uteis import Logger
@@ -300,31 +301,26 @@ def homepage():
         ):
             st.session_state["pagina"] = "informacoes"
             st.rerun()
-    
-    if st.session_state.get("owner"):
-        notifications_repository = NotificationsRepository()
-        unread = notifications_repository.get_unread_notifications()
-        count_unread = len(unread)
 
+    if st.session_state.get("owner"):
         # botão com contador
-        if st.sidebar.button(f"🔔 Notificações ({count_unread})"):
+        count_unread = (
+            st.session_state["count_unread"]
+            if "count_unread" in st.session_state
+            else 0
+        )
+        if st.sidebar.button(
+            f"({count_unread})",
+            icon=":material/notifications:",
+            type="primary",
+            help="Notificações não lidas",
+        ):
+            notifications_repository = NotificationsRepository()
+            unread = notifications_repository.get_unread_notifications()
+            count_unread = len(unread)
+            st.session_state["count_unread"] = count_unread
             # abre popover listando notificações
-            with st.popover("Notificações"):
-                if not unread:
-                    st.info("Nenhuma notificação nova.")
-                else:
-                    to_mark = []
-                    for n in unread:
-                        cols = st.columns([8, 1])
-                        cols[0].markdown(
-                            f"**{n.message}**  \n<small>{n.created_at}</small>",
-                            unsafe_allow_html=True,
-                        )
-                        if cols[1].button("Marcar lida", key=f"read_{n.id}"):
-                            to_mark.append(n.id)
-                    if to_mark:
-                        notifications_repository.mark_as_read(to_mark)
-                        st.rerun()
+            modal_notifications(unread, notifications_repository)
     st.html(
         """
     <style>

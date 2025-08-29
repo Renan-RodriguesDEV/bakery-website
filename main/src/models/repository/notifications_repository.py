@@ -10,7 +10,7 @@ class NotificationsRepository(DatabaseHandler):
         with self:
             return (
                 self.session.query(Notifications)
-                .filter(Notifications.is_read == False)
+                .filter(Notifications.is_read == False)  # noqa: E712
                 .all()
             )
 
@@ -22,16 +22,15 @@ class NotificationsRepository(DatabaseHandler):
             return True
         return False
 
-    def mark_as_read(self, notification: str | int):
+    def mark_as_read(self, notification_id: int):
         with self:
-            if isinstance(notification, int):
-                return (
-                    self.session.query(Notifications)
-                    .filter(Notifications.id == notification)
-                    .update({"is_read": True})
-                )
-            return (
+            notification = (
                 self.session.query(Notifications)
-                .filter(Notifications.message == notification)
-                .update({"is_read": True})
+                .filter(Notifications.id == notification_id)
+                .first()
             )
+
+            is_updated = notification.update({"is_read": True})
+            self.session.commit()
+            self.session.refresh(notification)
+            return is_updated
