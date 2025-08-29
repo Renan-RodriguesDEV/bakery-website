@@ -1,8 +1,9 @@
 import streamlit as st
+from src.utils.persistence import CookieSessionManager
 from src.models.repository.user_repository import UserRepository
 from src.utils.hasher import Hasher
 from src.utils.uteis import Logger
-
+session_manager = CookieSessionManager()
 
 def autenticar_usuario(username, password, type_user):
     """Verifica a senha e usuario no database
