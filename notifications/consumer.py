@@ -38,7 +38,7 @@ def callback(ch, method, properties, body):
     if not status or not product or stock is None:
         print(f"Invalid message format: {body}")
         return
-    message = f"{status} - {product}\nEstoque total: {stock}"
+    message = f"{status} - {product}\n\nEstoque Total: {stock}"
     save_notification(message)
     if "Warning" in status:
         notify(
