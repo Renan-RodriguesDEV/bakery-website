@@ -132,9 +132,14 @@ def register_product(nome, preco, qtde, categoria):
 # Função para o cadastro de produtos
 def cadastro_produto():
     """Pagina para cadastro de produtos"""
-    st.html(
-        "<h1 style='font-size:33px;color:darkgray;'><span style='color:#DAA520'>Cadastro(s)</span> e <span style='color:#8B4513'>Deleção(es)</span> de Produtos<h1/>"
-    )
+    st.html("""
+    <div style='background: linear-gradient(135deg, #2e2e2e, #1e1e1e); padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.5); text-align: center; margin-bottom: 20px;'>
+        <h1 style='font-size: 36px; color: #d3d3d3; font-family: Arial, sans-serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.7); margin: 0;'>
+            <span style='color: #DAA520; font-weight: bold;'>Cadastro(s)</span> e 
+            <span style='color: #8B4513; font-weight: bold;'>Deleção(es)</span> de Produtos
+        </h1>
+    </div>
+    """)
     selection = st.selectbox(
         "**:green[Selecione a ação]**", ["Cadastro", "Deleção", "Alterar"]
     )
@@ -231,9 +236,14 @@ def cadastro_produto():
 
 def cadastro_cliente():
     """Pagina para cadastro de clientes"""
-    st.html(
-        "<h1 style='font-size:33px;color:darkgray;'><span style='color:#DAA520'>Cadastro(s)</span> e <span style='color:#8B4513'>Deleção(es)</span> de Clientes<h1/>"
-    )
+    st.html("""
+    <div style='background: linear-gradient(135deg, #2e2e2e, #1e1e1e); padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.5); text-align: center; margin-bottom: 20px;'>
+        <h1 style='font-size: 36px; color: #d3d3d3; font-family: Arial, sans-serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.7); margin: 0;'>
+            <span style='color: #DAA520; font-weight: bold;'>Cadastro(s)</span> e 
+            <span style='color: #8B4513; font-weight: bold;'>Deleção(es)</span> de Clientes
+        </h1>
+    </div>
+    """)
     action = st.selectbox(
         "**:green[Selecione a ação]**",
         ["Cadastro", "Deleção", "Alterar"],
