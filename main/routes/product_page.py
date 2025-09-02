@@ -14,16 +14,22 @@ def consulta_produto():
     cols = st.sidebar.columns([2, 2])
     items_per_page = cols[0].slider(
         "Itens por página",
-        max_value=50,
+        max_value=100,
         min_value=10,
         value=10,
         step=1,
         help="Selecione o número de itens por página",
     )
     current_page = cols[1].number_input("Pagina", min_value=1, step=1, max_value=100)
+    preco_min = cols[0].number_input("Min.", min_value=0, max_value=500)
+    preco_max = cols[0].number_input("Max.", min_value=0, max_value=500, value=500)
 
     produtos = select_all_products(limit=items_per_page, offset=current_page)
 
+    if preco_min != 0.0 or preco_max != 1000.0:
+        produtos = produtos[
+            (produtos["Preço"] >= preco_min) & (produtos["Preço"] <= preco_max)
+        ]
     st.html(
         """
     <style>
@@ -110,6 +116,9 @@ def consulta_produto():
     )
     if categoria and categoria != "categoria":
         produtos = select_all_products_by_category(categoria)
+        produtos = produtos[
+            (produtos["Preço"] >= preco_min) & (produtos["Preço"] <= preco_max)
+        ]
 
     flag = True if produtos.empty else False
     df = DataFrame(produtos)
@@ -147,6 +156,7 @@ def consulta_produto():
     ):
         st.session_state["pagina"] = "homepage"
         st.rerun()
+
     if st.session_state["owner"]:
         if st.sidebar.button(
             "Editar Produtos",

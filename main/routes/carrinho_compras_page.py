@@ -143,12 +143,6 @@ def shopping_cart():
                 f"Registrando venda para {st.session_state['username']} de {qtde} x {produto} do estoque"
             )
 
-        # TODO: pós verificação, remover do estoque
-        # else:
-        #     for produto, qtde, precos in zip(produtos, quantidades):
-        #         cart_repository.remove_from_stoke(produto, qtde)
-        #         Logger.warning(f"Removendo {qtde} x {produto} do estoque")
-
     if st.sidebar.button(
         "Home",
         icon=":material/home:",

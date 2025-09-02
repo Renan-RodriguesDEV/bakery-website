@@ -59,7 +59,12 @@ def realizar_compra():
                 unsafe_allow_html=True,
             )
         disable = True
-        if col1.button("Adicionar ao carrinho", type="primary", disabled=not estoque):
+        if col1.button(
+            "Adicionar ao carrinho",
+            icon=":material/add_shopping_cart:",
+            type="primary",
+            disabled=not estoque,
+        ):
             cliente_obj = UserRepository().select_user(cliente_session, "Cliente")
             produto_obj = ProductRepository().select_product(produto)
             Logger.info(f"produto: {produto_obj}")
@@ -72,7 +77,9 @@ def realizar_compra():
                 disable = False
             else:
                 st.error("Erro ao adicionar ao carrinho")
-        if st.button("Carrinho de Compras", disabled=disable):
+        if st.button(
+            "Carrinho de Compras", icon=":material/shopping_cart:", disabled=disable
+        ):
             st.session_state["pagina"] = "cart"
             st.rerun()
 
