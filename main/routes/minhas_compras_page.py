@@ -126,7 +126,11 @@ def minhas_compras():
     else:
         st.info("Não há compra(s) para retirarda(s) ou atualização de status !!!")
     if st.sidebar.button(
-        "Home",icon=':material/home:', help="Ir para homepage", use_container_width=True, type="primary"
+        "Home",
+        icon=":material/home:",
+        help="Ir para homepage",
+        use_container_width=True,
+        type="primary",
     ):
         st.session_state["pagina"] = "homepage"
         st.rerun()

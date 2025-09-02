@@ -20,7 +20,12 @@ def modal_notifications(
         for n in unreads:
             cols = st.columns([2, 2])
             cols[0].markdown(
-                f"**{n.message}**  \n<small>{n.created_at.strftime('%d/%m/%Y %H:%M')}</small>",
+                f"""
+                <div style="padding: 10px; border-left: 4px solid #4CAF50; background-color: #f9f9f9; margin-bottom: 10px;">
+                    <strong style="color: #333;">{n.message}</strong><br>
+                    <small style="color: #666;">{n.created_at.strftime("%d/%m/%Y %H:%M")}</small>
+                </div>
+                """,
                 unsafe_allow_html=True,
             )
             if cols[1].button(

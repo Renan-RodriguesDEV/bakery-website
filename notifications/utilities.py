@@ -15,7 +15,8 @@ def check(stock=30, url=os.getenv("DATABASE_URL")):
     session = sessionmaker(bind=engine)()
     with session.begin():
         result = session.execute(
-            text("SELECT * FROM produtos WHERE estoque <= :stock"), {"stock": stock}
+            text("SELECT nome,estoque FROM produtos WHERE estoque <= :stock"),
+            {"stock": stock},
         )
 
         results = result.fetchall()
