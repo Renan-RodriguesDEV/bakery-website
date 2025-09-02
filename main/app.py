@@ -221,22 +221,15 @@ def homepage():
     if st.session_state.get("owner"):
         # botão com contador
         notifications_repository = NotificationsRepository()
-        count_unread = (
-            st.session_state["count_unread"]
-            if "count_unread" in st.session_state
-            else len(notifications_repository.get_unread_notifications())
-        )
+        count_unread = notifications_repository.get_count_unread_notifications()
         if st.sidebar.button(
             f"({count_unread})",
             icon=":material/notifications:",
             type="primary",
             help="Notificações não lidas",
         ):
-            unread = notifications_repository.get_unread_notifications()
-            count_unread = len(unread)
-            st.session_state["count_unread"] = count_unread
             # abre popover listando notificações
-            modal_notifications(unread, notifications_repository)
+            modal_notifications(notifications_repository)
     st.html(
         """
     <style>

@@ -11,7 +11,16 @@ class NotificationsRepository(DatabaseHandler):
             return (
                 self.session.query(Notifications)
                 .filter(Notifications.is_read == False)  # noqa: E712
+                .order_by(Notifications.created_at)
                 .all()
+            )
+
+    def get_count_unread_notifications(self):
+        with self:
+            return (
+                self.session.query(Notifications)
+                .filter(Notifications.is_read == False)  # noqa: E712
+                .count()
             )
 
     def save_notification(self, message):

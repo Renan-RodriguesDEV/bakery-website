@@ -13,7 +13,7 @@ load_dotenv()
 def check(stock=30, url=os.getenv("DATABASE_URL")):
     engine = create_engine(url, echo=True)
     session = sessionmaker(bind=engine)()
-    with session.begin():
+    try:
         result = session.execute(
             text("SELECT nome,estoque FROM produtos WHERE estoque <= :stock"),
             {"stock": stock},
@@ -23,6 +23,8 @@ def check(stock=30, url=os.getenv("DATABASE_URL")):
 
         results_dict = [dict(row._asdict()) for row in results]
         return results_dict
+    finally:
+        session.close()
 
 
 def notify(message, typed: Literal["warning", "danger"]):

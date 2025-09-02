@@ -1,12 +1,16 @@
 import streamlit as st
-from src.models.entities.database import Notifications
 from src.models.repository.notifications_repository import NotificationsRepository
 
 
+@st.cache_data
+def get_unreads():
+    notifications_repository = NotificationsRepository()
+    return notifications_repository.get_unread_notifications()
+
+
 @st.dialog("Notificações 🔔")
-def modal_notifications(
-    unreads: list[Notifications], notifications_repository: NotificationsRepository
-):
+def modal_notifications(notifications_repository: NotificationsRepository):
+    unreads = get_unreads()
     if not unreads:
         st.info("Nenhuma notificação nova.")
     else:
@@ -17,6 +21,8 @@ def modal_notifications(
         ):
             for unread in unreads:
                 notifications_repository.mark_as_read(unread.id)
+                del st.session_state["unreads"]
+                del st.session_state["count_unread"]
         for n in unreads:
             cols = st.columns([2, 2])
             cols[0].markdown(

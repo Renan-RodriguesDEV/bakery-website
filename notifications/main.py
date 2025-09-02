@@ -1,5 +1,4 @@
 import json
-import os
 import sys
 import threading
 import time
@@ -23,7 +22,7 @@ def run_publisher():
                 }
             )
             publisher.publish(msg)
-        time.sleep(60 * 1)  # Await 1 hours to check again
+        time.sleep(60 * 5)  # Await 5 minutes to check again
 
 
 def run_consumer():
@@ -46,7 +45,4 @@ if __name__ == "__main__":
             time.sleep(1)  # Mantém o programa principal rodando
     except KeyboardInterrupt:
         print("Process interrupted.")
-        os.system(
-            'taskkill /F /IM python.exe | findstr /I "notifications"'
-        )  # For Windows
         sys.exit(0)
