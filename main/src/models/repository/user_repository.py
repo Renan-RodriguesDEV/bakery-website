@@ -3,7 +3,7 @@ from typing import Literal
 from src.utils.hasher import Hasher
 
 from ...utils.uteis import Logger, str_as_number
-from ..entities.database import Cliente, DatabaseHandler, User
+from ..entities.database import Customer, DatabaseHandler, User
 
 
 class UserRepository(DatabaseHandler):
@@ -27,7 +27,7 @@ class UserRepository(DatabaseHandler):
                 return True
             elif type_user == "Cliente":
                 password = password if password else cpf
-                user = Cliente(
+                user = Customer(
                     nome=username,
                     cpf=cpf,
                     telefone=telefone,
@@ -56,8 +56,8 @@ class UserRepository(DatabaseHandler):
                     return user
             elif type_user == "Cliente":
                 user = (
-                    self.session.query(Cliente)
-                    .filter((Cliente.nome == username) | (Cliente.email == username))
+                    self.session.query(Customer)
+                    .filter((Customer.nome == username) | (Customer.email == username))
                     .first()
                 )
                 if user:
@@ -78,8 +78,8 @@ class UserRepository(DatabaseHandler):
                     return user
             elif type_user == "Cliente":
                 user = (
-                    self.session.query(Cliente)
-                    .filter(Cliente.email == user_email)
+                    self.session.query(Customer)
+                    .filter(Customer.email == user_email)
                     .first()
                 )
                 if user:
@@ -89,7 +89,7 @@ class UserRepository(DatabaseHandler):
 
     def select_user_cpf(self, cpf):
         with self:
-            return self.session.query(Cliente).filter_by(cpf=cpf).first()
+            return self.session.query(Customer).filter_by(cpf=cpf).first()
 
     def select_all_users(
         self, type_user: Literal["Proprietario/Funcionario", "Cliente"]
@@ -99,7 +99,7 @@ class UserRepository(DatabaseHandler):
                 users = self.session.query(User).all()
                 return users
             elif type_user == "Cliente":
-                users = self.session.query(Cliente).all()
+                users = self.session.query(Customer).all()
                 return users
             return None
 
@@ -123,9 +123,9 @@ class UserRepository(DatabaseHandler):
                     )
                 else:
                     user = (
-                        self.session.query(Cliente)
+                        self.session.query(Customer)
                         .filter(
-                            (Cliente.nome == username) | (Cliente.email == username)
+                            (Customer.nome == username) | (Customer.email == username)
                         )
                         .first()
                     )
@@ -160,7 +160,7 @@ class UserRepository(DatabaseHandler):
                     self.session.commit()
                     return True
                 elif type_user == "Cliente":
-                    user = self.session.query(Cliente).filter_by(nome=username).first()
+                    user = self.session.query(Customer).filter_by(nome=username).first()
                     self.session.delete(user)
                     self.session.commit()
                     return True
@@ -181,7 +181,9 @@ class UserRepository(DatabaseHandler):
                     user = self.session.query(User).filter_by(email=username).first()
                     user.senha = Hasher().hasherpswd(new_password)
                 else:
-                    user = self.session.query(Cliente).filter_by(email=username).first()
+                    user = (
+                        self.session.query(Customer).filter_by(email=username).first()
+                    )
                     user.senha = Hasher().hasherpswd(new_password)
                 self.session.commit()
                 return True
@@ -191,13 +193,13 @@ class UserRepository(DatabaseHandler):
 
     def get_token(self):
         with self:
-            user = self.session.query(Cliente).first()
+            user = self.session.query(Customer).first()
             if user:
                 return user.token
 
     def set_token(self, token):
         with self:
-            user = self.session.query(Cliente).first()
+            user = self.session.query(Customer).first()
             user.token = token
             self.session.commit()
             return True

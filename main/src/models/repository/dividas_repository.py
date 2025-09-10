@@ -1,10 +1,11 @@
 from decimal import Decimal
 from typing import Literal
+
 from src.models.entities.database import (
-    Cliente_Produto,
+    CustomerProduct,
     DatabaseHandler,
-    Divida,
-    Produto,
+    Debt,
+    Product,
 )
 from src.models.repository.user_repository import UserRepository
 
@@ -18,7 +19,7 @@ def select_debt_by_client(cliente, cpf=None):
     with DatabaseHandler() as db:
         if cliente:
             divida = (
-                db.session.query(Divida).filter(Divida.id_cliente == cliente.id).first()
+                db.session.query(Debt).filter(Debt.id_cliente == cliente.id).first()
             )
             if divida:
                 print("Valor", divida.valor)
@@ -33,10 +34,10 @@ def delete_dividas(cliente):
         cliente = us.select_user(cliente)
     with DatabaseHandler() as db:
         if cliente:
-            db.session.query(Cliente_Produto).filter(
-                Cliente_Produto.id_cliente == cliente.id
+            db.session.query(CustomerProduct).filter(
+                CustomerProduct.id_cliente == cliente.id
             ).delete()
-            db.session.query(Divida).filter(Divida.id_cliente == cliente.id).update(
+            db.session.query(Debt).filter(Debt.id_cliente == cliente.id).update(
                 {"valor": 0, "pago": 0}
             )
             db.session.commit()
@@ -53,29 +54,25 @@ def update_dividas(cliente, action: Literal["add", "remove"], valor=0):
         if cliente:
             if action == "add":
                 clientes = (
-                    db.session.query(Cliente_Produto)
-                    .filter(Cliente_Produto.id_cliente == cliente.id)
+                    db.session.query(CustomerProduct)
+                    .filter(CustomerProduct.id_cliente == cliente.id)
                     .all()
                 )
                 total = sum([c.total for c in clientes])
                 divida = (
-                    db.session.query(Divida)
-                    .filter(Divida.id_cliente == cliente.id)
-                    .first()
+                    db.session.query(Debt).filter(Debt.id_cliente == cliente.id).first()
                 )
                 if divida:
                     divida.valor = total
                     db.session.commit()
                     return True
-                divida = Divida(cliente, total)
+                divida = Debt(cliente, total)
                 db.session.add(divida)
                 db.session.commit()
                 return True
             else:
                 divida = (
-                    db.session.query(Divida)
-                    .filter(Divida.id_cliente == cliente.id)
-                    .first()
+                    db.session.query(Debt).filter(Debt.id_cliente == cliente.id).first()
                 )
                 if divida.valor == 0 or (divida.valor - divida.pago) < valor:
                     return False
@@ -93,10 +90,10 @@ def register_sale(client, product, count: int = 0):
         user = us.select_user(client)
     if user:
         with DatabaseHandler() as db:
-            product = db.session.query(Produto).filter(Produto.nome == product).first()
+            product = db.session.query(Product).filter(Product.nome == product).first()
             if product:
                 total = product.preco * count
-                sale = Cliente_Produto(
+                sale = CustomerProduct(
                     id_cliente=user.id,
                     id_produto=product.id,
                     preco=product.preco,
@@ -104,14 +101,12 @@ def register_sale(client, product, count: int = 0):
                     total=total,
                 )
                 divida = (
-                    db.session.query(Divida)
-                    .filter(Divida.id_cliente == user.id)
-                    .first()
+                    db.session.query(Debt).filter(Debt.id_cliente == user.id).first()
                 )
                 if divida:
                     divida.valor += total
                 else:
-                    divida = Divida(user, total)
+                    divida = Debt(user, total)
                 # remover do estoque
                 product.estoque -= count
                 db.session.add(sale)

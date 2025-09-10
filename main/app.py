@@ -54,6 +54,7 @@ load_css("background.css")
 def homepage():
     load_css("homepage.css")
     if st.session_state.get("owner"):
+        load_css("notify.css")
         # botão com contador
         count_unread = notifications_repository.get_count_unread_notifications()
         if st.button(
@@ -87,10 +88,6 @@ def homepage():
         """,
         unsafe_allow_html=True,
     )
-    x, y = st.columns([2, 2], gap="large", vertical_alignment="top")
-    # y.html(
-    #     f"<h2 style='color:black'>Status de login: <span style='color:#8B4513'> {st.session_state['usuario']}<span/></h2>"
-    # )
     x, y = st.columns([2, 2], gap="large", vertical_alignment="top")
 
     # Coordenadas da itai

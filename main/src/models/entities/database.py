@@ -28,7 +28,7 @@ from src.utils.uteis import Logger
 Base = declarative_base()
 
 
-class Produto(Base):
+class Product(Base):
     __tablename__ = "produtos"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     nome = Column("nome", TEXT, nullable=False)
@@ -62,7 +62,7 @@ class Produto(Base):
         return f"Produto(id={self.id}, nome='{self.nome}', preco={self.preco}, categoria='{self.categoria}', estoque={self.estoque})"
 
 
-class Cliente(Base):
+class Customer(Base):
     __tablename__ = "clientes"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     nome = Column("nome", String(255))
@@ -72,17 +72,18 @@ class Cliente(Base):
     email = Column("email", String(255), nullable=True, unique=True)
     token = Column("token", String(255), nullable=True)
     activate = Column("activate", Boolean, nullable=False, server_default="true")
-    dividas = relationship(
-        "Divida", backref="cliente", cascade="all, delete-orphan", passive_deletes=True
+    # relationships para delete em cascata e acesso ao objeto relacionado
+    debts = relationship(
+        "Debt", backref="cliente", cascade="all, delete-orphan", passive_deletes=True
     )
-    carrinho = relationship(
-        "Carrinho",
+    shopping_cart = relationship(
+        "ShoppingCart",
         backref="cliente",
         cascade="all, delete-orphan",
         passive_deletes=True,
     )
-    cliente_produto = relationship(
-        "Cliente_Produto",
+    customer_product = relationship(
+        "CustomerProduct",
         backref="cliente",
         cascade="all, delete-orphan",
         passive_deletes=True,
@@ -119,7 +120,7 @@ class User(Base):
         return f"User(id={self.id}, nome='{self.nome}', email='{self.email}')"
 
 
-class Cliente_Produto(Base):
+class CustomerProduct(Base):
     __tablename__ = "cliente_produto"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     id_cliente = Column(
@@ -151,7 +152,7 @@ class Cliente_Produto(Base):
         self.data = data
 
 
-class Divida(Base):
+class Debt(Base):
     __tablename__ = "dividas"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     id_cliente = Column(
@@ -170,7 +171,7 @@ class Divida(Base):
         self.data_modificacao = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
-class Carrinho(Base):
+class ShoppingCart(Base):
     __tablename__ = "carrinho"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     id_cliente = Column(

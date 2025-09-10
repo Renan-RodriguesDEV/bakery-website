@@ -1,0 +1,24 @@
+button.st-emotion-cache-1wowa6.eacrzsi1 {
+  position: absolute;
+  top: -1px;
+  right: -55px;
+  z-index: 1000;
+  background-color: rgba(255, 230, 0, 0.308); /* Light background by default */
+  border: none;
+  padding: 8px;
+  opacity: 1;
+  transition: all 0.2s ease;
+  border-radius: 50%; /* Keeping it rounded */
+}
+
+button.st-emotion-cache-1wowa6.eacrzsi1:hover {
+  opacity: 1;
+  background-color: rgba(240, 240, 240, 0.4); /* More visible on hover */
+}
+
+/* Ensure icon retains color */
+button.st-emotion-cache-1wowa6.eacrzsi1 svg,
+button.st-emotion-cache-1wowa6.eacrzsi1 img {
+  opacity: 1;
+  color: #333;
+}
