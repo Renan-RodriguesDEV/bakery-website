@@ -13,7 +13,7 @@ from routes.notifications import modal_notifications
 from routes.product_page import consulta_produto
 from routes.support_page import esquci_senha, page_support
 from routes.user_page import information, my_account
-from src.models.repository.notifications_repository import NotificationsRepository
+from src.models.repository.notifications_repository import notifications_repository
 from src.models.repository.user_repository import UserRepository
 from src.style.style import get_config_map, load_css
 from src.utils.uteis import Logger
@@ -53,6 +53,18 @@ load_css("background.css")
 # Função para a renderizar a homepage
 def homepage():
     load_css("homepage.css")
+    if st.session_state.get("owner"):
+        # botão com contador
+        count_unread = notifications_repository.get_count_unread_notifications()
+        if st.button(
+            f"+{count_unread}",
+            icon=":material/notifications:",
+            type="primary",
+            help="Notificações não lidas",
+            key="notifications",
+        ):
+            # abre popover listando notificações
+            modal_notifications(notifications_repository)
     nome_de_sessao = (
         UserRepository()
         .select_user(st.session_state["username"], st.session_state["usuario"])
@@ -218,18 +230,6 @@ def homepage():
             st.session_state["pagina"] = "informacoes"
             st.rerun()
 
-    if st.session_state.get("owner"):
-        # botão com contador
-        notifications_repository = NotificationsRepository()
-        count_unread = notifications_repository.get_count_unread_notifications()
-        if st.sidebar.button(
-            f"({count_unread})",
-            icon=":material/notifications:",
-            type="primary",
-            help="Notificações não lidas",
-        ):
-            # abre popover listando notificações
-            modal_notifications(notifications_repository)
     st.html(
         """
     <style>

@@ -1,15 +1,14 @@
 import streamlit as st
-from src.models.repository.notifications_repository import NotificationsRepository
+from src.models.repository.notifications_repository import notifications_repository
 
 
 @st.cache_data
 def get_unreads():
-    notifications_repository = NotificationsRepository()
     return notifications_repository.get_unread_notifications()
 
 
 @st.dialog("Notificações 🔔")
-def modal_notifications(notifications_repository: NotificationsRepository):
+def modal_notifications(notifications_repository):
     unreads = get_unreads()
     if not unreads:
         st.info("Nenhuma notificação nova.")

@@ -14,3 +14,10 @@ div[data-testid="stMainBlockContainer"] {
   z-index: -1;
   transition: filter 0.3s;
 }
+/* ajuste para o icone de notificações */
+/* .st-emotion-cache-e81xuv.el4r43z1 {
+  position: absolute;
+  top: -75px; /* Adjust this value to position below the headerbar */
+/* right: -55px; */
+/* z-index: 1000; */
+/* } */

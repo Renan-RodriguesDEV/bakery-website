@@ -5,10 +5,10 @@ from src.utils.uteis import Logger
 
 
 # Função para selecionar todos os produtos
-def select_all_products(limit=20, offset=0):
+def select_all_products(limit=20, offset=0, by="nome", asc=True):
     with get_db_session() as session:
         query = text(
-            "SELECT nome, preco, estoque FROM produtos ORDER BY nome LIMIT :limit OFFSET :offset"
+            f"SELECT nome, preco, estoque FROM produtos ORDER BY {by} {'ASC' if asc else 'DESC'} LIMIT :limit OFFSET :offset"
         )
         result = session.execute(query, {"limit": limit, "offset": offset})
 

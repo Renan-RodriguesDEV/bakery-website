@@ -92,8 +92,8 @@ def get_config_map(latitude, longitude):
             <div class="location-icon" aria-hidden="true">📍</div>
             <div class="location-content">
                 <p class="location-title">Estamos localizados em</p>
-                <p  class="location-sub">Clique em "Ver no mapa" para abrir a localização no Google Maps</p>
+                <p  class="location-sub">Clique em "maps" para abrir a localização no Google Maps</p>
             </div>
-            <a style="text-decoration:none; color:#fff" class="map-btn" href="https://www.google.com/maps/search/?api=1&query={latitude},{longitude}" target="_blank" rel="noopener noreferrer">Ver no mapa</a>
+            <a style="text-decoration:none; color:#fff" class="map-btn" href="https://www.google.com/maps/search/?api=1&query={latitude},{longitude}" target="_blank" rel="noopener noreferrer">maps</a>
         </div>
 """

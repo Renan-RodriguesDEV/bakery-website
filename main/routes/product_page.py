@@ -11,7 +11,7 @@ from src.models.repository.dataframes_repository import (
 
 def consulta_produto():
     """Pagina para consulta de produtos"""
-    cols = st.sidebar.columns([2, 2])
+    cols = st.sidebar.columns([2, 2, 2], vertical_alignment="center")
     items_per_page = cols[0].slider(
         "Itens por página",
         max_value=100,
@@ -20,11 +20,23 @@ def consulta_produto():
         step=1,
         help="Selecione o número de itens por página",
     )
-    current_page = cols[1].number_input("Pagina", min_value=1, step=1, max_value=100)
+    current_page = cols[2].number_input("Pagina", min_value=1, step=1, max_value=100)
     preco_min = cols[0].number_input("Min.", min_value=0, max_value=500)
     preco_max = cols[0].number_input("Max.", min_value=0, max_value=500, value=500)
-
-    produtos = select_all_products(limit=items_per_page, offset=current_page)
+    filter_by = cols[2].selectbox("Ordenar por", ["nome", "preco", "estoque"])
+    filter_order_by = cols[2].selectbox(
+        "Ordem",
+        [
+            "maior",
+            "menor",
+        ],
+    )
+    produtos = select_all_products(
+        limit=items_per_page,
+        offset=current_page,
+        by=filter_by,
+        asc=(filter_order_by == "menor"),
+    )
 
     if preco_min != 0.0 or preco_max != 1000.0:
         produtos = produtos[

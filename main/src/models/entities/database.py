@@ -2,6 +2,8 @@ import datetime
 
 # import os
 # import sys
+# print("current dir", os.path.join(os.getcwd(), "main"))
+# sys.path.append(os.path.join(os.getcwd(), "main"))
 from typing import Literal
 
 from sqlalchemy import (
@@ -16,11 +18,8 @@ from sqlalchemy import (
     String,
     Text,
 )
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.sql import func
-
-# print("current dir", os.path.join(os.getcwd(), "main"))
-# sys.path.append(os.path.join(os.getcwd(), "main"))
 from src.models.configs.config_geral import configs
 from src.models.entities.connection_handler import DatabaseHandler
 from src.utils.hasher import Hasher
@@ -73,6 +72,21 @@ class Cliente(Base):
     email = Column("email", String(255), nullable=True, unique=True)
     token = Column("token", String(255), nullable=True)
     activate = Column("activate", Boolean, nullable=False, server_default="true")
+    dividas = relationship(
+        "Divida", backref="cliente", cascade="all, delete-orphan", passive_deletes=True
+    )
+    carrinho = relationship(
+        "Carrinho",
+        backref="cliente",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+    cliente_produto = relationship(
+        "Cliente_Produto",
+        backref="cliente",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
 
     def __init__(self, nome, cpf, telefone, email, senha=None, token=None):
         self.nome = nome
@@ -108,7 +122,9 @@ class User(Base):
 class Cliente_Produto(Base):
     __tablename__ = "cliente_produto"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
-    id_cliente = Column("id_cliente", ForeignKey("clientes.id"), nullable=False)
+    id_cliente = Column(
+        "id_cliente", ForeignKey("clientes.id", ondelete="CASCADE"), nullable=False
+    )
     id_produto = Column("id_produto", ForeignKey("produtos.id"), nullable=False)
     preco = Column("preco", DECIMAL(15, 2))
     quantidade = Column(
@@ -138,7 +154,11 @@ class Cliente_Produto(Base):
 class Divida(Base):
     __tablename__ = "dividas"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
-    id_cliente = Column("id_cliente", ForeignKey("clientes.id"), nullable=False)
+    id_cliente = Column(
+        "id_cliente",
+        ForeignKey("clientes.id", ondelete="CASCADE"),
+        nullable=False,
+    )
     valor = Column("valor", DECIMAL(15, 2), nullable=False, default=0)
     pago = Column("pago", DECIMAL(15, 2), nullable=False, default=0)
     activate = Column("activate", Boolean, nullable=False, server_default="true")
@@ -153,8 +173,12 @@ class Divida(Base):
 class Carrinho(Base):
     __tablename__ = "carrinho"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
-    id_cliente = Column("id_cliente", ForeignKey("clientes.id"), nullable=False)
-    id_produto = Column("id_produto", ForeignKey("produtos.id"), nullable=False)
+    id_cliente = Column(
+        "id_cliente", ForeignKey("clientes.id", ondelete="CASCADE"), nullable=False
+    )
+    id_produto = Column(
+        "id_produto", ForeignKey("produtos.id", ondelete="CASCADE"), nullable=False
+    )
     quantidade = Column("quantidade", DECIMAL(15, 2), nullable=False)
     data = Column("data", TIMESTAMP, server_default=func.now())
 
