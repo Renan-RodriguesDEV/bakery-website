@@ -14,14 +14,15 @@ def run_publisher():
         results = check()
         print(f"Total de produtos abaixo de estoque: {len(results)}")
         for product in results:
-            msg = json.dumps(
-                {
-                    "status": "warning" if product.get("estoque") > 0 else "danger",
-                    "product": product.get("nome"),
-                    "stock": product.get("estoque"),
-                }
-            )
-            publisher.publish(msg)
+            if product:
+                msg = json.dumps(
+                    {
+                        "status": "warning" if product.get("estoque") > 0 else "danger",
+                        "product": product.get("nome"),
+                        "stock": product.get("estoque"),
+                    }
+                )
+                publisher.publish(msg)
         time.sleep(60 * 5)  # Await 5 minutes to check again
 
 

@@ -33,6 +33,7 @@ class Product(Base):
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     nome = Column("nome", TEXT, nullable=False)
     preco = Column("preco", DECIMAL(15, 2), nullable=False)
+    in_queue = Column(Boolean, nullable=False, server_default="false")
     categoria = Column(
         "categoria",
         Enum(

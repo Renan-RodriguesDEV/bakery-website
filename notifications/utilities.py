@@ -15,13 +15,21 @@ def check(stock=30, url=os.getenv("DATABASE_URL")):
     session = sessionmaker(bind=engine)()
     try:
         result = session.execute(
-            text("SELECT nome,estoque FROM produtos WHERE estoque <= :stock"),
+            text(
+                "SELECT id,nome,estoque FROM produtos WHERE estoque <= :stock AND in_queue = false"
+            ),
             {"stock": stock},
         )
 
         results = result.fetchall()
 
         results_dict = [dict(row._asdict()) for row in results]
+        for row in results_dict:
+            session.execute(
+                text("UPDATE produtos SET in_queue = true WHERE id = :id"),
+                {"id": row["id"]},
+            )
+        session.commit()
         return results_dict
     finally:
         session.close()

@@ -1,8 +1,7 @@
 import os
 import sys
 
-sys.path.append(os.path.dirname(__file__))
-
+sys.path.append(os.path.join(os.path.dirname(__file__), "main"))
 from main.src.models.entities.database import initialize_database
 from main.src.utils.migrations import backup_with_psycopg2
 
