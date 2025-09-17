@@ -2,7 +2,6 @@ import streamlit as st
 from src.models.repository.notifications_repository import notifications_repository
 
 
-@st.cache_data
 def get_unreads():
     return notifications_repository.get_unread_notifications()
 

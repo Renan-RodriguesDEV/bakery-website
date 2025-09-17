@@ -20,23 +20,26 @@ class UserRepository(DatabaseHandler):
         type_user: Literal["Proprietario/Funcionario", "Cliente"] = "Cliente",
     ):
         with self:
-            if type_user == "Proprietario/Funcionario":
-                user = User(nome=username, senha=password)
-                self.session.add(user)
-                self.session.commit()
-                return True
-            elif type_user == "Cliente":
-                password = password if password else cpf
-                user = Customer(
-                    nome=username,
-                    cpf=cpf,
-                    telefone=telefone,
-                    email=email,
-                    senha=password,
-                )
-                self.session.add(user)
-                self.session.commit()
-                return True
+            try:
+                if type_user == "Proprietario/Funcionario":
+                    user = User(nome=username, senha=password)
+                    self.session.add(user)
+                    self.session.commit()
+                    return True
+                elif type_user == "Cliente":
+                    password = password if password else cpf
+                    user = Customer(
+                        nome=username,
+                        cpf=cpf,
+                        telefone=telefone,
+                        email=email,
+                        senha=password,
+                    )
+                    self.session.add(user)
+                    self.session.commit()
+                    return True
+            except Exception as e:
+                Logger.error(e)
         return False
 
     def select_user(

@@ -1,4 +1,4 @@
-button.st-emotion-cache-1wowa6.eacrzsi1 {
+button.st-emotion-cache-e81xuv.el4r43z1 {
   position: absolute;
   top: -1px;
   right: -55px;
@@ -11,14 +11,14 @@ button.st-emotion-cache-1wowa6.eacrzsi1 {
   border-radius: 50%; /* Keeping it rounded */
 }
 
-button.st-emotion-cache-1wowa6.eacrzsi1:hover {
+button.st-emotion-cache-e81xuv.el4r43z1:hover {
   opacity: 1;
   background-color: rgba(240, 240, 240, 0.4); /* More visible on hover */
 }
 
 /* Ensure icon retains color */
-button.st-emotion-cache-1wowa6.eacrzsi1 svg,
-button.st-emotion-cache-1wowa6.eacrzsi1 img {
+button.st-emotion-cache-e81xuv.el4r43z1 svg,
+button.st-emotion-cache-e81xuv.el4r43z1 img {
   opacity: 1;
   color: #333;
 }
