@@ -10,3 +10,6 @@ qrcode
 SQLAlchemy
 streamlit
 pika
+langchain
+langchain-google-genai
+google-generativeai
