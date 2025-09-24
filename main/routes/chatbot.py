@@ -26,11 +26,11 @@ def show_chatbot_modal():
 
         # resposta IA
         with st.chat_message("assistant"):
-            with st.spinner("Pensando..."):
+            with st.spinner("Pensando...", show_time=True):
                 resposta = ask_chat(user_input)  # garantir que retorna str
-                st.markdown(resposta.content)
+                st.markdown(f"{resposta.get('font')}\n{resposta.get('message')}")
 
         # salva resposta IA
         st.session_state["chat_history"].append(
-            {"role": "assistant", "content": resposta.content}
+            {"role": "assistant", "content": resposta.get("message")}
         )

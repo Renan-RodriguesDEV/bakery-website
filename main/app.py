@@ -218,7 +218,12 @@ def homepage():
     ):
         st.session_state["pagina"] = "conta"
         st.rerun()
-    if st.sidebar.button("Chatbot Assistente IA", use_container_width=True):
+    if st.sidebar.button(
+        "AI Bakery",
+        icon=":material/auto_awesome:",
+        help="Converse com nossa assistente virtual",
+        use_container_width=True,
+    ):
         show_chatbot_modal()
     if st.session_state["owner"]:
         if st.sidebar.button(
