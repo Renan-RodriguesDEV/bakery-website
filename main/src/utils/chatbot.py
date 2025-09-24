@@ -1,13 +1,18 @@
 import os
 from typing import Dict
 
+import streamlit as st
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel, Field
 
 load_dotenv()
-API_KEY = os.getenv("GOOGLE_API_KEY")
+API_KEY = (
+    os.getenv("GOOGLE_API_KEY")
+    if os.getenv("GOOGLE_API_KEY")
+    else st.secrets["GOOGLE_API_KEY"]
+)
 llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.1, api_key=API_KEY)
 
 
