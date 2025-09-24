@@ -5,6 +5,7 @@ from routes.cadastros_page import (
     customer_registration,
 )
 from routes.carrinho_compras_page import shopping_cart
+from routes.chatbot import show_chatbot_modal
 from routes.compras_page import realizar_compra
 from routes.dividas_page import atualizar_divida, consulta_divida
 from routes.login_page import tela_login
@@ -118,6 +119,7 @@ def homepage():
                 ):
                     st.session_state["pagina"] = "cart"
                     st.rerun()
+
         if x.button(
             "Comprar",
             use_container_width=True,
@@ -216,7 +218,8 @@ def homepage():
     ):
         st.session_state["pagina"] = "conta"
         st.rerun()
-
+    if st.sidebar.button("Chatbot Assistente IA", use_container_width=True):
+        show_chatbot_modal()
     if st.session_state["owner"]:
         if st.sidebar.button(
             "Informações de Clientes",
