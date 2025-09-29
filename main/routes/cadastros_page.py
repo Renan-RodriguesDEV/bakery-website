@@ -8,7 +8,7 @@ from src.models.repository.dataframes_repository import (
 from src.models.repository.product_repository import ProductRepository
 from src.models.repository.user_repository import UserRepository
 from src.utils.email import EmailSender
-from src.utils.uteis import Logger, str_as_number, validate_email
+from src.utils.uteis import Logger, str_as_number, validate_cpf, validate_email
 
 
 def alter_client(cliente, nome=None, cpf=None, email=None, telefone=None):
@@ -267,7 +267,10 @@ def cadastro_cliente():
                 st.error("Todos os campos são obrigatorios!! Por favor preencha todos")
             else:
                 if validate_email(email):
-                    register_client(nome, cpf, telefone, email)
+                    if not validate_cpf(cpf):
+                        st.error("CPF inválido. Por favor, insira um CPF válido.")
+                    else:
+                        register_client(nome, cpf, telefone, email)
                 else:
                     st.error("Email invalido")
     elif action == "Alterar":
@@ -333,10 +336,12 @@ def customer_registration():
     cpf = str_as_number(cpf)
     telefone = str_as_number(telefone)
     if st.button("Cadastrar", type="primary"):
+        if not validate_cpf(cpf):
+            st.error("CPF inválido. Por favor, insira um CPF válido.")
         if not validate_email(email):
-            st.error("Email invalido")
+            st.error("Email inválido. Por favor, insira um email válido.")
         if not nome or not cpf or not senha or not telefone or not email:
-            st.warning("Todos os campos são obrigatorios!!")
+            st.warning("Todos os campos são obrigatórios!")
         else:
             if UserRepository().insert_user(
                 nome, senha, cpf, telefone, email, "Cliente"

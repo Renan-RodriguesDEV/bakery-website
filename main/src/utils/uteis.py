@@ -1,7 +1,8 @@
+import io
 import secrets
 import time
+
 import qrcode
-import io
 from colorama import Fore, Style, init
 
 
@@ -86,6 +87,13 @@ def number_as_cpf(string: str):
 
 def validate_email(email: str):
     if "@" in email and not email.startswith("@") and not email.endswith("@"):
+        return True
+    return False
+
+
+def validate_cpf(cpf: str):
+    cpf = cpf.replace("-", "").replace(".", "")
+    if len(cpf) == 11 and cpf.isdigit():
         return True
     return False
 
