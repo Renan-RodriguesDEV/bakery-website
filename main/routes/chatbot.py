@@ -1,5 +1,5 @@
 import streamlit as st
-from src.utils.chatbot import ask_chat
+from src.chatbot.chatbot import ask_chat
 
 
 @st.dialog("AI Assistant")
@@ -28,7 +28,9 @@ def show_chatbot_modal():
         with st.chat_message("assistant"):
             with st.spinner("Pensando...", show_time=True):
                 resposta = ask_chat(user_input)  # garantir que retorna str
-                st.markdown(f"{resposta.get('font')}\n{resposta.get('message')}")
+                st.markdown(
+                    f"{resposta.get('message')}\n\nFontes: {resposta.get('font')}"
+                )
 
         # salva resposta IA
         st.session_state["chat_history"].append(
