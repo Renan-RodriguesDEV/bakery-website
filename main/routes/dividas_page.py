@@ -234,7 +234,7 @@ Edite as pendências de dívidas dos clientes.
         ":grey[Aqui você pode adicionar ou remover dívidas de clientes específicos.]"
     )
     df_clientes = select_all_clientes()
-    df_produtos = select_all_products()
+    df_produtos = select_all_products(200)
     cliente = st.selectbox("Selecione o cliente", df_clientes["nome"].to_list())
     action = st.selectbox("Adicionar/Remover divida", ["Adicionar", "Remover"])
     if action == "Adicionar":
@@ -245,20 +245,23 @@ Edite as pendências de dívidas dos clientes.
             produto = st.selectbox("Selecione o produto", df_produtos)
         if df_clientes.empty:
             st.error("Nenhum cliente cadastrado")
-        preco = None
+        preco = 0.0
+        estoque = 0.0
         try:
             if produto:
                 preco = ProductRepository().select_product_price(produto)
+                estoque = ProductRepository().select_product(produto).estoque
         except Exception as e:
             st.warning("Produto não encontrado")
             Logger.error(str(e))
         quantidade = st.number_input(
             "Quantidade",
-            min_value=1,
-            step=1,
-            max_value=ProductRepository().select_product(produto).estoque,
+            min_value=0.0,
+            step=1.0,
+            max_value=float(estoque) - 1 if estoque else 0.0,
+            help=f"Estoque atual: {estoque}, coloque valores inteiros!",
         )
-        valor_total = preco * quantidade if preco is not None else 0
+        valor_total = float(preco) * float(quantidade) if preco is not None else 0
         # Garantindo que os valores estão formatados corretamente antes de inserir no HTML
         preco_formatado = (
             f"R$ {preco:.2f}".replace(".", ",") if preco is not None else "R$ 0,00"

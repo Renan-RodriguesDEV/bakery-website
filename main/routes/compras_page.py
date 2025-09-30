@@ -12,7 +12,9 @@ from src.utils.uteis import Logger
 def realizar_compra():
     """Pagina de compras a fazer"""
     st.title(":orange[Faça sua(s) Compra(s) 🛒]")
-    df_produtos = select_all_products()
+    df_produtos = select_all_products(
+        limit=200,
+    )
     cliente_session = st.session_state["username"]
     st.write(f"Cliente: {cliente_session}")
     categoria = st.selectbox(

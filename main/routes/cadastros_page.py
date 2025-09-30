@@ -173,7 +173,7 @@ def cadastro_produto():
     elif selection == "Alterar":
         produto = st.selectbox(
             "**:green[Selecione o produto]**",
-            select_all_products(),
+            select_all_products(200),
             help="selecione o produto que deseja alterar",
         )
         produto_obj = ProductRepository().select_product(produto)
@@ -207,7 +207,7 @@ def cadastro_produto():
             print(produto, nome, preco, qtde, categoria)
             alter_product(produto, nome, preco, int(qtde), categoria)
     else:
-        produto = st.selectbox(":red[Selecione o produto]", select_all_products())
+        produto = st.selectbox(":red[Selecione o produto]", select_all_products(200))
         Logger.info(f">>> Produto selecionado: {produto}")
         if st.button("Deletar Produto", type="primary"):
             deletion = ProductRepository().delete_product(produto)
