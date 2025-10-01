@@ -6,7 +6,6 @@ import streamlit as st
 from dotenv import load_dotenv
 from langchain.agents import AgentType, initialize_agent
 from langchain_google_genai import ChatGoogleGenerativeAI
-from pydantic import BaseModel, Field
 from src.chatbot.tools import find_all_products
 
 load_dotenv()
@@ -32,11 +31,6 @@ REGRAS:
 - Se a pergunta não for sobre padaria, ou sobre este sistema de padaria interno, responda com:
   {"font": ["interno"], "message": "Posso auxiliar apenas em assuntos da padaria e panificação."}
 """
-
-
-class Response(BaseModel):
-    font: list[str] = Field(title="font:", max_length=100)
-    message: str = Field(title="message:", max_length=500)
 
 
 tools = [find_all_products]
