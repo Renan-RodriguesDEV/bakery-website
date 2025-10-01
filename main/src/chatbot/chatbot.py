@@ -39,8 +39,6 @@ class Response(BaseModel):
     message: str = Field(title="message:", max_length=500)
 
 
-llm.with_structured_output(Response)
-
 tools = [find_all_products]
 agent = initialize_agent(
     tools=tools,
@@ -56,7 +54,10 @@ def ask_chat(answer) -> Dict:
         {"input": f"{PROMPT}\n\nPergunta: {answer}", "chat_history": []}
     )
     print(response)
-    print(type(response["output"]))
-    if isinstance(response["output"], str):
-        return json.loads(response["output"])
-    return response["output"]
+    print(type(response.get("output")))
+    try:
+        if isinstance(response.get("output"), str):
+            return json.loads(response.get("output"))
+        return response.get("output")
+    except json.JSONDecodeError:
+        return {"font": ["interno"], "message": "Erro ao processar a resposta."}
