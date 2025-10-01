@@ -55,3 +55,6 @@ def ask_chat(answer) -> Dict:
         return response.get("output")
     except json.JSONDecodeError:
         return {"font": ["interno"], "message": "Erro ao processar a resposta."}
+    except Exception as e:
+        print(str(e))
+        return {"font": ["interno"], "message": "Erro inesperado, desculpe nos =("}
