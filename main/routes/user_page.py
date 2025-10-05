@@ -68,7 +68,7 @@ def my_account():
                 x.write(f"CPF: {number_as_cpf(user_data.cpf)}")
                 x.write(f"Telefone: {number_as_telephone(user_data.telefone)}")
                 new_name = y.text_input(
-                    "Nome: ", type="default", placeholder="Criptovenio Mendes"
+                    "Nome: ", type="default", placeholder="Son Goku"
                 )
                 new_pswd = y.text_input("Senha: ", type="password", max_chars=11)
                 new_email = y.text_input(
@@ -126,7 +126,7 @@ def my_account():
                 x.write(f"Nome: {user_data.nome}")
                 x.write(f"Email: {user_data.email}")
                 new_name = y.text_input(
-                    "Nome: ", type="default", placeholder="Criptovenio Mendes"
+                    "Nome: ", type="default", placeholder="Son Goku"
                 )
                 new_pswd = y.text_input("Senha: ", type="password", max_chars=11)
                 new_email = y.text_input(
