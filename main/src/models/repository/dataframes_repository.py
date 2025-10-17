@@ -124,15 +124,17 @@ def select_all_sales_by_client(client_name=None, cpf=None, client_email=None):
 
 
 # Função para selecionar todos os produtos por categoria
-def select_all_products_by_category(category):
+def select_all_products_by_category(category, limit=20, offset=0, by="nome", asc=True):
     with get_db_session() as session:
-        query = text("""
+        query = text(f"""
             SELECT nome, preco, estoque
             FROM produtos
-            WHERE categoria = :categoria ORDER BY nome
+            WHERE categoria = :categoria  ORDER BY {by} {"ASC" if asc else "DESC"} LIMIT :limit OFFSET :offset
         """)
 
-        result = session.execute(query, {"categoria": category})
+        result = session.execute(
+            query, {"categoria": category, "limit": limit, "offset": offset}
+        )
 
         # Converte para lista de dicionários
         data = [dict(row._mapping) for row in result]

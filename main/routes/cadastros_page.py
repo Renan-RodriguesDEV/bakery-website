@@ -70,7 +70,7 @@ def register_client(nome: str, cpf: str, telefone: str, email: str):
             username=nome,
             cpf=cpf,
             telefone=telefone,
-            email=email,
+            email=email.strip(),
             type_user="Cliente",
         )
         if cadasto:
@@ -344,7 +344,7 @@ def customer_registration():
             st.warning("Todos os campos são obrigatórios!")
         else:
             if UserRepository().insert_user(
-                nome, senha, cpf, telefone, email, "Cliente"
+                nome, senha, cpf, telefone, email.strip(), "Cliente"
             ):
                 email_sender = EmailSender()
                 message = f"""<html>

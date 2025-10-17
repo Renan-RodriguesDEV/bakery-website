@@ -127,7 +127,13 @@ def consulta_produto():
         ["categoria", "Bebidas", "Doces", "Salgados", "Padaria", "Mercearia"],
     )
     if categoria and categoria != "categoria":
-        produtos = select_all_products_by_category(categoria)
+        produtos = select_all_products_by_category(
+            categoria,
+            limit=items_per_page,
+            offset=current_page,
+            by=filter_by,
+            asc=(filter_order_by == "menor"),
+        )
         produtos = produtos[
             (produtos["Preço"] >= preco_min) & (produtos["Preço"] <= preco_max)
         ]

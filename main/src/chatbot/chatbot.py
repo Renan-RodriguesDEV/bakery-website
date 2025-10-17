@@ -6,7 +6,7 @@ import streamlit as st
 from dotenv import load_dotenv
 from langchain.agents import AgentType, initialize_agent
 from langchain_google_genai import ChatGoogleGenerativeAI
-from src.chatbot.tools import find_all_products
+from src.chatbot.tools import find_all_products, get_data_FAQ
 
 load_dotenv()
 API_KEY = (
@@ -33,12 +33,12 @@ REGRAS:
 """
 
 
-tools = [find_all_products]
+tools = [find_all_products, get_data_FAQ]
 agent = initialize_agent(
     tools=tools,
     llm=llm,
     agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION,
-    verbose=False,
+    verbose=True,
     handle_parsing_errors=True,
 )
 

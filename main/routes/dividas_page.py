@@ -370,6 +370,14 @@ Edite as pendências de dívidas dos clientes.
     ):
         st.session_state["pagina"] = "consulta_divida"
         st.rerun()
+    if st.sidebar.button(
+        "Editar produtos",
+        icon=":material/edit:",
+        use_container_width=True,
+        type="primary",
+    ):
+        st.session_state["pagina"] = "cadastro_produto"
+        st.rerun()
 
 
 @st.cache_data

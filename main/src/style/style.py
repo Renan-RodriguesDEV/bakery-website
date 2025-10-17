@@ -5,7 +5,9 @@ import streamlit as st
 
 def load_css(filename):
     with open(
-        os.path.join(os.getcwd(), "main", "src", "style", "components", filename), "r"
+        os.path.join(os.getcwd(), "main", "src", "style", "components", filename),
+        "r",
+        encoding="utf-8",
     ) as f:
         st.html(f"<style>{f.read()}</style>")
 

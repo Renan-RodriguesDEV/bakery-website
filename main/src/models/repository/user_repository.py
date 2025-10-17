@@ -174,19 +174,26 @@ class UserRepository(DatabaseHandler):
 
     def reset_password(
         self,
-        username,
-        new_password,
+        username: str,
+        new_password: str,
         type_user: Literal["Proprietario/Funcionario", "Cliente"],
     ):
         with self:
             try:
+                username = username.strip()
                 if type_user == "Proprietario/Funcionario":
-                    user = self.session.query(User).filter_by(email=username).first()
+                    user = (
+                        self.session.query(User).filter(User.email == username).first()
+                    )
+                    print(f"Usurario encontrado {user}")
                     user.senha = Hasher().hasherpswd(new_password)
                 else:
                     user = (
-                        self.session.query(Customer).filter_by(email=username).first()
+                        self.session.query(Customer)
+                        .filter(Customer.email == username)
+                        .first()
                     )
+                    print(f"Usurario encontrado {user}")
                     user.senha = Hasher().hasherpswd(new_password)
                 self.session.commit()
                 return True

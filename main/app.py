@@ -54,19 +54,27 @@ load_css("background.css")
 # Função para a renderizar a homepage
 def homepage():
     load_css("homepage.css")
-    if st.session_state.get("owner"):
-        load_css("notify.css")
-        # botão com contador
-        count_unread = notifications_repository.get_count_unread_notifications()
-        if st.button(
-            f"+{count_unread}",
-            icon=":material/notifications:",
-            type="primary",
-            help="Notificações não lidas",
-            key="notifications",
-        ):
-            # abre popover listando notificações
-            modal_notifications(notifications_repository)
+    # Cria um container para o header com notificações alinhadas
+    header_container = st.container()
+
+    with header_container:
+        # Cria colunas: vazio + notificações (alinhadas à direita)
+        col_spacer, col_notifications = st.columns([0.96, 0.10], gap="small")
+
+        with col_notifications:
+            if st.session_state.get("owner"):
+                # botão com contador alinhado à direita
+                count_unread = notifications_repository.get_count_unread_notifications()
+                if st.button(
+                    f"+{count_unread}",
+                    icon=":material/notifications:",
+                    type="primary",
+                    help="Notificações não lidas",
+                    key="notifications",
+                    use_container_width=True,
+                ):
+                    # abre popover listando notificações
+                    modal_notifications(notifications_repository)
     nome_de_sessao = (
         UserRepository()
         .select_user(st.session_state["username"], st.session_state["usuario"])

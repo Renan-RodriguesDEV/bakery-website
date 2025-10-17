@@ -98,7 +98,7 @@ def my_account():
                                 user,
                                 new_name,
                                 new_pswd,
-                                new_email,
+                                new_email.strip(),
                                 new_cpf,
                                 new_telefone,
                                 type_user="Cliente",
@@ -144,7 +144,7 @@ def my_account():
                                 user,
                                 new_name,
                                 new_pswd,
-                                new_email,
+                                new_email.strip(),
                                 type_user="Proprietario/Funcionario",
                             )
                             if update:
