@@ -2,7 +2,7 @@ colorama==0.4.6
 mercadopago==2.3.0
 pandas==2.2.3
 openpyxl==3.1.5
-Pillow==11.1.0
+Pillow==10.4.0
 psycopg2-binary==2.9.10
 bcrypt==4.3.0
 qrcode==7.4.2
