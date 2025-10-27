@@ -9,7 +9,7 @@ bcrypt
 qrcode
 python-dotenv
 SQLAlchemy
-streamlit
+streamlit==1.39.0
 pika
 langchain
 langchain-google-genai
