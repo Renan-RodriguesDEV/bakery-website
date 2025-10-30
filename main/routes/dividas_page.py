@@ -256,9 +256,10 @@ Edite as pendências de dívidas dos clientes.
             Logger.error(str(e))
         quantidade = st.number_input(
             "Quantidade",
-            min_value=0.0,
-            step=1.0,
-            max_value=float(estoque) - 1 if estoque else 0.0,
+            min_value=0,
+            step=1,
+            max_value=estoque - 1 if estoque else 0,
+            value=0,
             help=f"Estoque atual: {estoque}, coloque valores inteiros!",
         )
         valor_total = float(preco) * float(quantidade) if preco is not None else 0
