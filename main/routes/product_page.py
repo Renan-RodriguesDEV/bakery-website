@@ -17,12 +17,14 @@ def consulta_produto():
         max_value=100,
         min_value=10,
         value=10,
-        step=1,
+        step=2,
         help="Selecione o número de itens por página",
     )
     current_page = cols[2].number_input("Pagina", min_value=1, step=1, max_value=100)
-    preco_min = cols[0].number_input("Min.", min_value=0, max_value=500)
-    preco_max = cols[0].number_input("Max.", min_value=0, max_value=500, value=500)
+    preco_min = cols[0].number_input("Valor Min.", min_value=0, max_value=500)
+    preco_max = cols[0].number_input(
+        "Valor Max.", min_value=0, max_value=500, value=500
+    )
     filter_by = cols[2].selectbox("Ordenar por", ["nome", "preco", "estoque"])
     filter_order_by = cols[2].selectbox(
         "Ordem",

@@ -254,70 +254,73 @@ Edite as pendências de dívidas dos clientes.
         except Exception as e:
             st.warning("Produto não encontrado")
             Logger.error(str(e))
-        quantidade = st.number_input(
-            "Quantidade",
-            min_value=0,
-            step=1,
-            max_value=estoque - 1 if estoque else 0,
-            value=0,
-            help=f"Estoque atual: {estoque}, coloque valores inteiros!",
-        )
-        valor_total = float(preco) * float(quantidade) if preco is not None else 0
-        # Garantindo que os valores estão formatados corretamente antes de inserir no HTML
-        preco_formatado = (
-            f"R$ {preco:.2f}".replace(".", ",") if preco is not None else "R$ 0,00"
-        )
-        valor_total_formatado = (
-            f"R$ {valor_total:.2f}".replace(".", ",")
-            if valor_total is not None
-            else "R$ 0,00"
-        )
+        if estoque <= 1:
+            st.warning("Estoque insuficiente")
+        else:
+            quantidade = st.number_input(
+                "Quantidade",
+                min_value=0,
+                step=1,
+                max_value=estoque - 1 if estoque else 0,
+                value=0,
+                help=f"Estoque atual: {estoque}, coloque valores inteiros!",
+            )
+            valor_total = float(preco) * float(quantidade) if preco is not None else 0
+            # Garantindo que os valores estão formatados corretamente antes de inserir no HTML
+            preco_formatado = (
+                f"R$ {preco:.2f}".replace(".", ",") if preco is not None else "R$ 0,00"
+            )
+            valor_total_formatado = (
+                f"R$ {valor_total:.2f}".replace(".", ",")
+                if valor_total is not None
+                else "R$ 0,00"
+            )
 
-        # HTML simplificado para garantir compatibilidade
-        st.html(
-            f"""
-            <div style="display:flex; flex-direction:column; gap:10px; padding:18px; border-radius:12px; background:#1e1e1e; border:1px solid #333; box-shadow:0 4px 12px rgba(0,0,0,0.15);">
-                <div style="font-size:16px; color:#8B4513; font-weight:700; margin-bottom:8px; border-bottom:1px solid #444; padding-bottom:8px;">
-                    Resumo da transação
-                </div>
-                
-                <div style="display:flex; align-items:center; justify-content:space-between; gap:20px;">
-                    <div style="flex:1; background:#2a2a2a; border-radius:8px; padding:12px; border-left:4px solid #8B4513;">
-                        <div style="font-size:13px; color:#999; font-weight:600; margin-bottom:6px;">
-                            <i class="fas fa-tag" style="margin-right:5px;"></i>Preço unitário
-                        </div>
-                        <div style="font-size:18px; font-weight:700; color:#eee;">{preco_formatado}</div>
+            # HTML simplificado para garantir compatibilidade
+            st.html(
+                f"""
+                <div style="display:flex; flex-direction:column; gap:10px; padding:18px; border-radius:12px; background:#1e1e1e; border:1px solid #333; box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+                    <div style="font-size:16px; color:#8B4513; font-weight:700; margin-bottom:8px; border-bottom:1px solid #444; padding-bottom:8px;">
+                        Resumo da transação
                     </div>
                     
-                    <div style="flex:1; background:#2a2a2a; border-radius:8px; padding:12px; border-left:4px solid #8B4513;">
-                        <div style="font-size:13px; color:#999; font-weight:600; margin-bottom:6px;">
-                            <i class="fas fa-cubes" style="margin-right:5px;"></i>Quantidade
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:20px;">
+                        <div style="flex:1; background:#2a2a2a; border-radius:8px; padding:12px; border-left:4px solid #8B4513;">
+                            <div style="font-size:13px; color:#999; font-weight:600; margin-bottom:6px;">
+                                <i class="fas fa-tag" style="margin-right:5px;"></i>Preço unitário
+                            </div>
+                            <div style="font-size:18px; font-weight:700; color:#eee;">{preco_formatado}</div>
                         </div>
-                        <div style="font-size:18px; font-weight:700; color:#eee;">{quantidade}</div>
+                        
+                        <div style="flex:1; background:#2a2a2a; border-radius:8px; padding:12px; border-left:4px solid #8B4513;">
+                            <div style="font-size:13px; color:#999; font-weight:600; margin-bottom:6px;">
+                                <i class="fas fa-cubes" style="margin-right:5px;"></i>Quantidade
+                            </div>
+                            <div style="font-size:18px; font-weight:700; color:#eee;">{quantidade}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top:10px; text-align:center;">
+                        <div style="font-size:13px; color:#999; font-weight:600; margin-bottom:8px;">
+                            <i class="fas fa-calculator" style="margin-right:5px;"></i>Valor final
+                        </div>
+                        <div style="display:inline-block; background:#212e21; color:#4ade80; padding:10px 16px; border-radius:10px; font-size:22px; font-weight:800; box-shadow:0 2px 8px rgba(0,0,0,0.2);">
+                            {valor_total_formatado}
+                        </div>
                     </div>
                 </div>
                 
-                <div style="margin-top:10px; text-align:center;">
-                    <div style="font-size:13px; color:#999; font-weight:600; margin-bottom:8px;">
-                        <i class="fas fa-calculator" style="margin-right:5px;"></i>Valor final
-                    </div>
-                    <div style="display:inline-block; background:#212e21; color:#4ade80; padding:10px 16px; border-radius:10px; font-size:22px; font-weight:800; box-shadow:0 2px 8px rgba(0,0,0,0.2);">
-                        {valor_total_formatado}
-                    </div>
-                </div>
-            </div>
-            
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-            """,
-        )
-        if st.button("Atualizar", type="primary", disabled=df_produtos.empty):
-            is_register = register_sale(cliente, produto, quantidade)
-            if is_register:
-                st.success(
-                    f"Venda registrada com sucesso no valor de R${preco * quantidade}!"
-                )
-            else:
-                st.error("Erro ao registrar a venda")
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                """,
+            )
+            if st.button("Atualizar", type="primary", disabled=df_produtos.empty):
+                is_register = register_sale(cliente, produto, quantidade)
+                if is_register:
+                    st.success(
+                        f"Venda registrada com sucesso no valor de R${preco * quantidade}!"
+                    )
+                else:
+                    st.error("Erro ao registrar a venda")
     else:
         divida_total = select_debt_by_client(cliente)
         st.write(
