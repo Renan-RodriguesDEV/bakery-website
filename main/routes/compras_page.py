@@ -49,16 +49,57 @@ def realizar_compra():
 
     if produto and preco:
         with st.container():
-            st.markdown(
+            preco_formatado = (
+                f"R$ {preco:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+            )
+            valor_total = preco * quantidade
+            valor_total_formatado = (
+                f"R$ {valor_total:,.2f}".replace(",", "X")
+                .replace(".", ",")
+                .replace("X", ".")
+            )
+            st.html(
                 f"""
-                <div style='background-color: #8B4513; padding: 10px; border-radius: 5px; width: 100%;font-size:18px'>
-                <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #FFFFFF'>Produto: </span><strong>{produto}</strong></p>
-                <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #FFFFFF'>Preço Unitário: </span><strong>R$ {preco}</strong></p>
-                <p style='color: white; display: flex; justify-content: space-between;'><span style='color: #FFFFFF'>Valor Final: </span><strong>R$ {preco * quantidade}</strong></p>
+                <div style="display:flex; flex-direction:column; gap:12px; padding:20px; border-radius:14px; background:#131313; border:1px solid #2b2b2b; box-shadow:0 6px 18px rgba(0,0,0,0.25);">
+                    <div style="font-size:15px; color:#8B4513; font-weight:700; letter-spacing:0.5px; text-transform:uppercase;">
+                        Resumo da compra
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; background:#1b1b1b; border-radius:10px; padding:14px; border-left:4px solid #8B4513;">
+                        <div style="font-size:12px; color:#999; font-weight:600; margin-bottom:6px;">
+                            <i class="fas fa-bread-slice" style="margin-right:6px;"></i>Produto selecionado
+                        </div>
+                        <div style="font-size:20px; font-weight:700; color:#f5f5f5;">{produto}</div>
+                    </div>
+                    
+                    <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                        <div style="flex:1; min-width:180px; background:#1b1b1b; border-radius:10px; padding:14px; border-left:4px solid #8B4513;">
+                            <div style="font-size:12px; color:#999; font-weight:600; margin-bottom:8px;">
+                                <i class="fas fa-tag" style="margin-right:6px;"></i>Preço unitário
+                            </div>
+                            <div style="font-size:20px; font-weight:700; color:#f5f5f5;">{preco_formatado}</div>
+                        </div>
+                        
+                        <div style="flex:1; min-width:180px; background:#1b1b1b; border-radius:10px; padding:14px; border-left:4px solid #8B4513;">
+                            <div style="font-size:12px; color:#999; font-weight:600; margin-bottom:8px;">
+                                <i class="fas fa-cubes" style="margin-right:6px;"></i>Quantidade
+                            </div>
+                            <div style="font-size:20px; font-weight:700; color:#f5f5f5;">{quantidade}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top:6px; text-align:center;">
+                        <div style="font-size:12px; color:#999; font-weight:600; margin-bottom:10px;">
+                            <i class="fas fa-calculator" style="margin-right:6px;"></i>Valor final
+                        </div>
+                        <div style="display:inline-block; background:#1f2b1f; color:#4ade80; padding:12px 22px; border-radius:12px; font-size:24px; font-weight:800; box-shadow:0 4px 12px rgba(0,0,0,0.22);">
+                            {valor_total_formatado}
+                        </div>
+                    </div>
                 </div>
-                <br/>
-                """,
-                unsafe_allow_html=True,
+                
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                """
             )
         disable = True
         if col1.button(

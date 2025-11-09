@@ -13,21 +13,58 @@ def information():
             cliente_obj = c.select_user(cliente)
         if cliente_obj:
             st.subheader(f"Informações sobre: {cliente}")
-            st.markdown(
+            telefone_limpo = "".join(
+                filter(str.isdigit, str(cliente_obj.telefone or ""))
+            )
+            st.html(
                 f"""
-                <div style="background-color: #8B4513; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                    <h3 style="color: white; margin-bottom: 15px;">Detalhes do Cliente</h3>
-                    <div style="margin-left: 10px;">
-                        <p style="font-size: 16px; margin: 8px 0;"><strong>Nome:</strong> {cliente_obj.nome}</p>
-                        <p style="font-size: 16px; margin: 8px 0;"><strong>CPF:</strong> {cliente_obj.cpf}</p>
-                        <p style="font-size: 16px; margin: 8px 0;"><strong>Telefone:</strong> <a href="https://wa.me/+55{cliente_obj.telefone}" style="color: #FFD700;">{cliente_obj.telefone}</a></p>
-                        <p style="font-size: 16px; margin: 8px 0;"><strong>Email:</strong> <a href="mailto:{cliente_obj.email}" style="color: #FFD700;">{cliente_obj.email}</a></p>
-                        <p style="font-size: 16px; margin: 8px 0;"><strong>Status de ativação:</strong> <span style="color: #FFD700;">{cliente_obj.activate}</span></p>
+                <div style="display:flex; flex-direction:column; gap:16px; padding:24px; border-radius:16px; background:#131313; border:1px solid #2b2b2b; box-shadow:0 8px 24px rgba(0,0,0,0.35); color:#f5f5f5;">
+                    <div style="font-size:15px; color:#d4a373; font-weight:700; letter-spacing:0.6px; text-transform:uppercase;">
+                        Detalhes do cliente
+                    </div>
+                    <div style="display:grid; gap:14px; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));">
+                        <div style="background:#1b1b1b; border-radius:12px; padding:16px; border-left:4px solid #8B4513;">
+                            <div style="font-size:12px; color:#999; font-weight:600; margin-bottom:6px;">
+                                <i class="fas fa-user" style="margin-right:6px;"></i>Nome
+                            </div>
+                            <div style="font-size:18px; font-weight:700;">{cliente_obj.nome}</div>
+                        </div>
+                        <div style="background:#1b1b1b; border-radius:12px; padding:16px; border-left:4px solid #8B4513;">
+                            <div style="font-size:12px; color:#999; font-weight:600; margin-bottom:6px;">
+                                <i class="fas fa-id-card" style="margin-right:6px;"></i>CPF
+                            </div>
+                            <div style="font-size:18px; font-weight:700;">{number_as_cpf(cliente_obj.cpf)}</div>
+                        </div>
+                        <div style="background:#1b1b1b; border-radius:12px; padding:16px; border-left:4px solid #8B4513;">
+                            <div style="font-size:12px; color:#999; font-weight:600; margin-bottom:6px;">
+                                <i class="fas fa-phone" style="margin-right:6px;"></i>Telefone
+                            </div>
+                            <a href="https://wa.me/55{telefone_limpo}" style="display:inline-flex; align-items:center; gap:6px; font-size:18px; font-weight:700; color:#4ade80; text-decoration:none;">
+                                {number_as_telephone(cliente_obj.telefone)}
+                                <i class="fas fa-arrow-up-right-from-square" style="font-size:14px;"></i>
+                            </a>
+                        </div>
+                        <div style="background:#1b1b1b; border-radius:12px; padding:16px; border-left:4px solid #8B4513;">
+                            <div style="font-size:12px; color:#999; font-weight:600; margin-bottom:6px;">
+                                <i class="fas fa-envelope" style="margin-right:6px;"></i>Email
+                            </div>
+                            <a href="mailto:{cliente_obj.email}" style="display:block; font-size:18px; font-weight:700; color:#93c5fd; text-decoration:none; overflow-wrap:anywhere; word-break:break-word;">
+                                {cliente_obj.email}
+                            </a>
+                        </div>
+                        <div style="background:#1b1b1b; border-radius:12px; padding:16px; border-left:4px solid #8B4513;">
+                            <div style="font-size:12px; color:#999; font-weight:600; margin-bottom:6px;">
+                                <i class="fas fa-toggle-on" style="margin-right:6px;"></i>Status de ativação
+                            </div>
+                            <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:999px; background:#1f2b1f; color:#4ade80; font-size:14px; font-weight:700;">
+                                <span style="width:8px; height:8px; border-radius:50%; background:#4ade80;"></span>
+                                {cliente_obj.activate}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <br></br>
-                """,
-                unsafe_allow_html=True,
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                """
             )
     if st.sidebar.button(
         "Home",

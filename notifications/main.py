@@ -23,7 +23,7 @@ def run_publisher():
                     }
                 )
                 publisher.publish(msg)
-        time.sleep(60 * 5)  # Await 5 minutes to check again
+        time.sleep(60 * 1)  # Await 1 minutes to check again
 
 
 def run_consumer():
