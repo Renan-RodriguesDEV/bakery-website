@@ -5,12 +5,17 @@ from src.utils.uteis import Logger
 
 
 # Função para selecionar todos os produtos
-def select_all_products(limit=20, offset=0, by="nome", asc=True):
+def select_all_products(limit=20, by="nome", asc=True):
     with get_db_session() as session:
         query = text(
-            f"SELECT nome, preco, estoque FROM produtos ORDER BY {by} {'ASC' if asc else 'DESC'} LIMIT :limit OFFSET :offset"
+            f"SELECT nome, preco, estoque FROM produtos ORDER BY {by} {'ASC' if asc else 'DESC'} LIMIT :limit "
         )
-        result = session.execute(query, {"limit": limit, "offset": offset})
+        result = session.execute(
+            query,
+            {
+                "limit": limit,
+            },
+        )
 
         # Converte para lista de dicionários
         data = [dict(row._mapping) for row in result]
@@ -124,16 +129,20 @@ def select_all_sales_by_client(client_name=None, cpf=None, client_email=None):
 
 
 # Função para selecionar todos os produtos por categoria
-def select_all_products_by_category(category, limit=20, offset=0, by="nome", asc=True):
+def select_all_products_by_category(category, limit=20, by="nome", asc=True):
     with get_db_session() as session:
         query = text(f"""
             SELECT nome, preco, estoque
             FROM produtos
-            WHERE categoria = :categoria  ORDER BY {by} {"ASC" if asc else "DESC"} LIMIT :limit OFFSET :offset
+            WHERE categoria = :categoria  ORDER BY {by} {"ASC" if asc else "DESC"} LIMIT :limit 
         """)
 
         result = session.execute(
-            query, {"categoria": category, "limit": limit, "offset": offset}
+            query,
+            {
+                "categoria": category,
+                "limit": limit,
+            },
         )
 
         # Converte para lista de dicionários

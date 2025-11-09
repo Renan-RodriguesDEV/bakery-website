@@ -20,7 +20,7 @@ def consulta_produto():
         step=2,
         help="Selecione o número de itens por página",
     )
-    current_page = cols[2].number_input("Pagina", min_value=1, step=1, max_value=100)
+    # current_page = cols[2].number_input("Pagina", min_value=1, step=1, max_value=100)
     preco_min = cols[0].number_input("Valor Min.", min_value=0, max_value=500)
     preco_max = cols[0].number_input(
         "Valor Max.", min_value=0, max_value=500, value=500
@@ -35,7 +35,6 @@ def consulta_produto():
     )
     produtos = select_all_products(
         limit=items_per_page,
-        offset=current_page,
         by=filter_by,
         asc=(filter_order_by == "menor"),
     )
@@ -132,7 +131,6 @@ def consulta_produto():
         produtos = select_all_products_by_category(
             categoria,
             limit=items_per_page,
-            offset=current_page,
             by=filter_by,
             asc=(filter_order_by == "menor"),
         )
