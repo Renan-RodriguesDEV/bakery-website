@@ -204,10 +204,11 @@ def consulta_divida():
                     ]
                     st.table(df_dividas_total)
                     st.download_button(
-                        label="Download divida",
+                        label="Baixar divida",
                         data=converter_df_to_excel(divida_total),
                         file_name="divida.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        icon=":material/download:",
                     )
                 else:
                     st.error("Nenhuma divida encontrado !!!")
