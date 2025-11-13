@@ -19,8 +19,10 @@ def modal_notifications(notifications_repository):
         ):
             for unread in unreads:
                 notifications_repository.mark_as_read(unread.id)
-                del st.session_state["unreads"]
-                del st.session_state["count_unread"]
+                if "unreads" in st.session_state:
+                    del st.session_state["unreads"]
+                if "count_unread" in st.session_state:
+                    del st.session_state["count_unread"]
         for n in unreads:
             cols = st.columns([2, 2])
             cols[0].markdown(
