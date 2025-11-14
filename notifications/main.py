@@ -20,6 +20,7 @@ def run_publisher():
                         "status": "warning" if product.get("estoque") > 0 else "danger",
                         "product": product.get("nome"),
                         "stock": product.get("estoque"),
+                        "id": product.get("id"),
                     }
                 )
                 publisher.publish(msg)

@@ -39,6 +39,7 @@ if __name__ == "__main__":
                     "status": "warning" if result.get("estoque") > 0 else "danger",
                     "product": result.get("nome"),
                     "stock": result.get("estoque"),
+                    "id": result.get("id"),
                 }
             )
             publisher.publish(message)

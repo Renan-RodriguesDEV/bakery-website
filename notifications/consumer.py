@@ -35,11 +35,12 @@ def callback(ch, method, properties, body):
     status = dict_body.get("status", "").title()
     product = dict_body.get("product", "")
     stock = dict_body.get("stock")
+    id_product = dict_body.get("id")
     if not status or not product or stock is None:
         print(f"Invalid message format: {body}")
         return
     message = f"{status} - {product}\n\nEstoque Total: {stock}"
-    save_notification(message)
+    save_notification(message, id_product)
     if "Warning" in status:
         notify(
             f"Atenção, estoque de ({product}) está abaixo do mínimo! em estoque {stock}",

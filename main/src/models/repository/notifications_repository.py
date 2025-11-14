@@ -1,6 +1,6 @@
 from sqlalchemy import text
 from src.models.entities.connection_handler import DatabaseHandler
-from src.models.entities.database import Notifications
+from src.models.entities.database import Notifications, Product
 
 
 class NotificationsRepository(DatabaseHandler):
@@ -28,9 +28,9 @@ class NotificationsRepository(DatabaseHandler):
                 print(e)
                 return 0
 
-    def save_notification(self, message):
+    def save_notification(self, message, fk_product):
         with self:
-            notification = Notifications(message=message)
+            notification = Notifications(message=message, fk_product=fk_product)
             self.session.add(notification)
             self.session.commit()
             return True
@@ -43,8 +43,15 @@ class NotificationsRepository(DatabaseHandler):
                 .filter(Notifications.id == notification_id)
                 .first()
             )
-
+            if not notification:
+                return False
+            product = (
+                self.session.query(Product)
+                .filter(Product.id == notification.fk_product)
+                .first()
+            )
             notification.is_read = True
+            product.in_queue = False
             self.session.commit()
             self.session.refresh(notification)
             return True

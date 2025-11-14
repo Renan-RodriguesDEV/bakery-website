@@ -194,13 +194,17 @@ class Notifications(Base):
     __tablename__ = "notifications"
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     message = Column("message", Text, nullable=False)
+    fk_product = Column(
+        "fk_produto", ForeignKey("produtos.id", ondelete="CASCADE"), nullable=False
+    )
     is_read = Column("is_read", Boolean, nullable=False, server_default="false")
     created_at = Column(
         "created_at", TIMESTAMP, server_default=func.now(), nullable=False
     )
 
-    def __init__(self, message, is_read=False):
+    def __init__(self, message, fk_product, is_read=False):
         self.message = message
+        self.fk_product = fk_product
         self.is_read = is_read
 
 

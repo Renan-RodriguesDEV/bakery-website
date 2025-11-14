@@ -52,13 +52,15 @@ def notify(message, typed: Literal["warning", "danger"]):
         )
 
 
-def save_notification(message, url=os.getenv("DATABASE_URL")):
+def save_notification(message, id_product, url=os.getenv("DATABASE_URL")):
     engine = create_engine(url, echo=True)
     try:
         with engine.connect() as conn:
             conn.execute(
-                text("INSERT INTO notifications (message) VALUES (:value)"),
-                {"value": message},
+                text(
+                    "INSERT INTO notifications (message,fk_produto) VALUES (:value,:product)"
+                ),
+                {"value": message, "product": id_product},
             )
             conn.commit()
     except Exception as e:
