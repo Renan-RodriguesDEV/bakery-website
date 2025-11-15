@@ -23,12 +23,18 @@ def run_publisher():
                         "id": product.get("id"),
                     }
                 )
-                publisher.publish(msg)
+                try:
+                    publisher.publish(msg)
+                except Exception as e:
+                    print(str(e))
         time.sleep(60 * 1)  # Await 1 minutes to check again
 
 
 def run_consumer():
-    consumer.start(callback=callback)
+    try:
+        consumer.start(callback=callback)
+    except Exception as e:
+        print(str(e))
 
 
 if __name__ == "__main__":
